@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { Head, Link } from '@inertiajs/vue3';
+
 </script>
 
 <template>
@@ -18,6 +19,12 @@ import { Head, Link } from '@inertiajs/vue3';
                     Dashboard
                 </Link>
                 <template v-else>
+                    <Link
+                        :href="route('contact')"
+                        class="inline-block rounded-sm border border-transparent px-5 py-1.5 text-sm leading-normal text-[#1b1b18] hover:border-[#19140035] dark:text-[#EDEDEC] dark:hover:border-[#3E3E3A]"
+                    >
+                       Contact
+                    </Link>
                     <Link
                         :href="route('login')"
                         class="inline-block rounded-sm border border-transparent px-5 py-1.5 text-sm leading-normal text-[#1b1b18] hover:border-[#19140035] dark:text-[#EDEDEC] dark:hover:border-[#3E3E3A]"
