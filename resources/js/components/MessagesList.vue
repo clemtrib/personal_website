@@ -1,16 +1,85 @@
 <script setup lang="ts">
-import { computed } from 'vue';
+import { computed, ref, defineExpose } from 'vue';
+import { useForm } from '@inertiajs/vue3';
+
+const props = defineProps<{
+  messages: Array<{
+    id: number;
+    firstname: string;
+    lastname: string;
+    email: string;
+    object: string;
+    message: string;
+    created_at: string;
+  }>;
+}>();
 
 const patternId = computed(() => `pattern-${Math.random().toString(36).substring(2, 9)}`);
+
+// Modale
+const showDeleteModal = ref(false);
+const messageIdToDelete = ref(null);
+
+const form = useForm({});
+
+const openDeleteModal = (id: number) => {
+  messageIdToDelete.value = id;
+  showDeleteModal.value = true;
+};
+
+const closeDeleteModal = () => {
+  showDeleteModal.value = false;
+};
+
+const deleteMessage = () => {
+  form.delete(route('messages.destroy', messageIdToDelete.value), {
+    preserveScroll: true,
+    preserveState: false,
+    onSuccess: () => {
+      closeDeleteModal();
+    },
+  });
+};
+
+defineExpose({
+  openDeleteModal
+});
 </script>
 
 <template>
-    <svg class="absolute inset-0 size-full stroke-neutral-900/20 dark:stroke-neutral-100/20" fill="none">
+
+    <div v-if="showDeleteModal" class="modal">
+        <div class="modal-content">
+            <h3>Confirmer la suppression</h3>
+            <p>Êtes-vous sûr de vouloir supprimer ce message ?</p>
+            <button @click="deleteMessage">Confirmer</button>
+            <button @click="closeDeleteModal">Annuler</button>
+        </div>
+    </div>
+
+
+    <div class="relative w-full h-full">
+        <svg class="absolute inset-0 size-full stroke-neutral-900/20 dark:stroke-neutral-100/20" fill="none">
         <defs>
             <pattern :id="patternId" x="0" y="0" width="8" height="8" patternUnits="userSpaceOnUse">
-                <path d="M-1 5L5 -1M3 9L8.5 3.5" stroke-width="0.5"></path>
+            <path d="M-1 5L5 -1M3 9L8.5 3.5" stroke-width="0.5"></path>
             </pattern>
         </defs>
         <rect stroke="none" :fill="`url(#${patternId})`" width="100%" height="100%"></rect>
-    </svg>
+        </svg>
+
+        <div class="relative z-10 p-4">
+            <h2 class="text-2xl font-bold mb-4">Messages</h2>
+            <ul class="space-y-4">
+                <li v-for="message in messages" :key="message.id" class="bg-white dark:bg-gray-800 p-4 rounded-lg shadow">
+                <h3 class="font-semibold">{{ message.object }}</h3>
+                <p class="text-sm text-gray-600 dark:text-gray-400">De: {{ message.firstname }} {{ message.lastname }}</p>
+                <p class="text-sm text-gray-600 dark:text-gray-400">Email: {{ message.email }}</p>
+                <p class="mt-2">{{ message.message }}</p>
+                <p class="text-xs text-gray-500 dark:text-gray-400 mt-2">Reçu le: {{ new Date(message.created_at).toLocaleString() }}</p>
+                <button @click="openDeleteModal(message.id)" class="btn btn-danger">Supprimer</button>
+                </li>
+            </ul>
+        </div>
+  </div>
 </template>
