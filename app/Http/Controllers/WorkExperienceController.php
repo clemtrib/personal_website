@@ -12,15 +12,8 @@ class WorkExperienceController extends Controller
      */
     public function index()
     {
-        //
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
+        $workExperiences = WorkExperience::orderBy('created_at', 'desc')->get();
+        return response()->json($workExperiences);
     }
 
     /**
@@ -28,7 +21,25 @@ class WorkExperienceController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validatedData = $request->validate([
+            'location' => 'required|string|max:255',
+            'company' => 'required|string|max:255',
+            'job' => 'required|string|max:255',
+            'description' => 'string',
+            'begin_at' => 'required',
+            'end_at' => ''
+        ]);
+
+        $message = new WorkExperience();
+        $message->location = $validatedData['location'];
+        $message->company = $validatedData['company'];
+        $message->job = $validatedData['job'];
+        $message->description = $validatedData['description'];
+        $message->begin_at = $validatedData['begin_at'];
+        $message->end_at = $validatedData['end_at'];
+        $message->save();
+
+        return response()->json(['message' => 'Expérience enregistrée avec succès'], 201);
     }
 
     /**
@@ -36,15 +47,7 @@ class WorkExperienceController extends Controller
      */
     public function show(WorkExperience $workExperience)
     {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(WorkExperience $workExperience)
-    {
-        //
+        return response()->json($workExperience);
     }
 
     /**
@@ -52,7 +55,19 @@ class WorkExperienceController extends Controller
      */
     public function update(Request $request, WorkExperience $workExperience)
     {
-        //
+        $validatedData = $request->validate([
+            'location' => 'sometimes|required|string|max:255',
+            'company' => 'sometimes|required|string|max:255',
+            'job' => 'sometimes|required|string|max:255',
+            'description' => 'sometimes|string',
+            'begin_at' => 'sometimes|required',
+            'end_at' => 'sometimes'
+        ]);
+
+        $workExperience->update($validatedData);
+
+        return response()->json(['message' => 'Expérience mis à jour avec succès']);
+
     }
 
     /**
@@ -60,6 +75,7 @@ class WorkExperienceController extends Controller
      */
     public function destroy(WorkExperience $workExperience)
     {
-        //
+        $workExperience->delete();
+        return response()->json(['message' => 'Expérience supprimée avec succès']);
     }
 }

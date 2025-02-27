@@ -3,15 +3,13 @@ import { computed, ref, defineExpose } from 'vue';
 import { useForm } from '@inertiajs/vue3';
 
 const props = defineProps<{
-  messages: Array<{
-    id: number;
-    firstname: string;
-    lastname: string;
-    email: string;
-    phone: string;
-    object: string;
-    message: string;
-    created_at: string;
+  workExperiences: Array<{
+    location: string,
+    company: string,
+    job: string,
+    description: string,
+    begin_at: string,
+    end_at: string
   }>;
 }>();
 
@@ -70,15 +68,13 @@ defineExpose({
         </svg>
 
         <div class="relative z-10 p-4">
-            <h2 class="text-2xl font-bold mb-4">Messages</h2>
+            <h2 class="text-2xl font-bold mb-4">Expériences</h2>
             <ul class="space-y-4">
-                <li v-for="message in messages" :key="message.id" class="bg-white dark:bg-gray-800 p-4 rounded-lg shadow">
-                <h3 class="font-semibold">{{ message.object }}</h3>
-                <p class="text-sm text-gray-600 dark:text-gray-400">De {{ message.firstname }} {{ message.lastname }} &lt;{{ message.email }}&gt;</p>
-                <p class="text-sm text-gray-600 dark:text-gray-400">Téléphone : {{ message.phone }}</p>
-                <p class="mt-2">{{ message.message }}</p>
-                <p class="text-xs text-gray-500 dark:text-gray-400 mt-2">Reçu le {{ new Date(message.created_at).toLocaleString() }}</p>
-                <button @click="openDeleteModal(message.id)" class="btn btn-danger">Supprimer</button>
+                <li v-for="experience in workExperiences" :key="experience.id" class="bg-white dark:bg-gray-800 p-4 rounded-lg shadow">
+                <h3 class="font-semibold">{{ experience.job }} - {{ experience.company }} <small>{{ experience.location }}</small></h3>
+                <p class="text-sm text-gray-600 dark:text-gray-400">Du {{ new Date(experience.begin_at).toLocaleString() }} au {{ new Date(experience.end_at).toLocaleString() }}</p>
+                <p class="mt-2">{{ experience.description }}</p>
+                <button @click="openDeleteModal(experience.id)" class="btn btn-danger">Supprimer</button>
                 </li>
             </ul>
         </div>
