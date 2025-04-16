@@ -2,7 +2,7 @@
 import AppLayout from '@/layouts/AppLayout.vue';
 import { type BreadcrumbItem } from '@/types';
 import { Head } from '@inertiajs/vue3';
-import MessagesList from '../components/MessagesList.vue';
+import WorkExperiencesList from '../components/WorkExperiencesList.vue';
 import { onMounted, ref } from 'vue';
 import axios from 'axios';
 import { CirclePlus } from 'lucide-vue-next';

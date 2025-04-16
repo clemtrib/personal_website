@@ -23,7 +23,7 @@ const hobbies = ref([]);
 
 onMounted(async () => {
     try {
-        const response = await axios.get('/messages/list');
+        var response = await axios.get('/messages/list');
         page.value = response.data;
 
         response = await axios.get('/messages/list');

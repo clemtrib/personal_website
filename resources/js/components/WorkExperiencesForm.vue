@@ -1,14 +1,14 @@
 <script setup lang="ts">
 
 import { ref } from 'vue'
-import Vue from 'vue'
-import wysiwyg from 'vue-wysiwyg'
 import { Head, useForm } from '@inertiajs/vue3';
-
+import { Label } from '@/components/ui/label';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
+import { Button } from '@/components/ui/button';
+import AuthBase from '@/layouts/AuthLayout.vue';
+import { LoaderCircle } from 'lucide-vue-next';
 import { DateInput } from '@/components/ui/date-input';
-//import "vue-wysiwyg/dist/vue-wysiwyg.css"
-
-//Vue.use(wysiwyg, {})
 
 const form = useForm({
     location: '',
@@ -54,7 +54,7 @@ const onSubmit = () => {
 
         <div class="mb-4">
             <Label for="location" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Ville</Label>
-            <Input id="location" type="text" required tabindex="1" autocomplete="location" v-model="form.company" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 dark:bg-gray-700 dark:border-gray-600 dark:text-white" />
+            <Input id="location" type="text" required tabindex="1" autocomplete="location" v-model="form.location" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 dark:bg-gray-700 dark:border-gray-600 dark:text-white" />
         </div>
 
         <div class="mb-4">
@@ -64,24 +64,16 @@ const onSubmit = () => {
 
         <div class="mb-4">
             <Label for="description" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Missions</Label>
-            <Textarea id="description" required tabindex="4" v-model.trim="form.message" placeholder="description"></textarea>
+            <Textarea id="description" required tabindex="4" v-model.trim="form.description" placeholder="description"></textarea>
         </div>
 
-        <!--
-        <div class="mb-4">
-            <Label for="description" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Description</Label>
-            <wysiwyg id="description" v-model="form.description" />
+        <div class="mt-6">
+            <Button type="submit" class="mt-2 w-full" tabindex="5" :disabled="form.processing">
+            <LoaderCircle v-if="form.processing" class="h-4 w-4 animate-spin" />
+            Envoyer
+            </Button>
         </div>
-        -->
 
-      <div class="mt-6">
-        <button
-          type="submit"
-          class="w-full px-4 py-2 text-sm font-medium text-white bg-indigo-600 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-        >
-          Soumettre
-        </button>
-      </div>
     </form>
   </div>
 </template>
