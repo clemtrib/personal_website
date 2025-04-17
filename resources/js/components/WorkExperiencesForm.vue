@@ -9,15 +9,28 @@ import { LoaderCircle } from 'lucide-vue-next';
 import { DateInput } from '@/components/ui/date-input';
 import { QuillEditor } from '@vueup/vue-quill';
 import '@vueup/vue-quill/dist/vue-quill.snow.css';
+import { computed } from 'vue';
+
+const props = defineProps({
+    experience: {
+        type: Object,
+        default: () => ({
+            location: '',
+            company: '',
+            job: '',
+            description: '<p></p>',
+            begin_at: '',
+            end_at: ''
+        })
+    }
+});
 
 const form = useForm({
-    location: '',
-    company: '',
-    job: '',
-    description: '<p></p>', // Initialiser avec du HTML valide
-    begin_at: '',
-    end_at: ''
+    ...props.experience,
+    description: props.experience.description || '<p></p>'
 });
+
+const isEditMode = computed(() => !!props.experience.id);
 
 const onSubmit = () => {
     // Validation personnalisée pour le contenu vide
@@ -26,10 +39,13 @@ const onSubmit = () => {
         return;
     }
 
-    form.post(route('experiences.store'), {
-        onFinish: () => form.reset('location', 'company', 'job', 'description', 'begin_at', 'end_at'),
-    });
+    isEditMode.value
+        ? form.put(route('experiences.update', props.experience.id))
+        : form.post(route('experiences.store'));
+
 };
+
+
 </script>
 
 <template>
@@ -89,7 +105,7 @@ const onSubmit = () => {
             <Button type="submit" class="mt-2 w-full" tabindex="5" :disabled="form.processing">
                 <LoaderCircle v-if="form.processing" class="h-4 w-4 animate-spin" />
                 Envoyer
-            </Button>
+              </Button>
         </div>
     </form>
 </div>

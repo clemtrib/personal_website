@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Inertia\Inertia;
 use App\Models\WorkExperience;
 use Illuminate\Http\Request;
 
@@ -47,7 +48,10 @@ class WorkExperienceController extends Controller
      */
     public function show(WorkExperience $workExperience)
     {
-        return response()->json($workExperience);
+        return Inertia::render('WorkExperiencesForm', [
+            'experience' => $workExperience
+        ]);
+        //return response()->json($workExperience);
     }
 
     /**
