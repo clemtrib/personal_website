@@ -72,7 +72,7 @@ defineExpose({
             <ul class="space-y-4">
                 <li v-for="experience in workExperiences" :key="experience.id" class="bg-white dark:bg-gray-800 p-4 rounded-lg shadow">
                 <h3 class="font-semibold">{{ experience.job }} - {{ experience.company }} <small>{{ experience.location }}</small></h3>
-                <p class="text-sm text-gray-600 dark:text-gray-400">Du {{ new Date(experience.begin_at).toLocaleString() }} au {{ new Date(experience.end_at).toLocaleString() }}</p>
+                <p class="text-sm text-gray-600 dark:text-gray-400">Du {{ new Date(experience.begin_at).toLocaleDateString() }} au {{ new Date(experience.end_at).toLocaleDateString() }}</p>
                 <p class="mt-2">{{ experience.description }}</p>
                 <button @click="openDeleteModal(experience.id)" class="btn btn-danger">Supprimer</button>
                 </li>
