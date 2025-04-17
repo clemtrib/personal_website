@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, ref, defineExpose } from 'vue';
 import { useForm } from '@inertiajs/vue3';
+import { Pencil, Eraser } from 'lucide-vue-next';
 
 const props = defineProps<{
   messages: Array<{
@@ -49,15 +50,33 @@ defineExpose({
 
 <template>
 
-    <div v-if="showDeleteModal" class="modal">
-        <div class="modal-content">
-            <h3>Confirmer la suppression</h3>
-            <p>Êtes-vous sûr de vouloir supprimer ce message ?</p>
-            <button @click="deleteMessage">Confirmer</button>
-            <button @click="closeDeleteModal">Annuler</button>
+    <div
+        v-if="showDeleteModal"
+        class="fixed inset-0 bg-black/50 flex items-center justify-center z-50"
+        @click.self="closeDeleteModal"
+    >
+        <div class="bg-white dark:bg-gray-800 p-6 rounded-lg max-w-md w-full mx-4">
+        <h3 class="text-lg font-semibold mb-4">Confirmer la suppression</h3>
+        <p class="mb-6">Êtes-vous sûr de vouloir supprimer ce message ?</p>
+
+        <div class="flex justify-end gap-3">
+            <button
+            @click="closeDeleteModal"
+            class="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded"
+            >
+            Annuler
+            </button>
+            <button
+            @click="deleteMessage"
+            class="px-4 py-2 bg-red-600 text-white text-sm font-medium rounded hover:bg-red-700"
+            :disabled="form.processing"
+            >
+            <span v-if="form.processing">Suppression...</span>
+            <span v-else>Confirmer</span>
+            </button>
+        </div>
         </div>
     </div>
-
 
     <div class="relative w-full h-full">
         <svg class="absolute inset-0 size-full stroke-neutral-900/20 dark:stroke-neutral-100/20" fill="none">
@@ -78,9 +97,28 @@ defineExpose({
                 <p class="text-sm text-gray-600 dark:text-gray-400">Téléphone : {{ message.phone }}</p>
                 <p class="mt-2">{{ message.message }}</p>
                 <p class="text-xs text-gray-500 dark:text-gray-400 mt-2">Reçu le {{ new Date(message.created_at).toLocaleString() }}</p>
-                <button @click="openDeleteModal(message.id)" class="btn btn-danger">Supprimer</button>
+
+                <button
+                @click="openDeleteModal(message.id)"
+                class="flex items-center gap-2 px-3 py-2 text-sm bg-red-100 dark:bg-red-900/30 hover:bg-red-200 dark:hover:bg-red-900/50 rounded-lg transition"
+                >
+                <Eraser class="h-4 w-4" />
+                Supprimer
+                </button>
+
                 </li>
             </ul>
         </div>
   </div>
 </template>
+
+
+<style scoped>
+/* Animation modale */
+.modal-enter-active, .modal-leave-active {
+  transition: opacity 0.3s;
+}
+.modal-enter-from, .modal-leave-to {
+  opacity: 0;
+}
+</style>
