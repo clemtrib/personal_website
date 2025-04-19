@@ -11,10 +11,19 @@ class WorkExperienceController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(bool $json = true)
     {
-        $workExperiences = WorkExperience::orderBy('created_at', 'desc')->get();
-        return response()->json($workExperiences);
+        $workExperiences = WorkExperience::orderBy('end_at', 'desc')->get();
+        if($json) {
+            return response()->json($workExperiences);
+        } else {
+            return Inertia::render('WorkExperiences', [
+                'experiences' => $workExperiences,
+                'flash' => [
+                    'success' => session('success')
+                ]
+            ]);
+        }
     }
 
     /**
@@ -46,12 +55,16 @@ class WorkExperienceController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(WorkExperience $workExperience)
+    public function edit(WorkExperience $workExperience)
     {
+
+        if(!$workExperience->exists) {
+            abort(404, "Expérience non trouvée");
+        }
+
         return Inertia::render('WorkExperiencesForm', [
-            'experience' => $workExperience
+            'experience' => $workExperience->only(['id', 'location', 'company', 'job', 'description', 'begin_at', 'end_at'])
         ]);
-        //return response()->json($workExperience);
     }
 
     /**
@@ -70,7 +83,8 @@ class WorkExperienceController extends Controller
 
         $workExperience->update($validatedData);
 
-        return response()->json(['message' => 'Expérience mis à jour avec succès']);
+        return redirect()->route('experiences', ['json' => false])->with('success', 'Expérience mise à jour avec succès');
+        //return response()->json(['message' => 'Expérience mis à jour avec succès']);
 
     }
 

@@ -14,42 +14,42 @@ import { computed } from 'vue';
 const props = defineProps({
     experience: {
         type: Object,
-        default: () => ({
-            location: '',
-            company: '',
-            job: '',
-            description: '<p></p>',
-            begin_at: '',
-            end_at: ''
-        })
+        default: () => null // Modifier ici
     }
 });
 
+// Initialisation conditionnelle du formulaire
 const form = useForm({
-    ...props.experience,
-    description: props.experience.description || '<p></p>'
+    location: props.experience?.location || '',
+    company: props.experience?.company || '',
+    job: props.experience?.job || '',
+    description: props.experience?.description || '<p></p>',
+    begin_at: props.experience?.begin_at || '',
+    end_at: props.experience?.end_at || ''
 });
 
-const isEditMode = computed(() => !!props.experience.id);
+// Mode édition seulement si l'expérience existe
+const isEditMode = computed(() => !!props.experience?.id);
 
 const onSubmit = () => {
-    // Validation personnalisée pour le contenu vide
-    if (form.description === '<p><br></p>' || form.description === '<p></p>') {
+    if (form.description.trim() === '<p></p>' || form.description.trim() === '<p><br></p>') {
         form.setError('description', 'Le champ missions est obligatoire');
         return;
     }
 
+    // Utiliser form directement pour PUT/POST
     isEditMode.value
         ? form.put(route('experiences.update', props.experience.id))
-        : form.post(route('experiences.store'));
-
+        : form.post(route('experiences.store'), {
+            preserveScroll: true,
+            onSuccess: () => form.reset()
+        });
 };
-
 
 </script>
 
 <template>
-<Head title="Ajouter une expérience" />
+<Head :title="isEditMode ? 'Modifier une expérience' : 'Ajouter une expérience'" />
 
 <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
     <form @submit.prevent="onSubmit">

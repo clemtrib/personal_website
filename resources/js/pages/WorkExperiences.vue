@@ -1,4 +1,5 @@
 <script setup lang="ts">
+ import api from '@/api';
 import AppLayout from '@/layouts/AppLayout.vue';
 import { type BreadcrumbItem } from '@/types';
 import { Head } from '@inertiajs/vue3';
@@ -18,7 +19,7 @@ const workExperiences = ref([]);
 
 onMounted(async () => {
     try {
-        const response = await axios.get('/experiences/list');
+        const response = await api.get('/api/experiences/list');
         workExperiences.value = response.data;
     } catch (error) {
         console.error('Erreur lors de la récupération des messages:', error);

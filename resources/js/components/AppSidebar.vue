@@ -14,16 +14,16 @@ const mainNavItems: NavItem[] = [
         url: '/dashboard',
         icon: LayoutGrid,
     },
+        {
+        title: 'Expériences',
+        url: '/dashboard/experiences/list',
+        icon: Briefcase,
+    },
     {
         title: 'Messages',
         url: '/dashboard/messages',
         icon: Mail,
     },
-    {
-        title: 'Expériences',
-        url: '/dashboard/experiences',
-        icon: Briefcase,
-    }
 ];
 
 const footerNavItems: NavItem[] = [

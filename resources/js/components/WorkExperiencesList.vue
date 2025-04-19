@@ -36,7 +36,7 @@ const closeDeleteModal = () => {
 };
 
 const deleteMessage = () => {
-  form.delete(route('messages.destroy', messageIdToDelete.value), {
+  form.delete(route('experiences.destroy', messageIdToDelete.value), {
     preserveScroll: true,
     preserveState: false,
     onSuccess: () => {
@@ -99,7 +99,7 @@ defineExpose({
 
           <div class="flex gap-2 mt-4">
             <Link
-              :href="route('experiences.show', experience.id)"
+              :href="route('experiences.edit', experience.id)"
               class="flex items-center gap-2 px-3 py-2 text-sm bg-blue-100 dark:bg-blue-900/30 hover:bg-blue-200 dark:hover:bg-blue-900/50 rounded-lg transition"
             >
               <Pencil class="h-4 w-4" />
