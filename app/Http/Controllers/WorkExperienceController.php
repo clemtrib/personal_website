@@ -5,9 +5,23 @@ namespace App\Http\Controllers;
 use Inertia\Inertia;
 use App\Models\WorkExperience;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
 
-class WorkExperienceController extends Controller
+class WorkExperienceController extends Controller implements HasMiddleware
 {
+
+    public static function middleware(): array
+    {
+        return [];
+        /*
+        return [
+            'auth',
+            new Middleware('can:edit-experiences', except: ['index', 'show'])
+        ];
+        */
+    }
+
     /**
      * Display a listing of the resource.
      */

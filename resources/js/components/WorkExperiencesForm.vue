@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Head, useForm } from '@inertiajs/vue3';
+import { Head, useForm, usePage } from '@inertiajs/vue3';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -10,6 +10,7 @@ import { DateInput } from '@/components/ui/date-input';
 import { QuillEditor } from '@vueup/vue-quill';
 import '@vueup/vue-quill/dist/vue-quill.snow.css';
 import { computed } from 'vue';
+import Toast from '../components/Toast.vue';
 
 const props = defineProps({
     experience: {
@@ -46,9 +47,12 @@ const onSubmit = () => {
         });
 };
 
+const page = usePage();
+
 </script>
 
 <template>
+<Toast :flash="page.props.flash" />
 <Head :title="isEditMode ? 'Modifier une expérience' : 'Ajouter une expérience'" />
 
 <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">

@@ -4,8 +4,6 @@ import { useForm } from '@inertiajs/vue3';
 import { Pencil, Eraser } from 'lucide-vue-next';
 import { Link } from '@inertiajs/vue3';
 
-
-
 const props = defineProps<{
   workExperiences: Array<{
     id: BigInteger,
