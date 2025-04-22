@@ -95,7 +95,7 @@ defineExpose({
 
                 <h3 class="font-semibold">{{ experience.job }} - {{ experience.company }} <small>{{ experience.location }}</small></h3>
                 <p class="text-sm text-gray-600 dark:text-gray-400">Du {{ new Date(experience.begin_at).toLocaleDateString() }} au {{ new Date(experience.end_at).toLocaleDateString() }}</p>
-                <p class="mt-2">{{ experience.description }}</p>
+                <p class="mt-2" v-html="experience.description"></p>
 
           <div class="flex gap-2 mt-4">
             <Link
