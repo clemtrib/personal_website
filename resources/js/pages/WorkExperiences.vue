@@ -1,12 +1,15 @@
 <script setup lang="ts">
- import api from '@/api';
+import api from '@/api';
 import AppLayout from '@/layouts/AppLayout.vue';
 import { type BreadcrumbItem } from '@/types';
-import { Head } from '@inertiajs/vue3';
+import { Head, usePage } from '@inertiajs/vue3';
 import WorkExperiencesList from '../components/WorkExperiencesList.vue';
-import { onMounted, ref } from 'vue';
+import { onMounted, ref, watch } from 'vue';
 import axios from 'axios';
 import { CirclePlus } from 'lucide-vue-next';
+import { useToast } from 'vue-toastification';
+
+const toast = useToast();
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -29,6 +32,48 @@ onMounted(async () => {
 defineProps<{
     name?: string;
 }>();
+
+const page = usePage();
+
+watch(
+  () => page.props.flash, // Surveillance de l'objet flash complet
+  (newFlashValues) => { // Paramètre renommé pour clarté
+    if (newFlashValues.success) {
+        toast.success(newFlashValues.success, {
+            position: "top-right",
+            timeout: 5000,
+            closeOnClick: true,
+            pauseOnFocusLoss: true,
+            pauseOnHover: true,
+            draggable: true,
+            draggablePercent: 0.6,
+            showCloseButtonOnHover: false,
+            hideProgressBar: false,
+            closeButton: "button",
+            icon: true,
+            rtl: false
+        });
+    }
+    if (newFlashValues.error) {
+        toast.error(newFlashValues.error, {
+            position: "top-right",
+            timeout: 5000,
+            closeOnClick: true,
+            pauseOnFocusLoss: true,
+            pauseOnHover: true,
+            draggable: true,
+            draggablePercent: 0.6,
+            showCloseButtonOnHover: false,
+            hideProgressBar: false,
+            closeButton: "button",
+            icon: true,
+            rtl: false
+        });
+    }
+  },
+  { deep: true, immediate: true } // Déclenche au montage du composant
+);
+
 </script>
 
 <template>
