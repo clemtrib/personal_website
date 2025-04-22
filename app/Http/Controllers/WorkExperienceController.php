@@ -72,19 +72,24 @@ class WorkExperienceController extends Controller
      */
     public function update(Request $request, WorkExperience $workExperience)
     {
-        $validatedData = $request->validate([
-            'location' => 'sometimes|required|string|max:255',
-            'company' => 'sometimes|required|string|max:255',
-            'job' => 'sometimes|required|string|max:255',
-            'description' => 'sometimes|string',
-            'begin_at' => 'sometimes|required',
-            'end_at' => 'sometimes'
-        ]);
+            $validatedData = $request->validate([
+                'location' => 'sometimes|required|string|max:255',
+                'company' => 'sometimes|required|string|max:255',
+                'job' => 'sometimes|required|string|max:255',
+                'description' => 'sometimes|string',
+                'begin_at' => 'sometimes|required',
+                'end_at' => 'sometimes'
+            ]);
 
-        $workExperience->update($validatedData);
+            try {
+                $workExperience->update($validatedData);
+                return redirect()->route('experiences', ['json' => false])->with('success', 'Expérience mise à jour avec succès');
+            } catch (\Exception $e) {
+                return back()->with('error', 'Erreur lors de la mise à jour');
+            }
 
-        return redirect()->route('experiences', ['json' => false])->with('success', 'Expérience mise à jour avec succès');
-        //return response()->json(['message' => 'Expérience mis à jour avec succès']);
+            //$workExperience->update($validatedData);
+            //return redirect()->route('experiences', ['json' => false])->with('success', 'Expérience mise à jour avec succès');
 
     }
 
