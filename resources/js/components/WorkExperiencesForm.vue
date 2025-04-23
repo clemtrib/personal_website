@@ -66,7 +66,7 @@ const page = usePage();
         <!-- Fin -->
         <div class="mb-4">
             <Label for="end_at" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Fin</Label>
-            <DateInput id="end_at" type="text" required tabindex="1" v-model="form.end_at" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 dark:bg-gray-700 dark:border-gray-600 dark:text-white" />
+            <DateInput id="end_at" type="text" tabindex="1" v-model="form.end_at" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 dark:bg-gray-700 dark:border-gray-600 dark:text-white" />
         </div>
 
         <!-- Entreprise -->
@@ -97,7 +97,6 @@ const page = usePage();
                 tabindex="4"
                 v-model:content="form.description"
                 contentType="html"
-                placeholder="description"
                 class="custom-quill-style"
             />
             <!-- Affichage des erreurs -->

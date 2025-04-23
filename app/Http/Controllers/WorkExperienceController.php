@@ -11,6 +11,15 @@ use Illuminate\Routing\Controllers\Middleware;
 class WorkExperienceController extends Controller implements HasMiddleware
 {
 
+    const VALIDATION_RULES = [
+        'location' => 'required|string|max:255',
+        'company' => 'required|string|max:255',
+        'job' => 'required|string|max:255',
+        'description' => 'string',
+        'begin_at' => 'required|date_format:Y-m-d',
+        'end_at' => 'nullable|date_format:Y-m-d|after:begin_at'
+    ];
+
     public static function middleware(): array
     {
         return [];
@@ -27,8 +36,8 @@ class WorkExperienceController extends Controller implements HasMiddleware
      */
     public function index(bool $json = true)
     {
-        $workExperiences = WorkExperience::orderBy('end_at', 'desc')->get();
-        if($json) {
+        $workExperiences = WorkExperience::orderByRaw('end_at IS NOT NULL, end_at DESC')->get();
+        if ($json) {
             return response()->json($workExperiences);
         } else {
             return Inertia::render('WorkExperiences', [
@@ -42,14 +51,7 @@ class WorkExperienceController extends Controller implements HasMiddleware
      */
     public function store(Request $request)
     {
-        $validatedData = $request->validate([
-            'location' => 'required|string|max:255',
-            'company' => 'required|string|max:255',
-            'job' => 'required|string|max:255',
-            'description' => 'string',
-            'begin_at' => 'required',
-            'end_at' => ''
-        ]);
+        $validatedData = $request->validate(self::VALIDATION_RULES);
 
         $workExperience = new WorkExperience();
         $workExperience->location = $validatedData['location'];
@@ -61,7 +63,7 @@ class WorkExperienceController extends Controller implements HasMiddleware
 
         try {
             $workExperience->save();
-            return redirect()->route('experiences', ['json' => false])->with('success', 'Expérience créée avec succès');
+            return redirect()->route('experiences', ['json' => false])->with('success', 'Expérience créée avec succès' . $workExperience->end_at);
         } catch (\Exception $e) {
             return back()->with('error', 'Erreur lors de la création');
         }
@@ -74,7 +76,7 @@ class WorkExperienceController extends Controller implements HasMiddleware
      */
     public function edit(WorkExperience $workExperience)
     {
-        if(!$workExperience->exists) {
+        if (!$workExperience->exists) {
             abort(404, "Expérience non trouvée");
         }
         return Inertia::render('WorkExperiencesForm', [
@@ -87,14 +89,7 @@ class WorkExperienceController extends Controller implements HasMiddleware
      */
     public function update(Request $request, WorkExperience $workExperience)
     {
-        $validatedData = $request->validate([
-            'location' => 'sometimes|required|string|max:255',
-            'company' => 'sometimes|required|string|max:255',
-            'job' => 'sometimes|required|string|max:255',
-            'description' => 'sometimes|string',
-            'begin_at' => 'sometimes|required',
-            'end_at' => 'sometimes'
-        ]);
+        $validatedData = $request->validate(self::VALIDATION_RULES);
 
         try {
             $workExperience->update($validatedData);
@@ -102,7 +97,6 @@ class WorkExperienceController extends Controller implements HasMiddleware
         } catch (\Exception $e) {
             return back()->with('error', 'Erreur lors de la modification');
         }
-
     }
 
     /**

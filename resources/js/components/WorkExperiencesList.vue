@@ -91,9 +91,17 @@ defineExpose({
         >
           <!-- Contenu expérience... -->
 
-                <h3 class="font-semibold">{{ experience.job }} - {{ experience.company }} <small>{{ experience.location }}</small></h3>
-                <p class="text-sm text-gray-600 dark:text-gray-400">Du {{ new Date(experience.begin_at).toLocaleDateString() }} au {{ new Date(experience.end_at).toLocaleDateString() }}</p>
-                <p class="mt-2" v-html="experience.description"></p>
+        <h3 class="font-semibold">{{ experience.job }} - {{ experience.company }} <small>{{ experience.location }}</small></h3>
+        <p class="text-sm text-gray-600 dark:text-gray-400">
+            Du {{ new Date(experience.begin_at).toLocaleDateString() }}
+        <template v-if="experience.end_at">
+            au {{ new Date(experience.end_at).toLocaleDateString() }}
+        </template>
+        <template v-else>
+            à aujourd'hui
+        </template>
+        </p>
+        <p class="mt-2" v-html="experience.description"></p>
 
           <div class="flex gap-2 mt-4">
             <Link
