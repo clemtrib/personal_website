@@ -57,15 +57,12 @@ class EducationController extends Controller implements HasMiddleware
         $education->graduation = $validatedData['graduation'];
         $education->date = $validatedData['date'];
 
-
         try {
             $education->save();
-            return redirect()->route('education', ['json' => false])->with('success', 'Diplôme créée avec succès');
+            return to_route('education', ['json' => false])->with('success', 'Diplôme créée avec succès');
         } catch (\Exception $e) {
-            return back()->with('error', 'Erreur lors de la création');
+            return back()->with('error', $e->getMessage());
         }
-
-        return response()->json(['message' => 'Diplôme enregistré avec succès'], 201);
     }
 
     /**
@@ -90,9 +87,9 @@ class EducationController extends Controller implements HasMiddleware
 
         try {
             $education->update($validatedData);
-            return redirect()->route('education', ['json' => false])->with('success', 'Diplôme modifié avec succès');
+            return to_route('education', ['json' => false])->with('success', 'Diplôme modifié avec succès');
         } catch (\Exception $e) {
-            return back()->with('error', 'Erreur lors de la modification');
+            return back()->with('error', $e->getMessage());
         }
     }
 
@@ -103,9 +100,9 @@ class EducationController extends Controller implements HasMiddleware
     {
         try {
             $education->delete();
-            return redirect()->route('education', ['json' => false])->with('success', 'Diplôme supprimé avec succès');
+            return to_route('education', ['json' => false])->with('success', 'Diplôme supprimé avec succès');
         } catch (\Exception $e) {
-            return back()->with('error', 'Erreur lors de la supression');
+            return back()->with('error', $e->getMessage());
         }
     }
 }

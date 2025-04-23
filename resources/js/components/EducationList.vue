@@ -14,68 +14,16 @@ const props = defineProps<{
   }>;
 }>();
 
-const patternId = computed(() => `pattern-${Math.random().toString(36).substring(2, 9)}`);
 
-// Modale
-const showDeleteModal = ref(false);
-const messageIdToDelete = ref(null);
-
-const form = useForm({});
+const emit = defineEmits(['open-delete-modal']);
 
 const openDeleteModal = (id: number) => {
-  messageIdToDelete.value = id;
-  showDeleteModal.value = true;
+    console.log('HERE ' + id)
+  emit('open-delete-modal', id);
 };
-
-const closeDeleteModal = () => {
-  showDeleteModal.value = false;
-};
-
-const deleteMessage = () => {
-  form.delete(route('education.destroy', messageIdToDelete.value), {
-    preserveScroll: true,
-    preserveState: false,
-    onSuccess: () => {
-      closeDeleteModal();
-    },
-  });
-};
-
-defineExpose({
-  openDeleteModal
-});
 </script>
 
 <template>
-  <!-- Modale -->
-  <div
-    v-if="showDeleteModal"
-    class="fixed inset-0 bg-black/50 flex items-center justify-center z-50"
-    @click.self="closeDeleteModal"
-  >
-    <div class="bg-white dark:bg-gray-800 p-6 rounded-lg max-w-md w-full mx-4">
-      <h3 class="text-lg font-semibold mb-4">Confirmer la suppression</h3>
-      <p class="mb-6">Êtes-vous sûr de vouloir supprimer ce diplôme ?</p>
-
-      <div class="flex justify-end gap-3">
-        <button
-          @click="closeDeleteModal"
-          class="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded"
-        >
-          Annuler
-        </button>
-        <button
-          @click="deleteMessage"
-          class="px-4 py-2 bg-red-600 text-white text-sm font-medium rounded hover:bg-red-700"
-          :disabled="form.processing"
-        >
-          <span v-if="form.processing">Suppression...</span>
-          <span v-else>Confirmer</span>
-        </button>
-      </div>
-    </div>
-  </div>
-
   <!-- Contenu principal -->
   <div class="relative w-full h-full">
     <!-- SVG pattern... -->
@@ -118,13 +66,4 @@ defineExpose({
   </div>
 </template>
 
-<style scoped>
-/* Animation modale */
-.modal-enter-active, .modal-leave-active {
-  transition: opacity 0.3s;
-}
-.modal-enter-from, .modal-leave-to {
-  opacity: 0;
-}
-</style>
 

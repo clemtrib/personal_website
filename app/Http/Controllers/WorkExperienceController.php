@@ -63,7 +63,7 @@ class WorkExperienceController extends Controller implements HasMiddleware
 
         try {
             $workExperience->save();
-            return redirect()->route('experiences', ['json' => false])->with('success', 'Expérience créée avec succès');
+            return to_route('experiences', ['json' => false])->with('success', 'Expérience créée avec succès');
         } catch (\Exception $e) {
             return back()->with('error', $e->getMessage());
         }
@@ -91,7 +91,7 @@ class WorkExperienceController extends Controller implements HasMiddleware
 
         try {
             $workExperience->update($validatedData);
-            return redirect()->route('experiences', ['json' => false])->with('success', 'Expérience modifiée avec succès');
+            return to_route('experiences', ['json' => false])->with('success', 'Expérience modifiée avec succès');
         } catch (\Exception $e) {
             return back()->with('error', $e->getMessage());
         }
@@ -104,9 +104,9 @@ class WorkExperienceController extends Controller implements HasMiddleware
     {
         try {
             $workExperience->delete();
-            return to_route('experiences', ['json' => false])->with('success', 'Expérience supprimé  avec succès');
+            return to_route('experiences', ['json' => false])->with('success', 'Expérience supprimée  avec succès');
         } catch (\Exception $e) {
-            return back()->with('error', $e->getMessage());
+            return back()->with('error',  $e->getMessage());
         }
     }
 }
