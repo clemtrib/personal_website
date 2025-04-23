@@ -63,7 +63,7 @@ class WorkExperienceController extends Controller implements HasMiddleware
 
         try {
             $workExperience->save();
-            return redirect()->route('experiences', ['json' => false])->with('success', 'Expérience créée avec succès' . $workExperience->end_at);
+            return redirect()->route('experiences', ['json' => false])->with('success', 'Expérience créée avec succès');
         } catch (\Exception $e) {
             return back()->with('error', 'Erreur lors de la création');
         }

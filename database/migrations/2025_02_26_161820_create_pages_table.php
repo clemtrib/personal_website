@@ -11,6 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
+        /*
         Schema::create('pages', function (Blueprint $table) {
             $table->id();
             $table->string('slug', 255);
@@ -20,6 +21,7 @@ return new class extends Migration
             $table->string('linkedin', 255);
             $table->timestamps();
         });
+        */
     }
 
     /**
@@ -27,6 +29,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('pagse');
+        Schema::dropIfExists('pages');
     }
 };

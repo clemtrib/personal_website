@@ -16,3 +16,4 @@ require __DIR__.'/auth.php';
 
 require __DIR__.'/message.php';
 require __DIR__.'/experiences.php';
+require __DIR__.'/education.php';
