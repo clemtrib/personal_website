@@ -32,7 +32,7 @@ const closeDeleteModal = () => {
 };
 
 const deleteMessage = () => {
-  form.delete(route('experiences.destroy', messageIdToDelete.value), {
+  form.delete(route('education.destroy', messageIdToDelete.value), {
     preserveScroll: true,
     preserveState: false,
     onSuccess: () => {

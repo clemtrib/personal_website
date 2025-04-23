@@ -76,8 +76,8 @@ class EducationController extends Controller implements HasMiddleware
         if (!$education->exists) {
             abort(404, "Expérience non trouvée");
         }
-        return Inertia::render('educationForm', [
-            'experience' => $education->only(['id', /*'location',*/ 'school', 'graduation', 'date'])
+        return Inertia::render('EducationForm', [
+            'education' => $education->only(['id', /*'location',*/ 'school', 'graduation', 'date'])
         ]);
     }
 

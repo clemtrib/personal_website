@@ -13,7 +13,7 @@ import { computed } from 'vue';
 import Toast from '../components/Toast.vue';
 
 const props = defineProps({
-    experience: {
+    education: {
         type: Object,
         default: () => null // Modifier ici
     }
@@ -21,14 +21,15 @@ const props = defineProps({
 
 // Initialisation conditionnelle du formulaire
 const form = useForm({
-    location: props.experience?.location || '',
-    school: props.experience?.company || '',
-    graduation: props.experience?.graduation || '<p></p>',
-    date: props.experience?.begin_at || '',
+    location: props.education?.location || '',
+    school: props.education?.school || '',
+    graduation: props.education?.graduation || '<p></p>',
+    date: props.education?.date || '',
 });
 
 // Mode édition seulement si l'expérience existe
 const isEditMode = computed(() => !!props.education?.id);
+
 
 const onSubmit = () => {
     if (form.graduation.trim() === '<p></p>' || form.graduation.trim() === '<p><br></p>') {
@@ -38,7 +39,7 @@ const onSubmit = () => {
 
     // Utiliser form directement pour PUT/POST
     isEditMode.value
-        ? form.put(route('education.update', props.experience.id))
+        ? form.put(route('education.update', props.education.id))
         : form.post(route('education.store'), {
             preserveScroll: true,
             onSuccess: () => form.reset()
@@ -46,6 +47,9 @@ const onSubmit = () => {
 };
 
 const page = usePage();
+
+console.log(props)
+
 
 </script>
 

@@ -11,13 +11,13 @@ import { usePage } from '@inertiajs/vue3';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
-        title: 'Expériences',
+        title: 'Éducation',
         href: '/dashboard/education',
     },
 ];
 
 const props = defineProps({
-    experience: {
+    education: {
         type: Object,
         default: () => null // Modifier ici
     }
@@ -32,7 +32,7 @@ onMounted(() => {
     }
 });
 
-console.log(props.flash)
+console.log(props.education)
 
 </script>
 
