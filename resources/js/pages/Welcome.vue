@@ -1,6 +1,30 @@
 <script setup lang="ts">
 import { Head, Link } from '@inertiajs/vue3';
 
+import AppLayout from '@/layouts/AppLayout.vue';
+import { type BreadcrumbItem } from '@/types';
+import { onMounted, ref } from 'vue';
+import axios from 'axios';
+
+
+const page = ref([]);
+const schools = ref([]);
+const skills = ref([]);
+const experiences = ref([]);
+const hobbies = ref([]);
+
+onMounted(async () => {
+    try {
+        var response = await axios.get('/api/spa/list');
+        experiences.value = response.data.experiences;
+        schools.value = schools.data.experiences;
+        hobbies.value = hobbies.data.experiences;
+
+    } catch (error) {
+        console.error('Erreur lors de la récupération des messages:', error);
+    }
+});
+
 </script>
 
 <template>
