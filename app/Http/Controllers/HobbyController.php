@@ -2,25 +2,45 @@
 
 namespace App\Http\Controllers;
 
+use Inertia\Inertia;
 use App\Models\Hobby;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
 
-class HobbyController extends Controller
+class HobbyController extends Controller implements HasMiddleware
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+
+    const VALIDATION_RULES = [
+        'title' => 'required|string|max:255',
+        'description' => 'string|max:255',
+        'order' => '',
+    ];
+
+    public static function middleware(): array
     {
-        //
+        return [];
+        /*
+        return [
+            'auth',
+            new Middleware('can:edit-experiences', except: ['index', 'show'])
+        ];
+        */
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Display a listing of the resource.
      */
-    public function create()
+    public function index(bool $json = true)
     {
-        //
+        $hobbies = Hobby::orderBy('order ASC')->get();
+        if ($json) {
+            return response()->json($hobbies);
+        } else {
+            return Inertia::render('Hobbies', [
+                'hobbies' => $hobbies
+            ]);
+        }
     }
 
     /**
@@ -28,23 +48,32 @@ class HobbyController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validatedData = $request->validate(self::VALIDATION_RULES);
+
+        $hobby = new Hobby();
+        $hobby->title = $validatedData['title'];
+        $hobby->description = $validatedData['description'];
+        $hobby->order = $validatedData['order'];
+
+        try {
+            $hobby->save();
+            return to_route('hobbies', ['json' => false])->with('success', 'Loisirs créé avec succès');
+        } catch (\Exception $e) {
+            return back()->with('error', $e->getMessage());
+        }
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(Hobby $hobby)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
     public function edit(Hobby $hobby)
     {
-        //
+        if (!$hobby->exists) {
+            abort(404, "Loisirs non trouvée");
+        }
+        return Inertia::render('HobbiesForm', [
+            'hobby' => $hobby->only(['id', 'title', 'description', 'order'])
+        ]);
     }
 
     /**
@@ -52,7 +81,14 @@ class HobbyController extends Controller
      */
     public function update(Request $request, Hobby $hobby)
     {
-        //
+        $validatedData = $request->validate(self::VALIDATION_RULES);
+
+        try {
+            $hobby->update($validatedData);
+            return to_route('hobbies', ['json' => false])->with('success', 'Loisirs modifié avec succès');
+        } catch (\Exception $e) {
+            return back()->with('error', $e->getMessage());
+        }
     }
 
     /**
@@ -60,6 +96,11 @@ class HobbyController extends Controller
      */
     public function destroy(Hobby $hobby)
     {
-        //
+        try {
+            $hobby->delete();
+            return to_route('hobbies', ['json' => false])->with('success', 'Loisirs supprimé  avec succès');
+        } catch (\Exception $e) {
+            return back()->with('error',  $e->getMessage());
+        }
     }
 }

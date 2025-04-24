@@ -5,11 +5,10 @@ import NavUser from '@/components/NavUser.vue';
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar';
 import { type NavItem } from '@/types';
 import { Link } from '@inertiajs/vue3';
-import { BookOpen, Folder, LayoutGrid, Mail, Briefcase, GraduationCap } from 'lucide-vue-next';
+import { BookOpen, Folder, LayoutGrid, Mail, Briefcase, GraduationCap, Gamepad2 } from 'lucide-vue-next';
 import AppLogo from './AppLogo.vue';
 
-const mainNavItems: NavItem[] = [
-    {
+const mainNavItems: NavItem[] = [{
         title: 'Dashboard',
         url: '/dashboard',
         icon: LayoutGrid,
@@ -25,14 +24,18 @@ const mainNavItems: NavItem[] = [
         icon: Briefcase,
     },
     {
+        title: 'Loisirs',
+        url: '/dashboard/hobbies/list',
+        icon: Gamepad2,
+    },
+    {
         title: 'Messages',
         url: '/dashboard/messages',
         icon: Mail,
     },
 ];
 
-const footerNavItems: NavItem[] = [
-    {
+const footerNavItems: NavItem[] = [{
         title: 'Github Repo',
         href: 'https://github.com/clemtrib/personal_website',
         icon: Folder,
@@ -52,7 +55,7 @@ const footerNavItems: NavItem[] = [
                 <SidebarMenuItem>
                     <SidebarMenuButton size="lg" as-child>
                         <Link :href="route('dashboard')">
-                            <AppLogo />
+                        <AppLogo />
                         </Link>
                     </SidebarMenuButton>
                 </SidebarMenuItem>

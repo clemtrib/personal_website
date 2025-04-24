@@ -1,13 +1,10 @@
 <script setup lang="ts">
 import { watch } from 'vue';
 import { useToast } from 'vue-toastification';
-import { usePage } from '@inertiajs/vue3'; // <-- Import manquant
+import { usePage } from '@inertiajs/vue3';
 
 const toast = useToast();
 const page = usePage(); // <-- Accès aux props
-
-
-console.log('TOAST')
 
 const props = defineProps<{
   flash?: {
@@ -18,7 +15,7 @@ const props = defineProps<{
 
 watch(
   () => props.flash || page.props.flash,
-  (newFlashValues) => { // Paramètre renommé pour clarté
+  (newFlashValues) => {
     if (newFlashValues.success) {
         toast.success(newFlashValues.success, {
             position: "top-right",
