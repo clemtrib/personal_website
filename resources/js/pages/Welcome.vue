@@ -21,6 +21,7 @@ const schools = ref([]);
 const skills = ref([]);
 const experiences = ref([]);
 const hobbies = ref([]);
+const config = ref([]);
 
 onMounted(async () => {
     try {
@@ -28,7 +29,7 @@ onMounted(async () => {
         experiences.value = response.data.experiences;
         schools.value = response.data.schools;
         hobbies.value = response.data.hobbies;
-
+        config.value = response.data.config;
     } catch (error) {
         console.error('Erreur lors de la récupération des messages:', error);
     }
@@ -43,9 +44,9 @@ onMounted(async () => {
         <SkillsSection />
         <ExperienceSection :experiences=experiences />
         <HobbiesSection :hobbies=hobbies />
-        <TJMSection />
+        <TJMSection :config=config />
         <ContactForm />
-        <Footer />
+        <Footer :config=config />
     </div>
 
     <Head title="Welcome">

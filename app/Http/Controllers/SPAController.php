@@ -20,16 +20,24 @@ class SPAController extends Controller
     public function index()
     {
 
-        if (Cache::has(self::CACHE_KEY)) {
-            $value = Cache::get(self::CACHE_KEY);
-        } else {
-            $value = [
-                'experiences' => WorkExperience::orderByRaw('end_at IS NOT NULL, end_at DESC')->get(),
-                'schools' => Education::orderByRaw('date IS NOT NULL, date DESC')->get(),
-                'hobbies' => Hobby::orderBy('order ASC')->get(),
-            ];
-            Cache::add('key', 0, now()->addHours(12));
-        }
+        //if (Cache::has(self::CACHE_KEY)) {
+        //  $value = Cache::get(self::CACHE_KEY);
+        //} else {
+        $value = [
+            'config' => [
+                'social_networks' => [
+                    'facebook' => getenv('FACEBOOK') ?? null,
+                    'github' => getenv('GITHUB') ?? null,
+                    'linkedin' => getenv('LINKEDIN') ?? null,
+                ],
+                'tjm' => getenv('TJM') ?? null,
+            ],
+            'experiences' => WorkExperience::orderByRaw('end_at IS NOT NULL, end_at DESC')->get(),
+            'schools' => Education::orderByRaw('date IS NOT NULL, date DESC')->get(),
+            'hobbies' => Hobby::orderBy('order ASC')->get(),
+        ];
+        Cache::add(self::CACHE_KEY, $value, now()->addHours(12));
+        //}
         return response()->json($value);
     }
 }
