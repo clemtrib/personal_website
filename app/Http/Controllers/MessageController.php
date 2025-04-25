@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Message;
+use Exception;
 use Illuminate\Http\Request;
 
 class MessageController extends Controller
@@ -21,25 +22,28 @@ class MessageController extends Controller
      */
     public function store(Request $request)
     {
-        $validatedData = $request->validate([
-            'firstname' => 'required|string|max:255',
-            'lastname' => 'required|string|max:255',
-            'email' => 'required|email',
-            'phone' => 'required|max:255',
-            'object' => 'required|string|max:255',
-            'message' => 'required|string',
-        ]);
+        try {
+            $validatedData = $request->validate([
+                'firstname' => 'required|string|max:255',
+                'lastname' => 'required|string|max:255',
+                'email' => 'required|email',
+                'phone' => 'required|max:255',
+                'object' => 'required|string|max:255',
+                'message' => 'required|string',
+            ]);
 
-        $message = new Message();
-        $message->firstname = $validatedData['firstname'];
-        $message->lastname = $validatedData['lastname'];
-        $message->email = $validatedData['email'];
-        $message->phone = $validatedData['phone'];
-        $message->object = $validatedData['object'];
-        $message->message = $validatedData['message'];
-        $message->save();
-
-        return response()->json(['message' => 'Message enregistré avec succès'], 201);
+            $message = new Message();
+            $message->firstname = $validatedData['firstname'];
+            $message->lastname = $validatedData['lastname'];
+            $message->email = $validatedData['email'];
+            $message->phone = $validatedData['phone'];
+            $message->object = $validatedData['object'];
+            $message->message = $validatedData['message'];
+            $message->save();
+            return redirect()->back()->with('success', 'Message envoyé avec succès');
+        } catch (\Exception $e) {
+            return back()->withErrors(['error' => $e->getMessage()]);
+        }
     }
 
     /**
@@ -67,7 +71,6 @@ class MessageController extends Controller
         $message->update($validatedData);
 
         return response()->json(['message' => 'Message mis à jour avec succès']);
-
     }
 
     /**
