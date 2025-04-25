@@ -8,6 +8,8 @@ import { Label } from '@/components/ui/label';
 import AuthBase from '@/layouts/AuthLayout.vue';
 import { Head, useForm } from '@inertiajs/vue3';
 import { LoaderCircle } from 'lucide-vue-next';
+import { onMounted } from 'vue'
+import gsap from 'gsap'
 
 const form = useForm({
     firstname: '',
@@ -17,6 +19,30 @@ const form = useForm({
     object: '',
     message: '',
 });
+
+onMounted(() => {
+    const fields = document.querySelectorAll('.gsap-hover')
+
+    fields.forEach((el) => {
+        el.addEventListener('mouseenter', () => {
+            gsap.to(el, {
+                scale: 1.03,
+                boxShadow: '0 6px 18px rgba(100, 255, 218, 0.4)',
+                duration: 0.3,
+                ease: 'power2.out'
+            })
+        })
+
+        el.addEventListener('mouseleave', () => {
+            gsap.to(el, {
+                scale: 1,
+                boxShadow: '0 0 0 rgba(0,0,0,0)',
+                duration: 0.3,
+                ease: 'power2.out'
+            })
+        })
+    })
+})
 
 const submit = () => {
     form.post(route('contact'), {
@@ -31,35 +57,35 @@ const submit = () => {
         <form @submit.prevent="submit" class="max-w-xl mx-auto grid gap-4">
 
             <div>
-                <Input id="name" type="text" required autocomplete="firstname" v-model="form.firstname" placeholder="Prénom" :class="'p-2 rounded bg-[#0a192f] text-white border border-[#64ffda]'" />
+                <Input id="name" type="text" required autocomplete="firstname" v-model="form.firstname" placeholder="Prénom" :class="'gsap-hover p-2 rounded bg-[#0a192f] text-white border border-[#64ffda]'" />
                 <InputError :message="form.errors.firstname" />
             </div>
 
             <div>
-                <Input id="lastname" type="text" required autocomplete="lastname" v-model="form.lastname" placeholder="Nom de famille" :class="'p-2 rounded bg-[#0a192f] text-white border border-[#64ffda]'" />
+                <Input id="lastname" type="text" required autocomplete="lastname" v-model="form.lastname" placeholder="Nom de famille" :class="'gsap-hover p-2 rounded bg-[#0a192f] text-white border border-[#64ffda]'" />
                 <InputError :message="form.errors.lastname" />
             </div>
 
             <div>
-                <Input id="email" type="email" required autocomplete="email" v-model="form.email" placeholder="email@example.com" :class="'p-2 rounded bg-[#0a192f] text-white border border-[#64ffda]'" />
+                <Input id="email" type="email" required autocomplete="email" v-model="form.email" placeholder="email@example.com" :class="'gsap-hover p-2 rounded bg-[#0a192f] text-white border border-[#64ffda]'" />
                 <InputError :message="form.errors.email" />
             </div>
 
             <div>
-                <Input id="phone" type="text" required autocomplete="phone" v-model.number="form.phone" placeholder="5140000000" :class="'p-2 rounded bg-[#0a192f] text-white border border-[#64ffda]'" />
+                <Input id="phone" type="text" required autocomplete="phone" v-model.number="form.phone" placeholder="5140000000" :class="'gsap-hover p-2 rounded bg-[#0a192f] text-white border border-[#64ffda]'" />
                 <InputError :message="form.errors.phone" />
             </div>
 
             <div>
-                <Input id="object" type="text" required v-model.trim="form.object" placeholder="Objet" :class="'p-2 rounded bg-[#0a192f] text-white border border-[#64ffda]'" />
+                <Input id="object" type="text" required v-model.trim="form.object" placeholder="Objet" :class="'gsap-hover p-2 rounded bg-[#0a192f] text-white border border-[#64ffda]'" />
                 <InputError :message="form.errors.object" />
             </div>
 
             <div>
-                <Textarea id="message" required v-model.trim="form.message" placeholder="Message" :rows="4" :class="'rounded bg-[#0a192f] text-white border border-[#64ffda]'"></textarea>
+                <Textarea id="message" required v-model.trim="form.message" placeholder="Message" :rows="4" :class="'gsap-hover rounded bg-[#0a192f] text-white border border-[#64ffda]'"></textarea>
             </div>
 
-            <Button type="submit" class="mt-2 w-full" tabindex="5" :disabled="form.processing" :class="'bg-green-400 text-[#0a192f] px-4 py-2 rounded hover:bg-green-300 transition'">
+            <Button type="submit" class="mt-2 w-full" tabindex="5" :disabled="form.processing" :class="'gsap-hover bg-green-400 text-[#0a192f] px-4 py-2 rounded hover:bg-green-300 transition'">
                         <LoaderCircle v-if="form.processing" class="h-4 w-4 animate-spin" />
                         Envoyer
             </Button>
