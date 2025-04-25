@@ -1,5 +1,5 @@
 <template>
-  <section class="min-h-screen flex flex-col justify-center px-6 bg-[#0a192f] text-[#ccd6f6]" data-aos="fade-up">
+  <section class="min-h-screen flex flex-col justify-center px-6 bg-[#112240] text-[#ccd6f6]" data-aos="fade-up">
     <p class="text-green-400">Bonjour, je suis</p>
     <h1 class="text-5xl font-bold text-white mt-2">Clément</h1>
     <h2 class="text-4xl font-semibold text-[#8892b0] mt-2">Développeur Backend à Montréal</h2>
