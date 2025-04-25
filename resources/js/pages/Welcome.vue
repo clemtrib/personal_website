@@ -29,6 +29,7 @@ onMounted(async () => {
         experiences.value = response.data.experiences;
         schools.value = response.data.schools;
         hobbies.value = response.data.hobbies;
+        skills.value = response.data.skills;
         config.value = response.data.config;
     } catch (error) {
         console.error('Erreur lors de la récupération des messages:', error);
@@ -45,7 +46,7 @@ onMounted(async () => {
         <Navigation :config=config />
         <HeroSection />
         <SchoolsSection :schools=schools />
-        <SkillsSection />
+        <SkillsSection :skills=skills />
         <ExperienceSection :experiences=experiences />
         <HobbiesSection :hobbies=hobbies />
         <TJMSection :config=config />

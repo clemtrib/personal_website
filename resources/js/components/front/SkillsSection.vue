@@ -1,4 +1,4 @@
-<script setup>
+<script setup  lang="ts">
 import { onMounted } from 'vue'
 import gsap from 'gsap'
 
@@ -21,18 +21,20 @@ onMounted(() => {
         })
     })
 })
+
+defineProps < {
+    skills: Array < {
+        id: number;
+        label: string;
+    } > ;
+} > ();
 </script>
 
 <template>
     <section id="skills" class="px-6 py-20 bg-[#112240] text-[#ccd6f6] hover-animate transition-transform duration-300 ease-in-out" data-aos="zoom-in">
         <h2 class="text-3xl font-bold mb-10 border-b-2 border-green-400 inline-block">Compétences</h2>
         <ul class="grid grid-cols-2 gap-4">
-            <li class="bg-[#0a192f] p-4 rounded shadow hover-animate-item">PHP</li>
-            <li class="bg-[#0a192f] p-4 rounded shadow hover-animate-item">Vue.js</li>
-            <li class="bg-[#0a192f] p-4 rounded shadow hover-animate-item">Tailwind CSS</li>
-            <li class="bg-[#0a192f] p-4 rounded shadow hover-animate-item">MySQL</li>
-            <li class="bg-[#0a192f] p-4 rounded shadow hover-animate-item">Docker</li>
-            <li class="bg-[#0a192f] p-4 rounded shadow hover-animate-item">Git</li>
+            <li v-for="skill in skills" :key="skill.id" class="bg-[#0a192f] p-4 rounded shadow hover-animate-item">{{ skill.label}}</li>
         </ul>
     </section>
 </template>
