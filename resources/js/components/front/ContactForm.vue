@@ -12,11 +12,8 @@ import { ref, onMounted, nextTick, computed } from 'vue'
 import gsap from 'gsap'
 
 const form = useForm({
-    firstname: '',
-    lastname: '',
+    fullname: '',
     email: '',
-    phone: '',
-    object: '',
     message: '',
 });
 
@@ -66,7 +63,7 @@ const submit = () => {
                 }
             })
         },
-        onFinish: () => form.reset('firstname', 'lastname', 'email', 'phone', 'object', 'message'),
+        onFinish: () => form.reset('fullname', 'email', 'message'),
     })
 };
 </script>
@@ -85,24 +82,12 @@ const submit = () => {
 
         <form v-if="!formSubmitted" @submit.prevent="submit" class="max-w-xl mx-auto grid gap-4">
             <div>
-                <Input id="name" type="text" required autocomplete="firstname" v-model="form.firstname" placeholder="Prénom" class="gsap-hover p-2 rounded bg-[#0a192f] text-white border border-[#64ffda]" />
-                <InputError :message="form.errors.firstname" />
-            </div>
-            <div>
-                <Input id="lastname" type="text" required autocomplete="lastname" v-model="form.lastname" placeholder="Nom de famille" class="gsap-hover p-2 rounded bg-[#0a192f] text-white border border-[#64ffda]" />
-                <InputError :message="form.errors.lastname" />
+                <Input id="fullname" type="text" required autocomplete="fullname" v-model="form.fullname" placeholder="Nom" class="gsap-hover p-2 rounded bg-[#0a192f] text-white border border-[#64ffda]" />
+                <InputError :message="form.errors.fullname" />
             </div>
             <div>
                 <Input id="email" type="email" required autocomplete="email" v-model="form.email" placeholder="email@example.com" class="gsap-hover p-2 rounded bg-[#0a192f] text-white border border-[#64ffda]" />
                 <InputError :message="form.errors.email" />
-            </div>
-            <div>
-                <Input id="phone" type="text" required autocomplete="phone" v-model.number="form.phone" placeholder="5140000000" class="gsap-hover p-2 rounded bg-[#0a192f] text-white border border-[#64ffda]" />
-                <InputError :message="form.errors.phone" />
-            </div>
-            <div>
-                <Input id="object" type="text" required v-model.trim="form.object" placeholder="Objet" class="gsap-hover p-2 rounded bg-[#0a192f] text-white border border-[#64ffda]" />
-                <InputError :message="form.errors.object" />
             </div>
             <div>
                 <Textarea id="message" required v-model.trim="form.message" placeholder="Message" :rows="4" class="gsap-hover rounded bg-[#0a192f] text-white border border-[#64ffda]"></Textarea>

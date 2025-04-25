@@ -11,19 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-
-        Schema::create('skill_categories', function (Blueprint $table) {
-            $table->id();
-            $table->string('label', 255);
-            $table->smallInteger('order')->nullable();
-            $table->timestamps();
-        });
-
         Schema::create('skills', function (Blueprint $table) {
             $table->id();
             $table->string('label', 255);
             $table->smallInteger('order')->nullable();
-            $table->foreignId('skill_category_id')->nullable()->index();
             $table->timestamps();
         });
     }

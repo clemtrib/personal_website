@@ -10,11 +10,8 @@ class MessageController extends Controller
 {
 
     const VALIDATION_RULES = [
-        'firstname' => 'required|string|max:255',
-        'lastname' => 'required|string|max:255',
+        'fullname' => 'required|string|max:255',
         'email' => 'required|email',
-        'phone' => 'required|max:255',
-        'object' => 'required|string|max:255',
         'message' => 'required|string',
     ];
 
@@ -35,11 +32,8 @@ class MessageController extends Controller
         try {
             $validatedData = $request->validate(self::VALIDATION_RULES);
             $message = new Message();
-            $message->firstname = $validatedData['firstname'];
-            $message->lastname = $validatedData['lastname'];
+            $message->fullname = $validatedData['fullname'];
             $message->email = $validatedData['email'];
-            $message->phone = $validatedData['phone'];
-            $message->object = $validatedData['object'];
             $message->message = $validatedData['message'];
             $message->save();
             return redirect()->back()->with('success', 'Message envoyé avec succès');

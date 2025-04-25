@@ -13,11 +13,8 @@ class Message extends Model
      * @var list<string>
      */
     protected $fillable = [
-        'firstname',
-        'lastname',
+        'fullname',
         'email',
-        'phone',
-        'object',
         'message'
     ];
 
