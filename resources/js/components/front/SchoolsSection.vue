@@ -11,7 +11,7 @@ const props = defineProps < {
 </script>
 
 <template>
-    <section id="schools" class="px-6 py-20 bg-[#0a192f] text-[#ccd6f6]">
+    <section id="schools" class="px-6 py-20 bg-[#0a192f] text-[#ccd6f6]" data-aos="fade-left">
         <h2 class="text-3xl font-bold mb-10 border-b-2 border-green-400 inline-block">Formation</h2>
         <div class="space-y-10">
             <p class="mt-4 max-w-xl text-[#8892b0]" v-for="school in schools" :key="school.id">

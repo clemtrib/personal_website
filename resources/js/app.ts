@@ -7,7 +7,9 @@ import { createApp, h } from 'vue';
 import { ZiggyVue } from '../../vendor/tightenco/ziggy';
 import { initializeTheme } from './composables/useAppearance';
 import Toast from 'vue-toastification';
-import "vue-toastification/dist/index.css";
+import 'vue-toastification/dist/index.css';
+import AOS from 'aos';
+import 'aos/dist/aos.css';
 
 // Extend ImportMeta interface for Vite...
 declare module 'vite/client' {
@@ -34,8 +36,14 @@ createInertiaApp({
             .use(Toast, {
                 position: "top-right",
                 timeout: 5000
-              })
-            .mount(el);
+            });
+
+        app.mount(el);
+
+        AOS.init({
+            duration: 800,
+            once: true,
+        })
     },
     progress: {
         color: '#4B5563',

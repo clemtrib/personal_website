@@ -26,7 +26,7 @@ const submit = () => {
 </script>
 
 <template>
-    <section id="contact" class="px-6 py-20 bg-[#112240] text-[#ccd6f6]">
+    <section id="contact" class="px-6 py-20 bg-[#112240] text-[#ccd6f6]" data-aos="fade-up">
         <h2 class="text-3xl font-bold mb-6 border-b-2 border-green-400 inline-block">Contact</h2>
         <form @submit.prevent="submit" class="max-w-xl mx-auto grid gap-4">
 
