@@ -1,33 +1,51 @@
-<script setup  lang="ts">
-import { onMounted } from 'vue'
+<script setup lang="ts">
+import { onMounted, watch, nextTick } from 'vue'
 import gsap from 'gsap'
 
-onMounted(() => {
-    const items = document.querySelectorAll('.hover-animate-item')
-    items.forEach((el) => {
-        el.addEventListener('mouseenter', () => {
-            gsap.to(el, {
-                scale: 1.05,
-                boxShadow: '0px 10px 20px rgba(0, 0, 0, 0.4)',
-                duration: 0.3,
-            })
-        })
-        el.addEventListener('mouseleave', () => {
-            gsap.to(el, {
-                scale: 1,
-                boxShadow: '0px 0px 0px rgba(0, 0, 0, 0)',
-                duration: 0.3,
-            })
-        })
-    })
-})
-
-defineProps < {
+// Props
+const props = defineProps < {
     skills: Array < {
         id: number;
         label: string;
     } > ;
-} > ();
+} > ()
+
+// Fonction pour appliquer les animations
+const animateItems = () => {
+    nextTick(() => {
+        const items = document.querySelectorAll('.hover-animate-item')
+        items.forEach((el) => {
+            el.addEventListener('mouseenter', () => {
+                gsap.to(el, {
+                    scale: 1.05,
+                    boxShadow: '0px 10px 20px rgba(0, 0, 0, 0.4)',
+                    duration: 0.3,
+                })
+            })
+            el.addEventListener('mouseleave', () => {
+                gsap.to(el, {
+                    scale: 1,
+                    boxShadow: '0px 0px 0px rgba(0, 0, 0, 0)',
+                    duration: 0.3,
+                })
+            })
+        })
+    })
+}
+
+// Si les skills sont déjà là au montage
+onMounted(() => {
+    if (props.skills.length) {
+        animateItems()
+    }
+})
+
+// Si les skills arrivent après (ex: chargés dynamiquement)
+watch(() => props.skills, (newSkills) => {
+    if (newSkills.length) {
+        animateItems()
+    }
+})
 </script>
 
 <template>
