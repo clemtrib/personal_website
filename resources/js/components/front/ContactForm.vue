@@ -20,7 +20,6 @@ const form = useForm({
     message: '',
 });
 
-//const formSubmitted = ref(false) // <- afficher le message de remerciement
 const successMessage = ref < HTMLElement | null > (null)
 const page = usePage()
 const formSubmitted = computed(() => !!page.props.flash.success)
@@ -85,7 +84,6 @@ const submit = () => {
         </div>
 
         <form v-if="!formSubmitted" @submit.prevent="submit" class="max-w-xl mx-auto grid gap-4">
-            <!-- tous les champs du formulaire comme avant -->
             <div>
                 <Input id="name" type="text" required autocomplete="firstname" v-model="form.firstname" placeholder="Prénom" class="gsap-hover p-2 rounded bg-[#0a192f] text-white border border-[#64ffda]" />
                 <InputError :message="form.errors.firstname" />
@@ -110,9 +108,9 @@ const submit = () => {
                 <Textarea id="message" required v-model.trim="form.message" placeholder="Message" :rows="4" class="gsap-hover rounded bg-[#0a192f] text-white border border-[#64ffda]"></Textarea>
             </div>
             <Button type="submit" class="mt-2 w-full gsap-hover bg-green-400 text-[#0a192f] px-4 py-2 rounded hover:bg-green-300 transition" :disabled="form.processing">
-                            <LoaderCircle v-if="form.processing" class="h-4 w-4 animate-spin" />
-                            Envoyer
-                          </Button>
+                <LoaderCircle v-if="form.processing" class="h-4 w-4 animate-spin" />
+                Envoyer
+            </Button>
         </form>
     </section>
 </template>

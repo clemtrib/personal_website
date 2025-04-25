@@ -8,6 +8,16 @@ use Illuminate\Http\Request;
 
 class MessageController extends Controller
 {
+
+    const VALIDATION_RULES = [
+        'firstname' => 'required|string|max:255',
+        'lastname' => 'required|string|max:255',
+        'email' => 'required|email',
+        'phone' => 'required|max:255',
+        'object' => 'required|string|max:255',
+        'message' => 'required|string',
+    ];
+
     /**
      * Display a listing of the resource.
      */
@@ -23,15 +33,7 @@ class MessageController extends Controller
     public function store(Request $request)
     {
         try {
-            $validatedData = $request->validate([
-                'firstname' => 'required|string|max:255',
-                'lastname' => 'required|string|max:255',
-                'email' => 'required|email',
-                'phone' => 'required|max:255',
-                'object' => 'required|string|max:255',
-                'message' => 'required|string',
-            ]);
-
+            $validatedData = $request->validate(self::VALIDATION_RULES);
             $message = new Message();
             $message->firstname = $validatedData['firstname'];
             $message->lastname = $validatedData['lastname'];
@@ -59,17 +61,8 @@ class MessageController extends Controller
      */
     public function update(Request $request, Message $message)
     {
-        $validatedData = $request->validate([
-            'firstname' => 'sometimes|required|string|max:255',
-            'lastname' => 'sometimes|required|string|max:255',
-            'email' => 'sometimes|required|email',
-            'phone' => 'sometimes|required|max:255',
-            'object' => 'sometimes|required|string|max:255',
-            'message' => 'sometimes|required|string',
-        ]);
-
+        $validatedData = $request->validate(self::VALIDATION_RULES);
         $message->update($validatedData);
-
         return response()->json(['message' => 'Message mis à jour avec succès']);
     }
 
