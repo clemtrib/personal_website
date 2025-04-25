@@ -2,25 +2,44 @@
 
 namespace App\Http\Controllers;
 
+use Inertia\Inertia;
 use App\Models\Skill;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
 
-class SkillController extends Controller
+class SkillController extends Controller implements HasMiddleware
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+
+    const VALIDATION_RULES = [
+        'label' => 'required|string|max:255',
+        'order' => '',
+    ];
+
+    public static function middleware(): array
     {
-        //
+        return [];
+        /*
+        return [
+            'auth',
+            new Middleware('can:edit-experiences', except: ['index', 'show'])
+        ];
+        */
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Display a listing of the resource.
      */
-    public function create()
+    public function index(bool $json = true)
     {
-        //
+        $skills = Skill::orderBy('order ASC')->get();
+        if ($json) {
+            return response()->json($skills);
+        } else {
+            return Inertia::render('Skills', [
+                'skills' => $skills
+            ]);
+        }
     }
 
     /**
@@ -28,23 +47,31 @@ class SkillController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validatedData = $request->validate(self::VALIDATION_RULES);
+
+        $skill = new Skill();
+        $skill->label = $validatedData['label'];
+        $skill->order = $validatedData['order'];
+
+        try {
+            $skill->save();
+            return to_route('skills', ['json' => false])->with('success', 'Compétence créé avec succès');
+        } catch (\Exception $e) {
+            return back()->with('error', $e->getMessage());
+        }
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(Skill $skill)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
     public function edit(Skill $skill)
     {
-        //
+        if (!$skill->exists) {
+            abort(404, "Loisirs non trouvée");
+        }
+        return Inertia::render('SkillsForm', [
+            'skill' => $skill->only(['id', 'label', 'order'])
+        ]);
     }
 
     /**
@@ -52,7 +79,14 @@ class SkillController extends Controller
      */
     public function update(Request $request, Skill $skill)
     {
-        //
+        $validatedData = $request->validate(self::VALIDATION_RULES);
+
+        try {
+            $skill->update($validatedData);
+            return to_route('skills', ['json' => false])->with('success', 'Compétence modifié avec succès');
+        } catch (\Exception $e) {
+            return back()->with('error', $e->getMessage());
+        }
     }
 
     /**
@@ -60,6 +94,11 @@ class SkillController extends Controller
      */
     public function destroy(Skill $skill)
     {
-        //
+        try {
+            $skill->delete();
+            return to_route('skills', ['json' => false])->with('success', 'Compétence supprimé  avec succès');
+        } catch (\Exception $e) {
+            return back()->with('error',  $e->getMessage());
+        }
     }
 }

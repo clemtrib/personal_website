@@ -19,6 +19,7 @@ require __DIR__.'/message.php';
 require __DIR__.'/experiences.php';
 require __DIR__.'/education.php';
 require __DIR__.'/hobbies.php';
+require __DIR__.'/skills.php';
 
 Route::prefix('api/spa')->group(function () {
     Route::get('/list', [SPAController::class, 'index'])->name('spa.index');

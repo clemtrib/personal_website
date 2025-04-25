@@ -3,7 +3,7 @@ import api from '@/api';
 import AppLayout from '@/layouts/AppLayout.vue';
 import { type BreadcrumbItem } from '@/types';
 import { Head, usePage } from '@inertiajs/vue3';
-import HobbiesList from '../components/HobbiesList.vue';
+import SkillsList from '../components/SkillsList.vue';
 import DeleteModale from '../components/DeleteModale.vue';
 import Toast from '../components/Toast.vue';
 import { onMounted, ref } from 'vue';
@@ -24,13 +24,12 @@ const closeDeleteModal = () => {
 };
 
 // Données des expériences
-const hobbies = ref([]);
+const skills = ref([]);
 
 onMounted(async () => {
     try {
-        const response = await api.get('/api/hobbies/list');
-        hobbies.value = response.data;
-        console.log(hobbies.value)
+        const response = await api.get('/api/skills/list');
+        skills.value = response.data;
     } catch (error) {
         console.error('Erreur lors de la récupération des messages:', error);
     }
@@ -46,13 +45,13 @@ const page = usePage();
 
 <template>
     <Toast :flash="page.props.flash" />
-    <Head title="Loisirs" />
+    <Head title="Compétences" />
 
     <AppLayout :breadcrumbs="breadcrumbs">
         <!-- Contenu principal -->
         <div class="flex h-auto min-h-[50px] flex-col gap-4 rounded-xl p-4">
             <div class="relative h-full rounded-xl border border-sidebar-border/70 dark:border-sidebar-border overflow-hidden">
-                <a :href="route('hobbies.create')" class="flex items-center gap-x-3 rounded-lg px-3 py-2 text-sm font-medium hover:bg-accent">
+                <a :href="route('skills.create')" class="flex items-center gap-x-3 rounded-lg px-3 py-2 text-sm font-medium hover:bg-accent">
                     <component :is="CirclePlus" />
                     <span>Ajouter</span>
                 </a>
@@ -62,11 +61,11 @@ const page = usePage();
         <!-- Liste des expériences -->
         <div class="flex h-full flex-1 flex-col gap-4 rounded-xl p-4">
             <div class="relative min-h-[100vh] flex-1 rounded-xl border border-sidebar-border/70 dark:border-sidebar-border md:min-h-min">
-                <HobbiesList :hobbies="hobbies" @open-delete-modal="openDeleteModal" />
+                <SkillsList :skills="skills" @open-delete-modal="openDeleteModal" />
             </div>
         </div>
 
         <!-- Modale de suppression -->
-        <DeleteModale :show="showDeleteModal" :object-id="objectIdToDelete" @close="closeDeleteModal" action-form="hobbies.destroy" />
+        <DeleteModale :show="showDeleteModal" :object-id="objectIdToDelete" @close="closeDeleteModal" action-form="skills.destroy" />
     </AppLayout>
 </template>

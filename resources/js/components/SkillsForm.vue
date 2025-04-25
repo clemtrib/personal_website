@@ -13,7 +13,7 @@ import { computed } from 'vue';
 import Toast from '../components/Toast.vue';
 
 const props = defineProps({
-    hobby: {
+    skill: {
         type: Object,
         default: () => null // Modifier ici
     }
@@ -21,19 +21,18 @@ const props = defineProps({
 
 // Initialisation conditionnelle du formulaire
 const form = useForm({
-    title: props.hobby?.title || '',
-    description: props.hobby?.description || '',
-    order: props.hobby?.order || '',
+    label: props.skill?.label || '',
+    order: props.skill?.order || '',
 });
 
 // Mode édition seulement si l'expérience existe
-const isEditMode = computed(() => !!props.hobby?.id);
+const isEditMode = computed(() => !!props.skill?.id);
 
 const onSubmit = () => {
     // Utiliser form directement pour PUT/POST
     isEditMode.value
-        ? form.put(route('hobbies.update', props.hobby.id))
-        : form.post(route('hobbies.store'), {
+        ? form.put(route('skills.update', props.skill.id))
+        : form.post(route('skills.store'), {
             preserveScroll: true,
             onSuccess: () => form.reset()
         });
@@ -45,23 +44,16 @@ const page = usePage();
 
 <template>
 <Toast :flash="page.props.flash" />
-<Head :title="isEditMode ? 'Modifier un loisirs' : 'Ajouter un loisirs'" />
+<Head :title="isEditMode ? 'Modifier une compétence' : 'Ajouter une compétence'" />
 
 <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
     <form @submit.prevent="onSubmit">
 
-        <!-- Title -->
+        <!-- Label -->
         <div class="mb-4">
-            <Label for="title" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Nom</Label>
-            <Input id="title" type="text" required tabindex="1" v-model="form.title" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 dark:bg-gray-700 dark:border-gray-600 dark:text-white" />
-            <p v-if="form.errors.title" class="mt-1 text-sm text-red-600">{{ form.errors.title }}</p>
-        </div>
-
-        <!-- Description -->
-        <div class="mb-4">
-            <Label for="description" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Description</Label>
-            <Input id="description" type="text" tabindex="1" autocomplete="description" v-model="form.description" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 dark:bg-gray-700 dark:border-gray-600 dark:text-white" />
-            <p v-if="form.errors.description" class="mt-1 text-sm text-red-600">{{ form.errors.description }}</p>
+            <Label for="label" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Nom</Label>
+            <Input id="label" type="text" required tabindex="1" v-model="form.label" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 dark:bg-gray-700 dark:border-gray-600 dark:text-white" />
+            <p v-if="form.errors.label" class="mt-1 text-sm text-red-600">{{ form.errors.label }}</p>
         </div>
 
         <!-- Bouton -->
