@@ -11,14 +11,17 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('pages_hero', function (Blueprint $table) {
+        Schema::create('pages', function (Blueprint $table) {
             $table->id();
-            $table->string('slug', 255);
-            $table->string('subtitle', 255);
-            $table->string('title', 255);
-            $table->longText('description');
-            $table->string('image', 255);
-            $table->longText('seo');
+            $table->string('page_slug', 255);
+            $table->string('page_name', 255);
+            $table->string('hero_subtitle', 255);
+            $table->string('hero_title', 255);
+            $table->longText('hero_description');
+            $table->string('hero_image', 255);
+            $table->longText('content_text');
+            $table->string('content_image', 255);
+            $table->longText('page_seo');
             $table->timestamps();
         });
     }
@@ -28,6 +31,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('pages_hero');
+        Schema::dropIfExists('pages');
     }
 };

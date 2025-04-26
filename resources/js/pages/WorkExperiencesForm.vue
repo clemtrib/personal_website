@@ -32,8 +32,6 @@ onMounted(() => {
     }
 });
 
-console.log(props.flash)
-
 </script>
 
 <template>
