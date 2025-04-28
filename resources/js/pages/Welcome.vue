@@ -22,6 +22,8 @@ const skills = ref([]);
 const experiences = ref([]);
 const hobbies = ref([]);
 const config = ref([]);
+const home = ref([]);
+const readyToLoad = ref([]);
 
 onMounted(async () => {
     try {
@@ -31,6 +33,8 @@ onMounted(async () => {
         hobbies.value = response.data.hobbies;
         skills.value = response.data.skills;
         config.value = response.data.config;
+        home.value = response.data.content;
+        readyToLoad.value = true;
     } catch (error) {
         console.error('Erreur lors de la récupération des messages:', error);
     }
@@ -43,14 +47,14 @@ onMounted(async () => {
         <link rel="stylesheet" href="https://rsms.me/inter/inter.css" />
     </Head>
     <div class="font-sans scroll-smooth">
-        <Navigation :config=config />
-        <HeroSection />
-        <SchoolsSection :schools=schools />
-        <SkillsSection :skills=skills />
-        <ExperienceSection :experiences=experiences />
-        <HobbiesSection :hobbies=hobbies />
-        <TJMSection :config=config />
-        <ContactForm />
-        <Footer :config=config />
+        <Navigation :config=config :readyToLoad=readyToLoad />
+        <HeroSection :home=home :readyToLoad=readyToLoad />
+        <SchoolsSection :schools=schools :readyToLoad=readyToLoad />
+        <SkillsSection :skills=skills :readyToLoad=readyToLoad />
+        <ExperienceSection :experiences=experiences :readyToLoad=readyToLoad />
+        <HobbiesSection :hobbies=hobbies :readyToLoad=readyToLoad />
+        <TJMSection :config=config :readyToLoad=readyToLoad />
+        <ContactForm :readyToLoad=readyToLoad />
+        <Footer :config=config :readyToLoad=readyToLoad />
     </div>
 </template>

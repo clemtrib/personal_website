@@ -8,20 +8,26 @@ import { Label } from '@/components/ui/label';
 import AuthBase from '@/layouts/AuthLayout.vue';
 import { Head, useForm, usePage } from '@inertiajs/vue3';
 import { LoaderCircle } from 'lucide-vue-next';
-import { ref, onMounted, nextTick, computed } from 'vue'
-import gsap from 'gsap'
+import { ref, onMounted, nextTick, computed, watch } from 'vue';
+import gsap from 'gsap';
 
+// Formulaire
 const form = useForm({
     fullname: '',
     email: '',
     message: '',
 });
 
-const successMessage = ref < HTMLElement | null > (null)
+const props = defineProps<{
+    readyToLoad: boolean,
+}>();
+
+const successMessage = ref<HTMLElement | null>(null)
 const page = usePage()
 const formSubmitted = computed(() => !!page.props.flash.success)
 
-onMounted(() => {
+// Fonction pour appliquer GSAP sur les champs
+function setupGsapAnimations() {
     const fields = document.querySelectorAll('.gsap-hover')
 
     fields.forEach((el) => {
@@ -43,15 +49,33 @@ onMounted(() => {
             })
         })
     })
+}
+
+// Quand le composant est monté
+onMounted(() => {
+    if (props.readyToLoad) {
+        nextTick(() => {
+            setupGsapAnimations()
+        })
+    }
 })
 
+// Surveille readyToLoad
+watch(() => props.readyToLoad, (newValue) => {
+    if (newValue) {
+        nextTick(() => {
+            setupGsapAnimations()
+        })
+    }
+})
+
+// Envoi du formulaire
 const submit = () => {
     form.post(route('contact'), {
         preserveScroll: true,
         onSuccess: () => {
             formSubmitted.value = true
 
-            // attend que le DOM soit mis à jour
             nextTick(() => {
                 if (successMessage.value) {
                     gsap.fromTo(successMessage.value, { opacity: 0, y: 30 }, {
@@ -65,11 +89,11 @@ const submit = () => {
         },
         onFinish: () => form.reset('fullname', 'email', 'message'),
     })
-};
+}
 </script>
 
 <template>
-    <section id="contact" class="px-6 py-20 bg-[#112240] text-[#ccd6f6]">
+    <section v-if="readyToLoad && readyToLoad == true" id="contact" class="px-6 py-20 bg-[#112240] text-[#ccd6f6]">
         <h2 class="text-3xl font-bold mb-6 border-b-2 border-green-400 inline-block">Contact</h2>
 
         <div v-if="formSubmitted" ref="successMessage" class="text-center text-lg text-green-400">
@@ -91,10 +115,11 @@ const submit = () => {
             </div>
             <div>
                 <Textarea id="message" required v-model.trim="form.message" placeholder="Message" :rows="4" class="gsap-hover rounded bg-[#0a192f] text-white border border-[#64ffda]"></Textarea>
+                <InputError :message="form.errors.message" />
             </div>
             <Button type="submit" class="mt-2 w-full gsap-hover bg-green-400 text-[#0a192f] px-4 py-2 rounded hover:bg-green-300 transition" :disabled="form.processing">
                 <LoaderCircle v-if="form.processing" class="h-4 w-4 animate-spin" />
-                Envoyer
+                <span v-else>Envoyer</span>
             </Button>
         </form>
     </section>

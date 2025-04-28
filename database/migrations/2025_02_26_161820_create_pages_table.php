@@ -18,10 +18,10 @@ return new class extends Migration
             $table->string('hero_subtitle', 255);
             $table->string('hero_title', 255);
             $table->longText('hero_description');
-            $table->string('hero_image', 255);
-            $table->longText('content_text');
-            $table->string('content_image', 255);
-            $table->longText('page_seo');
+            $table->string('hero_image', 255)->nullable();
+            $table->longText('content_text')->nullable();
+            $table->string('content_image', 255)->nullable();
+            $table->longText('page_seo')->nullable();
             $table->timestamps();
         });
     }

@@ -2,6 +2,7 @@
 import { Facebook, Linkedin, Github } from 'lucide-vue-next';
 
 const props = defineProps < {
+    readyToLoad: boolean,
     config: {
         social_networks: Array < {
             facebook: string,
@@ -14,7 +15,7 @@ const props = defineProps < {
 </script>
 
 <template>
-    <footer class="p-6 text-center bg-black text-white">
+    <footer v-if="props.readyToLoad && props.readyToLoad == true" class="p-6 text-center bg-black text-white">
         <p>Montréal, Québec, Canada</p>
         <div class="flex justify-center gap-4 mt-2">
             <a v-if="props.config?.social_networks?.linkedin" :href="props.config.social_networks.linkedin" class="hover:text-green-400" target="_blank">

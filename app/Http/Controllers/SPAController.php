@@ -7,6 +7,7 @@ use App\Models\WorkExperience;
 use App\Models\Education;
 use App\Models\Hobby;
 use App\Models\Skill;
+use App\Models\Page;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 
@@ -37,6 +38,7 @@ class SPAController extends Controller
             'schools' => Education::orderByRaw('date IS NOT NULL, date DESC')->get(),
             'hobbies' => Hobby::orderBy('order ASC')->get(),
             'skills' => Skill::orderBy('order ASC')->get(),
+            'content' => Page::where('page_slug', 'home')->first()
         ];
         Cache::add(self::CACHE_KEY, $value, now()->addHours(12));
         //}

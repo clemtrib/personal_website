@@ -1,5 +1,6 @@
 <script setup lang="ts">
 defineProps < {
+    readyToLoad: boolean,
     hobbies: Array < {
         id: number;
         title: string;
@@ -10,7 +11,7 @@ defineProps < {
 </script>
 
 <template>
-    <section id="hobbies" class="px-6 py-20 bg-[#112240] text-[#ccd6f6] flex flex-col md:flex-row items-center gap-10" data-aos="zoom-in-up">
+    <section v-if="readyToLoad && readyToLoad == true" id="hobbies" class="px-6 py-20 bg-[#112240] text-[#ccd6f6] flex flex-col md:flex-row items-center gap-10" data-aos="zoom-in-up">
         <div class="md:w-1/2">
             <h2 class="text-3xl font-bold mb-6 border-b-2 border-green-400 inline-block">Loisirs</h2>
             <ul class="space-y-4 text-[#8892b0]">

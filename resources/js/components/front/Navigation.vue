@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { Link } from '@inertiajs/vue3';
 const props = defineProps < {
+    readyToLoad: boolean,
     config: {
         social_networks: Array < {
             facebook: string,
@@ -13,7 +14,7 @@ const props = defineProps < {
 </script>
 
 <template>
-    <nav class="fixed top-0 left-0 w-full bg-[#0a192f] text-[#ccd6f6] shadow z-50">
+    <nav v-if="props.readyToLoad && props.readyToLoad == true" class="fixed top-0 left-0 w-full bg-[#0a192f] text-[#ccd6f6] shadow z-50">
         <div class="max-w-6xl mx-auto px-6 py-4 flex justify-between items-center">
             <a href="#" class="text-xl font-bold text-green-400">Clément</a>
             <Link v-if="$page.props.auth.user" :href="route('dashboard')" class="inline-block rounded-sm border border-[#19140035] px-5 py-1.5 text-sm leading-normal text-[#1b1b18] hover:border-[#1915014a] dark:border-[#3E3E3A] dark:text-[#EDEDEC] dark:hover:border-[#62605b]"> Dashboard

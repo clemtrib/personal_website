@@ -16,11 +16,11 @@ class PageController extends Controller implements HasMiddleware
         'page_name' => 'required|string|max:255',
         'hero_subtitle' => 'string|max:255',
         'hero_title' => 'required|string|max:255',
-        'hero_description' => 'string',
-        'hero_image' => 'string|max:255',
-        'content_text' => 'string',
-        'content_image' => 'string|max:255',
-        'page_seo' => 'string',
+        'hero_description' => 'required|string',
+        'hero_image' => 'nullable|string|max:255',
+        'content_text' => 'nullable|string',
+        'content_image' => 'nullable|string|max:255',
+        'page_seo' => 'nullable|string',
     ];
 
     public static function middleware(): array
@@ -83,7 +83,7 @@ class PageController extends Controller implements HasMiddleware
         if (!$page->exists) {
             abort(404, "Page non trouvée");
         }
-        return Inertia::render('pagesForm', [
+        return Inertia::render('PagesForm', [
             'page' => $page->only(['id', 'page_slug', 'page_name', 'hero_subtitle', 'hero_title', 'hero_description', 'hero_image', 'content_text', 'content_image', 'page_seo'])
         ]);
     }

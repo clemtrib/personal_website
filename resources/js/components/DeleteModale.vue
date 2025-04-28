@@ -35,7 +35,7 @@ const deleteObject = () => {
   >
     <div class="bg-white dark:bg-gray-800 p-6 rounded-lg max-w-md w-full mx-4">
       <h3 class="text-lg font-semibold mb-4">Confirmer la suppression</h3>
-      <p class="mb-6">Êtes-vous sûr de vouloir supprimer cette expérience ?</p>
+      <p class="mb-6">Êtes-vous sûr de vouloir supprimer cette entrée ?</p>
 
       <div class="flex justify-end gap-3">
         <button

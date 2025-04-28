@@ -1,5 +1,6 @@
 <script setup lang="ts">
 defineProps < {
+    readyToLoad: boolean,
     experiences: Array < {
         id: number;
         location: string;
@@ -13,7 +14,7 @@ defineProps < {
 </script>
 
 <template>
-    <section id="experiences" class="px-6 py-20 bg-[#0a192f] text-[#ccd6f6]" data-aos="fade-right">
+    <section v-if="readyToLoad && readyToLoad == true" id="experiences" class="px-6 py-20 bg-[#0a192f] text-[#ccd6f6]" data-aos="fade-right">
         <h2 class="text-3xl font-bold mb-10 border-b-2 border-green-400 inline-block">Expériences & Projets</h2>
         <div class="space-y-10">
             <div v-for="experience in experiences" :key="experience.id">
