@@ -32,9 +32,7 @@ const openDeleteModal = (id: number) => {
                     <!-- Contenu expérience... -->
 
                     <h3 class="font-semibold">{{ education.school }} <small>{{ education.location }}</small></h3>
-                    <p class="text-sm text-gray-600 dark:text-gray-400">
-                        {{ education.graduation }}
-                    </p>
+                    <p class="text-sm text-gray-600 dark:text-gray-400" v-html="education.graduation"></p>
                     <p class="text-sm text-gray-600 dark:text-gray-400">
                         {{ new Date(education.date).toLocaleDateString() }}
                     </p>
