@@ -47,7 +47,7 @@ onMounted(async () => {
         <link rel="stylesheet" href="https://rsms.me/inter/inter.css" />
     </Head>
     <div class="font-sans scroll-smooth">
-        <Navigation :config=config :readyToLoad=readyToLoad />
+        <Navigation :home=home :config=config :readyToLoad=readyToLoad />
         <HeroSection :home=home :readyToLoad=readyToLoad />
         <SchoolsSection :schools=schools :readyToLoad=readyToLoad />
         <SkillsSection :skills=skills :readyToLoad=readyToLoad />
