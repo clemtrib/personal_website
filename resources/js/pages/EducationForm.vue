@@ -31,9 +31,6 @@ onMounted(() => {
         setTimeout(() => showAlert.value = false, 3000);
     }
 });
-
-console.log(props.education)
-
 </script>
 
 <template>

@@ -47,10 +47,6 @@ const onSubmit = () => {
 };
 
 const page = usePage();
-
-console.log(props)
-
-
 </script>
 
 <template>

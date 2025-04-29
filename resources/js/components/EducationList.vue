@@ -16,7 +16,6 @@ const props = defineProps < {
 const emit = defineEmits(['open-delete-modal']);
 
 const openDeleteModal = (id: number) => {
-    console.log('HERE ' + id)
     emit('open-delete-modal', id);
 };
 </script>
