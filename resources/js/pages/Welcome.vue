@@ -24,8 +24,18 @@ const hobbies = ref([]);
 const config = ref([]);
 const home = ref([]);
 const readyToLoad = ref([]);
+readyToLoad.value = false;
+const siteKey =
+    import.meta.env.VITE_RECAPTCHA_SITE_KEY;
 
 onMounted(async () => {
+    if (siteKey && typeof window.grecaptcha === 'undefined') {
+        const script = document.createElement('script');
+        script.src = `https://www.google.com/recaptcha/api.js?render=${siteKey}`;
+        script.async = true;
+        script.defer = true;
+        document.head.appendChild(script);
+    }
     try {
         var response = await axios.get('/api/spa/list');
         experiences.value = response.data.experiences;
@@ -54,7 +64,7 @@ onMounted(async () => {
         <ExperienceSection :experiences=experiences :readyToLoad=readyToLoad />
         <HobbiesSection :hobbies=hobbies :readyToLoad=readyToLoad />
         <TJMSection :config=config :readyToLoad=readyToLoad />
-        <ContactForm :readyToLoad=readyToLoad />
+        <ContactForm :readyToLoad=readyToLoad :siteKey=siteKey />
         <Footer :config=config :readyToLoad=readyToLoad />
     </div>
 </template>

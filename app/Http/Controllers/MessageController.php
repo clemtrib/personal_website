@@ -3,8 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Message;
-use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Http;
 
 class MessageController extends Controller
 {
@@ -13,6 +13,7 @@ class MessageController extends Controller
         'fullname' => 'required|string|max:255',
         'email' => 'required|email',
         'message' => 'required|string',
+        'recaptcha_token' => 'required|string',
     ];
 
     /**
@@ -30,6 +31,19 @@ class MessageController extends Controller
     public function store(Request $request)
     {
         try {
+
+            $response = Http::asForm()->post('https://www.google.com/recaptcha/api/siteverify', [
+                'secret' => getenv('RECAPTCHA_PRIVATE_KEY') ?? null,
+                'response' => $request->recaptcha_token,
+                'remoteip' => $request->ip(),
+            ]);
+
+            $result = $response->json();
+
+            if (!($result['success'] ?? false) || ($result['score'] ?? 0) < 0.5) {
+                return back()->withErrors(['general' => 'Échec de la vérification reCAPTCHA.']);
+            }
+
             $validatedData = $request->validate(self::VALIDATION_RULES);
             $message = new Message();
             $message->fullname = $validatedData['fullname'];
