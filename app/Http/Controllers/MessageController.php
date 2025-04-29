@@ -46,9 +46,9 @@ class MessageController extends Controller
 
             $validatedData = $request->validate(self::VALIDATION_RULES);
             $message = new Message();
-            $message->fullname = $validatedData['fullname'];
-            $message->email = $validatedData['email'];
-            $message->message = $validatedData['message'];
+            $message->fullname = $this->sanitizeInput($validatedData['fullname']);
+            $message->email = $this->sanitizeInput($validatedData['email']);
+            $message->message = $this->sanitizeInput($validatedData['message']);
             $message->save();
             return redirect()->back()->with('success', 'Message envoyé avec succès');
         } catch (\Exception $e) {
@@ -81,5 +81,13 @@ class MessageController extends Controller
     {
         $message->delete();
         return response()->json(['message' => 'Message supprimé avec succès']);
+    }
+
+    private function sanitizeInput(String $input) : String {
+        // Remove <script> blocks
+        $input = preg_replace('#<script(.*?)>(.*?)</script>#is', '', $input);
+        // Remove other tags
+        $input = strip_tags($input);
+        return htmlspecialchars($input, ENT_QUOTES, 'UTF-8');
     }
 }
