@@ -62,7 +62,7 @@ onMounted(async () => {
         <SchoolsSection :schools=schools :readyToLoad=readyToLoad />
         <SkillsSection :skills=skills :readyToLoad=readyToLoad />
         <ExperienceSection :experiences=experiences :readyToLoad=readyToLoad />
-        <HobbiesSection :hobbies=hobbies :readyToLoad=readyToLoad />
+        <HobbiesSection :home=home :hobbies=hobbies :readyToLoad=readyToLoad />
         <TJMSection :config=config :readyToLoad=readyToLoad />
         <ContactForm :readyToLoad=readyToLoad :siteKey=siteKey />
         <Footer :config=config :readyToLoad=readyToLoad />

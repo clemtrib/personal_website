@@ -1,6 +1,9 @@
 <script setup lang="ts">
 defineProps < {
     readyToLoad: boolean,
+    home: {
+        content_image: number;
+    },
     hobbies: Array < {
         id: number;
         title: string;
@@ -18,8 +21,8 @@ defineProps < {
                 <li v-for="hobby in hobbies" :key="hobby.id"><strong>{{ hobby.title }}</strong> {{ hobby.description }}</li>
             </ul>
         </div>
-        <div class="md:w-1/2">
-            <img src="" alt="" class="rounded-xl w-64 h-64 object-cover">
+        <div class="md:w-1/2" v-if="home?.content_image">
+            <img :src="`/storage/${home.content_image}`" alt="Clément Tribouillard" class="rounded-xl w-64 h-64 object-cover">
         </div>
     </section>
 </template>

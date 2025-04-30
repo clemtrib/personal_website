@@ -2,24 +2,20 @@
 import { Head, useForm, usePage } from '@inertiajs/vue3';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
-import AuthBase from '@/layouts/AuthLayout.vue';
-import { LoaderCircle } from 'lucide-vue-next';
-import { DateInput } from '@/components/ui/date-input';
 import { QuillEditor } from '@vueup/vue-quill';
 import '@vueup/vue-quill/dist/vue-quill.snow.css';
-import { computed } from 'vue';
+import { computed, ref } from 'vue';
 import Toast from '../components/Toast.vue';
+import axios from 'axios';
 
 const props = defineProps({
     page: {
         type: Object,
-        default: () => null // Modifier ici
+        default: () => null
     }
 });
 
-// Initialisation conditionnelle du formulaire
 const form = useForm({
     id: props.page?.id || '',
     page_slug: props.page?.page_slug || '',
@@ -27,28 +23,83 @@ const form = useForm({
     hero_subtitle: props.page?.hero_subtitle || '',
     hero_title: props.page?.hero_title || '',
     hero_description: props.page?.hero_description || '',
-    hero_image: props.page?.hero_image || '',
-    content_text: props.page?.content_text || '',
-    content_image: props.page?.content_image || '',
-    page_seo: props.page?.page_seo || '',
+    content_image: null,
+}, {
+    forceFormData: true
 });
 
-// Mode édition seulement si l'expérience existe
 const isEditMode = computed(() => !!props.page?.id);
 
-const onSubmit = () => {
+// Pour affichage image sélectionnée avant upload
+const imagePreview = ref<string | null>(null);
+const hasExistingImage = ref(!!props.page?.content_image);
+const removeExistingImage = ref(false);
+
+const handleFileChange = (e: Event) => {
+    const input = e.target as HTMLInputElement;
+    if (input.files && input.files.length > 0) {
+        const file = input.files[0];
+        form.content_image = file;
+        imagePreview.value = URL.createObjectURL(file);
+        removeExistingImage.value = false; // on garde la nouvelle image
+    } else {
+        form.content_image = null;
+        imagePreview.value = null;
+    }
+};
+
+const handleRemoveImage = () => {
+    form.content_image = null;
+    imagePreview.value = null;
+
+    // Si on avait une image existante en base
+    if (hasExistingImage.value) {
+        removeExistingImage.value = true;
+    }
+};
+
+const submit = () => {
+
     if (form.hero_description.trim() === '<p></p>' || form.hero_description.trim() === '<p><br></p>') {
         form.setError('hero_description', 'Le champ Texte est obligatoire');
         return;
     }
 
-    // Utiliser form directement pour PUT/POST
-    isEditMode.value ?
-        form.put(route('pages.update', props.page.id)) :
-        form.post(route('pages.store'), {
-            preserveScroll: true,
-            onSuccess: () => form.reset()
-        });
+    const formData = new FormData();
+    Object.entries(form.data()).forEach(([key, value]) => {
+        if (value !== null && value !== undefined) {
+            formData.append(key, value);
+        }
+    });
+
+    if (isEditMode.value) {
+        formData.append('_method', 'PUT');
+    }
+
+    if (removeExistingImage.value) {
+        formData.append('remove_content_image', '1');
+    }
+
+    axios.post(
+        isEditMode.value ? route('pages.update', props.page.id) : route('pages.store'),
+        formData,
+        { headers: { 'Content-Type': 'multipart/form-data' } }
+    )
+    .then(response => {
+        // Enregistre le message flash dans localStorage
+        localStorage.setItem('flashMessage', response.data.message);
+        localStorage.setItem('flashType', 'success');
+
+        // Redirige vers la liste
+        window.location.href = route('pages');
+    }).catch(error => {
+        const message = error.response?.data?.message || 'Erreur inconnue';
+        localStorage.setItem('flashMessage', message);
+        localStorage.setItem('flashType', 'error');
+
+        window.location.href = route('pages');
+    });
+
 };
 
 const page = usePage();
@@ -59,68 +110,88 @@ const page = usePage();
     <Head :title="isEditMode ? 'Modifier une page' : 'Ajouter une page'" />
 
     <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
-        <form @submit.prevent="onSubmit">
+        <form @submit.prevent="submit" enctype="multipart/form-data" class="flex flex-col lg:flex-row gap-8">
 
-            <!-- page_slug -->
-            <div class="mb-4">
-                <Label for="page_slug" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Slug</Label>
-                <Input id="page_slug" type="text" required tabindex="1" autocomplete="page_slug" v-model="form.page_slug" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-                />
+            <!-- Colonne gauche : formulaire -->
+            <div class="flex-1">
+                <div class="mb-4">
+                    <Label for="page_slug">Slug</Label>
+                    <Input id="page_slug" type="text" v-model="form.page_slug" required />
+                    <p v-if="form.errors.page_slug" class="text-red-600 text-sm">{{ form.errors.page_slug }}</p>
+                </div>
+
+                <div class="mb-4">
+                    <Label for="page_name">Nom</Label>
+                    <Input id="page_name" type="text" v-model="form.page_name" required />
+                    <p v-if="form.errors.page_name" class="text-red-600 text-sm">{{ form.errors.page_name }}</p>
+                </div>
+
+                <div class="mb-4">
+                    <Label for="hero_subtitle">Surtitre</Label>
+                    <Input id="hero_subtitle" type="text" v-model="form.hero_subtitle" />
+                    <p v-if="form.errors.hero_subtitle" class="text-red-600 text-sm">{{ form.errors.hero_subtitle }}</p>
+                </div>
+
+                <div class="mb-4">
+                    <Label for="hero_title">Titre</Label>
+                    <Input id="hero_title" type="text" v-model="form.hero_title" />
+                    <p v-if="form.errors.hero_title" class="text-red-600 text-sm">{{ form.errors.hero_title }}</p>
+                </div>
+
+                <div class="mb-4">
+                    <Label for="hero_description">Texte</Label>
+                    <QuillEditor theme="snow" id="hero_description" v-model:content="form.hero_description" contentType="html" class="custom-quill-style" />
+                    <p v-if="form.errors.hero_description" class="text-red-600 text-sm">{{ form.errors.hero_description }}</p>
+                </div>
+
+                <div class="mb-4">
+                    <Label for="content_image">Image</Label>
+                    <input id="content_image" type="file" accept="image/*" @change="handleFileChange"
+                        class="block w-full text-sm text-gray-500
+                               file:mr-4 file:py-2 file:px-4
+                               file:rounded-md file:border-0
+                               file:text-sm file:font-semibold
+                               file:bg-gray-50 file:text-gray-700
+                               hover:file:bg-gray-100" />
+                    <p v-if="form.errors.content_image" class="text-red-600 text-sm">{{ form.errors.content_image }}</p>
+                </div>
+
+                <div class="mt-6">
+                    <Button type="submit" :disabled="form.processing">
+                        {{ isEditMode ? 'Mettre à jour' : 'Créer' }}
+                    </Button>
+                </div>
             </div>
 
-            <!-- page_name -->
-            <div class="mb-4">
-                <Label for="page_name" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Name</Label>
-                <Input id="page_name" type="text" required tabindex="1" autocomplete="page_name" v-model="form.page_name" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-                />
+            <!-- Colonne droite : prévisualisation -->
+            <div class="w-full lg:w-1/4">
+                <!-- Nouvelle image sélectionnée -->
+                <div v-if="imagePreview" class="mb-4 border rounded-lg p-4 bg-gray-50 dark:bg-gray-700">
+                    <p class="text-sm text-gray-500 dark:text-gray-300 mb-2">Aperçu de la nouvelle image :</p>
+                    <img :src="imagePreview" alt="Aperçu" class="w-full rounded-md shadow border mb-2" />
+                    <Button type="button" variant="destructive" @click="handleRemoveImage">Supprimer l'image</Button>
+                </div>
+
+                <!-- Image enregistrée actuelle -->
+                <div v-else-if="hasExistingImage && props.page?.content_image" class="border rounded-lg p-4 bg-gray-50 dark:bg-gray-700">
+                    <p class="text-sm text-gray-500 dark:text-gray-300 mb-2">Image actuelle :</p>
+                    <img :src="`/storage/${props.page.content_image}`" alt="Image actuelle" class="w-full rounded-md shadow border mb-2" />
+                    <Button type="button" variant="destructive" @click="handleRemoveImage">Supprimer l'image</Button>
+                </div>
             </div>
 
-            <!-- hero_subtitle -->
-            <div class="mb-4">
-                <Label for="hero_subtitle" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Surtitre</Label>
-                <Input id="hero_subtitle" type="text" required tabindex="1" autocomplete="hero_subtitle" v-model="form.hero_subtitle" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-                />
-            </div>
-
-            <!-- hero_title -->
-            <div class="mb-4">
-                <Label for="hero_title" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Titre</Label>
-                <Input id="hero_title" type="text" required tabindex="1" autocomplete="hero_title" v-model="form.hero_title" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-                />
-            </div>
-
-            <!-- Missions -->
-            <div class="mb-4">
-                <Label for="hero_description" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Texte</Label>
-                <QuillEditor theme="snow" id="hero_description" required tabindex="4" v-model:content="form.hero_description" contentType="html" class="custom-quill-style" />
-                <!-- Affichage des erreurs -->
-                <p v-if="form.errors.description" class="mt-1 text-sm text-red-600">{{ form.errors.hero_description }}</p>
-            </div>
-
-            <!-- Bouton -->
-            <div class="mt-6">
-                <Button type="submit" class="mt-2 w-full" tabindex="5" :disabled="form.processing">
-                    <LoaderCircle v-if="form.processing" class="h-4 w-4 animate-spin" />
-                    Envoyer
-                  </Button>
-            </div>
         </form>
     </div>
 </template>
 
 <style>
-/* Styles personnalisés pour Quill */
-
 .custom-quill-style {
     background: white;
     border-radius: 0.375rem;
     border: 1px solid #d1d5db;
     min-height: 200px;
     color: black;
-    /* Couleur de texte par défaut */
 }
-
-/* Style pour le mode sombre */
 
 .dark .custom-quill-style {
     background: #374151;
@@ -131,8 +202,6 @@ const page = usePage();
 .dark .ql-editor {
     color: white;
 }
-
-/* Style du placeholder */
 
 .ql-editor.ql-blank::before {
     color: #9ca3af;
