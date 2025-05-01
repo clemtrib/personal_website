@@ -35,7 +35,7 @@ const openDeleteModal = (id: number) => {
                         <Link :href="route('pages.edit', page.id)" class="flex items-center gap-2 px-3 py-2 text-sm bg-blue-100 dark:bg-blue-900/30 hover:bg-blue-200 dark:hover:bg-blue-900/50 rounded-lg transition">
                             <Pencil class="h-4 w-4" /> Modifier
                         </Link>
-                        <button @click="openDeleteModal(page.id)" class="flex items-center gap-2 px-3 py-2 text-sm bg-red-100 dark:bg-red-900/30 hover:bg-red-200 dark:hover:bg-red-900/50 rounded-lg transition">
+                        <button v-if="page.page_slug != 'home'" @click="openDeleteModal(page.id)" class="flex items-center gap-2 px-3 py-2 text-sm bg-red-100 dark:bg-red-900/30 hover:bg-red-200 dark:hover:bg-red-900/50 rounded-lg transition">
                             <Eraser class="h-4 w-4" />
                             Supprimer
                         </button>

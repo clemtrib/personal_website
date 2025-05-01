@@ -77,21 +77,7 @@ class PageController extends Controller implements HasMiddleware
         $page->hero_description = $validatedData['hero_description'];
         $page->content_text = $validatedData['content_text'];
         $page->content_image = $validatedData['content_image'];
-
-        $page->page_seo = json_encode([
-            "description" => $validatedData['seo_description'] ?? '',
-            "canonical" => getenv('APP_URL'),
-            "og:title" => $validatedData['seo_og_title'] ?? getenv('APP_NAME'),
-            "og:description" => $validatedData['seo_og_description'] ?? '',
-            "og:image" => "https://monsite.com/og-image.jpg",
-            "og:url" => getenv('APP_URL'),
-            "og:type" => "website",
-            "og:site_name" => getenv('APP_NAME'),
-            "twitter:card" => "summary_large_image",
-            "twitter:title" =>  $validatedData['seo_twitter_title'] ?? getenv('APP_NAME'),
-            "twitter:description" => $validatedData['seo_twitter_description'] ?? '',
-            "twitter:image" => "https://monsite.com/twitter-image.jpg",
-        ]);
+        $page->page_seo = $this->generateSeoProperty($page, $validatedData);
 
         try {
             $page->save();
@@ -122,52 +108,25 @@ class PageController extends Controller implements HasMiddleware
 
         $validatedData = $request->validate(self::VALIDATION_RULES);
 
+        // Supprime l'ancienne image si elle existe
+        if (($request->hasFile('hero_image') && $page->hero_image) || ($request->has('remove_hero_image') && $request->boolean('remove_hero_image'))) {
+            Storage::disk('public')->delete($page->hero_image);
+            $page->hero_image = null;
+        }
         if ($request->hasFile('hero_image')) {
-            // Supprime l'ancienne image si elle existe
-            if ($page->hero_image) {
-                Storage::disk('public')->delete($page->hero_image);
-            }
-
             $validatedData['hero_image'] = $request->file('hero_image')->store('uploads', 'public');
         }
 
+        // Supprime l'ancienne image si elle existe
+        if (($request->hasFile('content_image') && $page->content_image) || ($request->has('remove_content_image') && $request->boolean('remove_content_image'))) {
+            Storage::disk('public')->delete($page->content_image);
+            $page->content_image = null;
+        }
         if ($request->hasFile('content_image')) {
-            // Supprime l'ancienne image si elle existe
-            if ($page->content_image) {
-                Storage::disk('public')->delete($page->content_image);
-            }
-
             $validatedData['content_image'] = $request->file('content_image')->store('uploads', 'public');
         }
 
-        if ($request->has('remove_hero_image') && $request->boolean('remove_hero_image')) {
-            if ($page->hero_image) {
-                Storage::disk('public')->delete($page->hero_image);
-                $page->hero_image = null;
-            }
-        }
-
-        if ($request->has('remove_content_image') && $request->boolean('remove_content_image')) {
-            if ($page->content_image) {
-                Storage::disk('public')->delete($page->content_image);
-                $page->content_image = null;
-            }
-        }
-
-        $page->page_seo = json_encode([
-            "description" => $validatedData['seo_description'] ?? '',
-            "canonical" => getenv('APP_URL'),
-            "og:title" => $validatedData['seo_og_title'] ?? getenv('APP_NAME'),
-            "og:description" => $validatedData['seo_og_description'] ?? '',
-            "og:image" => "https://monsite.com/og-image.jpg",
-            "og:url" => getenv('APP_URL'),
-            "og:type" => "website",
-            "og:site_name" => getenv('APP_NAME'),
-            "twitter:card" => "summary_large_image",
-            "twitter:title" =>  $validatedData['seo_twitter_title'] ?? getenv('APP_NAME'),
-            "twitter:description" => $validatedData['seo_twitter_description'] ?? '',
-            "twitter:image" => "https://monsite.com/twitter-image.jpg",
-        ]);
+        $page->page_seo = $this->generateSeoProperty($page, $validatedData);
 
         try {
             $page->update($validatedData);
@@ -194,5 +153,32 @@ class PageController extends Controller implements HasMiddleware
         } catch (\Exception $e) {
             return back()->with('error',  $e->getMessage());
         }
+    }
+
+    /**
+     *
+     */
+    private function generateSeoProperty(Page $page, array $validatedData): string
+    {
+        $seo_image = null;
+        if (isset($validatedData['content_image'])) {
+            $seo_image = $validatedData['content_image'];
+        } elseif ($page->content_image) {
+            $seo_image = $page->content_image;
+        }
+        return json_encode([
+            "description" => $validatedData['seo_description'] ?? '',
+            "canonical" => getenv('APP_URL'),
+            "og:title" => $validatedData['seo_og_title'] ?? getenv('APP_NAME'),
+            "og:description" => $validatedData['seo_og_description'] ?? '',
+            "og:image" => $seo_image ? getenv('APP_URL') . '/storage/' . $seo_image : '',
+            "og:url" => getenv('APP_URL'),
+            "og:type" => "website",
+            "og:site_name" => getenv('APP_NAME'),
+            "twitter:card" => "summary_large_image",
+            "twitter:title" =>  $validatedData['seo_twitter_title'] ?? getenv('APP_NAME'),
+            "twitter:description" => $validatedData['seo_twitter_description'] ?? '',
+            "twitter:image" =>  $seo_image ? getenv('APP_URL') . '/storage/' . $seo_image : '',
+        ]);
     }
 }

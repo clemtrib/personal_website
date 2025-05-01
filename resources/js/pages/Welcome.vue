@@ -27,6 +27,9 @@ const readyToLoad = ref([]);
 readyToLoad.value = false;
 const siteKey =
     import.meta.env.VITE_RECAPTCHA_SITE_KEY;
+let seo = [];
+
+
 
 onMounted(async () => {
     if (siteKey && typeof window.grecaptcha === 'undefined') {
@@ -45,6 +48,7 @@ onMounted(async () => {
         config.value = response.data.config;
         home.value = response.data.content;
         readyToLoad.value = true;
+        seo = JSON.parse(home.value?.page_seo);
     } catch (error) {
         console.error('Erreur lors de la récupération des messages:', error);
     }
@@ -52,9 +56,23 @@ onMounted(async () => {
 </script>
 
 <template>
-    <Head title="Welcome">
+    <Head title="Portfolio">
         <link rel="preconnect" href="https://rsms.me/" />
         <link rel="stylesheet" href="https://rsms.me/inter/inter.css" />
+        <!-- SEO -->
+        <meta name="description" :content="seo?.description || ''" />
+        <!-- Facebook Open Graph -->
+        <meta property="og:site_name" :content="seo['og:site_name']" />
+        <meta property="og:title" :content="seo['og:title']" />
+        <meta property="og:description" :content="seo['og:description']" />
+        <meta property="og:image" :content="seo['og:image']" />
+        <meta property="og:type" content="seo['og:type']" />
+        <meta property="og:url" :content="seo['og:url']" />
+        <!-- Twitter -->
+        <meta name="twitter:card" content="seo['twitter:card']" />
+        <meta name="twitter:title" :content="seo['twitter:title']" />
+        <meta name="twitter:description" :content="seo['twitter:description']" />
+        <meta name="twitter:image" :content="seo['twitter:image']" />
     </Head>
     <div class="font-sans scroll-smooth">
         <Navigation :home=home :config=config :readyToLoad=readyToLoad />
