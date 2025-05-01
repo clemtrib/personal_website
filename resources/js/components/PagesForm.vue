@@ -30,8 +30,7 @@ const form = useForm({
 
 const isEditMode = computed(() => !!props.page?.id);
 
-// Pour affichage image sélectionnée avant upload
-const imagePreview = ref<string | null>(null);
+const imagePreview = ref < string | null > (null);
 const hasExistingImage = ref(!!props.page?.content_image);
 const removeExistingImage = ref(false);
 
@@ -41,7 +40,7 @@ const handleFileChange = (e: Event) => {
         const file = input.files[0];
         form.content_image = file;
         imagePreview.value = URL.createObjectURL(file);
-        removeExistingImage.value = false; // on garde la nouvelle image
+        removeExistingImage.value = false;
     } else {
         form.content_image = null;
         imagePreview.value = null;
@@ -51,15 +50,12 @@ const handleFileChange = (e: Event) => {
 const handleRemoveImage = () => {
     form.content_image = null;
     imagePreview.value = null;
-
-    // Si on avait une image existante en base
     if (hasExistingImage.value) {
         removeExistingImage.value = true;
     }
 };
 
 const submit = () => {
-
     if (form.hero_description.trim() === '<p></p>' || form.hero_description.trim() === '<p><br></p>') {
         form.setError('hero_description', 'Le champ Texte est obligatoire');
         return;
@@ -81,25 +77,24 @@ const submit = () => {
     }
 
     axios.post(
-        isEditMode.value ? route('pages.update', props.page.id) : route('pages.store'),
-        formData,
-        { headers: { 'Content-Type': 'multipart/form-data' } }
-    )
-    .then(response => {
-        // Enregistre le message flash dans localStorage
-        localStorage.setItem('flashMessage', response.data.message);
-        localStorage.setItem('flashType', 'success');
+            isEditMode.value ? route('pages.update', props.page.id) : route('pages.store'),
+            formData, { headers: { 'Content-Type': 'multipart/form-data' } }
+        )
+        .then(response => {
+            localStorage.setItem('flashMessage', response.data.message);
+            localStorage.setItem('flashType', 'success');
+            window.location.href = route('pages');
+        }).catch(error => {
+            const message = error.response?.data?.message || 'Erreur inconnue';
+            localStorage.setItem('flashMessage', message);
+            localStorage.setItem('flashType', 'error');
+            window.location.href = route('pages');
+        });
+};
 
-        // Redirige vers la liste
-        window.location.href = route('pages');
-    }).catch(error => {
-        const message = error.response?.data?.message || 'Erreur inconnue';
-        localStorage.setItem('flashMessage', message);
-        localStorage.setItem('flashType', 'error');
-
-        window.location.href = route('pages');
-    });
-
+const openSection = ref('hero');
+const toggleSection = (section: string) => {
+    openSection.value = openSection.value === section ? '' : section;
 };
 
 const page = usePage();
@@ -111,75 +106,117 @@ const page = usePage();
 
     <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
         <form @submit.prevent="submit" enctype="multipart/form-data" class="flex flex-col lg:flex-row gap-8">
-
             <!-- Colonne gauche : formulaire -->
             <div class="flex-1">
-                <div class="mb-4">
-                    <Label for="page_slug">Slug</Label>
-                    <Input id="page_slug" type="text" v-model="form.page_slug" required />
-                    <p v-if="form.errors.page_slug" class="text-red-600 text-sm">{{ form.errors.page_slug }}</p>
-                </div>
 
-                <div class="mb-4">
-                    <Label for="page_name">Nom</Label>
-                    <Input id="page_name" type="text" v-model="form.page_name" required />
-                    <p v-if="form.errors.page_name" class="text-red-600 text-sm">{{ form.errors.page_name }}</p>
-                </div>
+                <!-- HERO -->
+                <fieldset class="border border-gray-300 dark:border-gray-600 rounded mb-6 overflow-hidden transition-all">
+                    <legend class="mx-10 px-2 py-2 cursor-pointer text-lg" @click="toggleSection('page')">
+                        Page
+                    </legend>
+                    <Transition name="accordion">
+                        <div v-show="openSection === 'page'" class="p-4 space-y-4">
+                            <div>
+                                <div>
+                                    <Label for="page_slug">Slug</Label>
+                                    <Input id="page_slug" type="text" v-model="form.page_slug" required />
+                                    <p v-if="form.errors.page_slug" class="text-red-600 text-sm">{{ form.errors.page_slug }}</p>
+                                </div>
 
-                <div class="mb-4">
-                    <Label for="hero_subtitle">Surtitre</Label>
-                    <Input id="hero_subtitle" type="text" v-model="form.hero_subtitle" />
-                    <p v-if="form.errors.hero_subtitle" class="text-red-600 text-sm">{{ form.errors.hero_subtitle }}</p>
-                </div>
+                                <div>
+                                    <Label for="page_name">Nom</Label>
+                                    <Input id="page_name" type="text" v-model="form.page_name" required />
+                                    <p v-if="form.errors.page_name" class="text-red-600 text-sm">{{ form.errors.page_name }}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </Transition>
+                </fieldset>
 
-                <div class="mb-4">
-                    <Label for="hero_title">Titre</Label>
-                    <Input id="hero_title" type="text" v-model="form.hero_title" />
-                    <p v-if="form.errors.hero_title" class="text-red-600 text-sm">{{ form.errors.hero_title }}</p>
-                </div>
+                <!-- HERO -->
+                <fieldset class="border border-gray-300 dark:border-gray-600 rounded mb-6 overflow-hidden transition-all">
+                    <legend class="mx-10 px-2 py-2 cursor-pointer text-lg" @click="toggleSection('hero')">
+                        Entête
+                    </legend>
+                    <Transition name="accordion">
+                        <div v-show="openSection === 'hero'" class="p-4 space-y-4">
 
-                <div class="mb-4">
-                    <Label for="hero_description">Texte</Label>
-                    <QuillEditor theme="snow" id="hero_description" v-model:content="form.hero_description" contentType="html" class="custom-quill-style" />
-                    <p v-if="form.errors.hero_description" class="text-red-600 text-sm">{{ form.errors.hero_description }}</p>
-                </div>
+                            <div>
+                                <Label for="hero_subtitle">Surtitre</Label>
+                                <Input id="hero_subtitle" type="text" v-model="form.hero_subtitle" />
+                                <p v-if="form.errors.hero_subtitle" class="text-red-600 text-sm">{{ form.errors.hero_subtitle }}</p>
+                            </div>
 
-                <div class="mb-4">
-                    <Label for="content_image">Image</Label>
-                    <input id="content_image" type="file" accept="image/*" @change="handleFileChange"
-                        class="block w-full text-sm text-gray-500
-                               file:mr-4 file:py-2 file:px-4
-                               file:rounded-md file:border-0
-                               file:text-sm file:font-semibold
-                               file:bg-gray-50 file:text-gray-700
-                               hover:file:bg-gray-100" />
-                    <p v-if="form.errors.content_image" class="text-red-600 text-sm">{{ form.errors.content_image }}</p>
-                </div>
+                            <div>
+                                <Label for="hero_title">Titre</Label>
+                                <Input id="hero_title" type="text" v-model="form.hero_title" />
+                                <p v-if="form.errors.hero_title" class="text-red-600 text-sm">{{ form.errors.hero_title }}</p>
+                            </div>
+
+                            <div>
+                                <Label for="hero_description">Texte</Label>
+                                <QuillEditor theme="snow" id="hero_description" v-model:content="form.hero_description" contentType="html" class="custom-quill-style" />
+                                <p v-if="form.errors.hero_description" class="text-red-600 text-sm">{{ form.errors.hero_description }}</p>
+                            </div>
+                        </div>
+                    </Transition>
+                </fieldset>
+
+                <!-- Content -->
+                <fieldset class="border border-gray-300 dark:border-gray-600 rounded mb-6 overflow-hidden transition-all">
+                    <legend class="mx-10 px-2 py-2 cursor-pointer text-lg" @click="toggleSection('content')">
+                        Contenu
+                    </legend>
+                    <Transition name="accordion">
+                        <div v-show="openSection === 'content'" class="p-4 space-y-4">
+                            <div>
+                                <Label for="content_image">Image</Label>
+                                <input id="content_image" type="file" accept="image/*" @change="handleFileChange" class="block w-full text-sm text-gray-500
+                                               file:mr-4 file:py-2 file:px-4
+                                               file:rounded-md file:border-0
+                                               file:text-sm file:font-semibold
+                                               file:bg-gray-50 file:text-gray-700
+                                               hover:file:bg-gray-100" />
+                                <p v-if="form.errors.content_image" class="text-red-600 text-sm">{{ form.errors.content_image }}</p>
+                            </div>
+                        </div>
+                    </Transition>
+                </fieldset>
+
+                <fieldset class="border border-gray-300 dark:border-gray-600 rounded mb-6 overflow-hidden transition-all">
+                    <legend class="mx-10 px-2 py-2 cursor-pointer text-lg" @click="toggleSection('seo')">
+                        SEO
+                    </legend>
+                    <Transition name="accordion">
+                        <div v-show="openSection === 'seo'" class="p-4 space-y-4">
+                            <div>
+
+                            </div>
+                        </div>
+                    </Transition>
+                </fieldset>
 
                 <div class="mt-6">
                     <Button type="submit" :disabled="form.processing">
-                        {{ isEditMode ? 'Mettre à jour' : 'Créer' }}
-                    </Button>
+                            {{ isEditMode ? 'Mettre à jour' : 'Créer' }}
+                        </Button>
                 </div>
             </div>
 
             <!-- Colonne droite : prévisualisation -->
             <div class="w-full lg:w-1/4">
-                <!-- Nouvelle image sélectionnée -->
                 <div v-if="imagePreview" class="mb-4 border rounded-lg p-4 bg-gray-50 dark:bg-gray-700">
                     <p class="text-sm text-gray-500 dark:text-gray-300 mb-2">Aperçu de la nouvelle image :</p>
                     <img :src="imagePreview" alt="Aperçu" class="w-full rounded-md shadow border mb-2" />
                     <Button type="button" variant="destructive" @click="handleRemoveImage">Supprimer l'image</Button>
                 </div>
 
-                <!-- Image enregistrée actuelle -->
                 <div v-else-if="hasExistingImage && props.page?.content_image" class="border rounded-lg p-4 bg-gray-50 dark:bg-gray-700">
                     <p class="text-sm text-gray-500 dark:text-gray-300 mb-2">Image actuelle :</p>
                     <img :src="`/storage/${props.page.content_image}`" alt="Image actuelle" class="w-full rounded-md shadow border mb-2" />
                     <Button type="button" variant="destructive" @click="handleRemoveImage">Supprimer l'image</Button>
                 </div>
             </div>
-
         </form>
     </div>
 </template>
@@ -209,5 +246,27 @@ const page = usePage();
 
 .dark .ql-editor.ql-blank::before {
     color: #6b7280;
+}
+
+/* Transition accordéon */
+
+.accordion-enter-active,
+.accordion-leave-active {
+    transition: max-height 0.3s ease, opacity 0.3s ease, padding 0.3s ease;
+    overflow: hidden;
+}
+
+.accordion-enter-from,
+.accordion-leave-to {
+    max-height: 0;
+    opacity: 0;
+    padding-top: 0;
+    padding-bottom: 0;
+}
+
+.accordion-enter-to,
+.accordion-leave-from {
+    max-height: 1000px;
+    opacity: 1;
 }
 </style>
