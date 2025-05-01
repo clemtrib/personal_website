@@ -16,6 +16,8 @@ const props = defineProps({
     }
 });
 
+const seo = JSON.parse(props.page?.page_seo);
+
 const form = useForm({
     id: props.page?.id || '',
     page_slug: props.page?.page_slug || '',
@@ -26,12 +28,11 @@ const form = useForm({
     hero_image: null,
     content_text: props.page?.content_text || '',
     content_image: null,
-    seo_description: props.page?.seo_description || '',
-    seo_og_title: props.page?.seo_og_title || '',
-    seo_og_description: props.page?.seo_og_description || '',
-    seo_twitter_title: props.page?.seo_twitter_title || '',
-    seo_twitter_description: props.page?.seo_twitter_description || '',
-
+    seo_description: seo?.description || '',
+    seo_og_title: seo && Object.hasOwn(seo, "og:title") ? seo['og:title'] : '',
+    seo_og_description: seo && Object.hasOwn(seo, "og:title") ? seo['og:description'] : '',
+    seo_twitter_title: seo && Object.hasOwn(seo, "og:title") ? seo['twitter:title'] : '',
+    seo_twitter_description: seo && Object.hasOwn(seo, "og:title") ? seo['twitter:description'] : '',
 }, {
     forceFormData: true
 });
@@ -223,7 +224,7 @@ const page = usePage();
                             </div>
 
                             <div>
-                                <Label for="content_image">ImageImage actuelle (contenu) :</Label>
+                                <Label for="content_image">Image</Label>
                                 <input id="content_image" type="file" accept="image/*" @change="handleFileChange" class="block w-full text-sm text-gray-500
                                                file:mr-4 file:py-2 file:px-4
                                                file:rounded-md file:border-0
