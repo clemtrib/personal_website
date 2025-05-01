@@ -18,10 +18,14 @@ class PageController extends Controller implements HasMiddleware
         'hero_subtitle' => 'string|max:255',
         'hero_title' => 'required|string|max:255',
         'hero_description' => 'required|string',
-        //'hero_image' => 'nullable|image|max:2048',
-        //'content_text' => 'nullable|string',
+        'hero_image' => 'nullable|image|max:2048',
+        'content_text' => 'nullable|string',
         'content_image' => 'nullable|image|max:2048',
-        //'page_seo' => 'nullable|string',
+        'seo_description' => 'nullable|string|max:255',
+        'seo_og_title' => 'nullable|string|max:255',
+        'seo_og_description' => 'nullable|string|max:255',
+        'seo_twitter_title' => 'nullable|string|max:255',
+        'seo_twitter_description' => 'nullable|string|max:255',
     ];
 
     public static function middleware(): array
@@ -57,6 +61,10 @@ class PageController extends Controller implements HasMiddleware
     {
         $validatedData = $request->validate(self::VALIDATION_RULES);
 
+        if ($request->hasFile('hero_image')) {
+            $validatedData['hero_image'] = $request->file('hero_image')->store('uploads', 'public');
+        }
+
         if ($request->hasFile('content_image')) {
             $validatedData['content_image'] = $request->file('content_image')->store('uploads', 'public');
         }
@@ -67,10 +75,23 @@ class PageController extends Controller implements HasMiddleware
         $page->hero_subtitle = $validatedData['hero_subtitle'];
         $page->hero_title = $validatedData['hero_title'];
         $page->hero_description = $validatedData['hero_description'];
-        //$page->hero_image = $validatedData['hero_image'];
-        //$page->content_text = $validatedData['content_text'];
+        $page->content_text = $validatedData['content_text'];
         $page->content_image = $validatedData['content_image'];
-        //$page->page_seo = $validatedData['page_seo'];
+
+        $page->page_seo = json_encode([
+            "description" => $validatedData['seo_description'] ?? '',
+            "canonical" => getenv('APP_URL'),
+            "og:title" => $validatedData['seo_og_title'] ?? getenv('APP_NAME'),
+            "og:description" => $validatedData['seo_og_description'] ?? '',
+            "og:image" => "https://monsite.com/og-image.jpg",
+            "og:url" => getenv('APP_URL'),
+            "og:type" => "website",
+            "og:site_name" => getenv('APP_NAME'),
+            "twitter:card" => "summary_large_image",
+            "twitter:title" =>  $validatedData['seo_twitter_title'] ?? getenv('APP_NAME'),
+            "twitter:description" => $validatedData['seo_twitter_description'] ?? '',
+            "twitter:image" => "https://monsite.com/twitter-image.jpg",
+        ]);
 
         try {
             $page->save();
@@ -89,7 +110,7 @@ class PageController extends Controller implements HasMiddleware
             abort(404, "Page non trouvée");
         }
         return Inertia::render('PagesForm', [
-            'page' => $page->only(['id', 'page_slug', 'page_name', 'hero_subtitle', 'hero_title', 'hero_description', /*'hero_image', 'content_text',*/ 'content_image'/*, 'page_seo'*/])
+            'page' => $page->only(['id', 'page_slug', 'page_name', 'hero_subtitle', 'hero_title', 'hero_description', 'hero_image', 'content_text', 'content_image'/*, 'page_seo'*/])
         ]);
     }
 
@@ -101,6 +122,15 @@ class PageController extends Controller implements HasMiddleware
 
         $validatedData = $request->validate(self::VALIDATION_RULES);
 
+        if ($request->hasFile('hero_image')) {
+            // Supprime l'ancienne image si elle existe
+            if ($page->hero_image) {
+                Storage::disk('public')->delete($page->hero_image);
+            }
+
+            $validatedData['hero_image'] = $request->file('hero_image')->store('uploads', 'public');
+        }
+
         if ($request->hasFile('content_image')) {
             // Supprime l'ancienne image si elle existe
             if ($page->content_image) {
@@ -108,6 +138,13 @@ class PageController extends Controller implements HasMiddleware
             }
 
             $validatedData['content_image'] = $request->file('content_image')->store('uploads', 'public');
+        }
+
+        if ($request->has('remove_hero_image') && $request->boolean('remove_hero_image')) {
+            if ($page->hero_image) {
+                Storage::disk('public')->delete($page->hero_image);
+                $page->hero_image = null;
+            }
         }
 
         if ($request->has('remove_content_image') && $request->boolean('remove_content_image')) {

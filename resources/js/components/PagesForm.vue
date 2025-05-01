@@ -23,16 +23,39 @@ const form = useForm({
     hero_subtitle: props.page?.hero_subtitle || '',
     hero_title: props.page?.hero_title || '',
     hero_description: props.page?.hero_description || '',
+    hero_image: null,
+    content_text: props.page?.content_text || '',
     content_image: null,
+    seo_description: props.page?.seo_description || '',
+    seo_og_title: props.page?.seo_og_title || '',
+    seo_og_description: props.page?.seo_og_description || '',
+    seo_twitter_title: props.page?.seo_twitter_title || '',
+    seo_twitter_description: props.page?.seo_twitter_description || '',
+
 }, {
     forceFormData: true
 });
 
 const isEditMode = computed(() => !!props.page?.id);
-
+const imageHeroPreview = ref < string | null > (null);
 const imagePreview = ref < string | null > (null);
+const hasExistingHeroImage = ref(!!props.page?.hero_image);
 const hasExistingImage = ref(!!props.page?.content_image);
+const removeExistingHeroImage = ref(false);
 const removeExistingImage = ref(false);
+
+const handleHeroFileChange = (e: Event) => {
+    const input = e.target as HTMLInputElement;
+    if (input.files && input.files.length > 0) {
+        const file = input.files[0];
+        form.hero_image = file;
+        imageHeroPreview.value = URL.createObjectURL(file);
+        removeExistingHeroImage.value = false;
+    } else {
+        form.hero_image = null;
+        imageHeroPreview.value = null;
+    }
+};
 
 const handleFileChange = (e: Event) => {
     const input = e.target as HTMLInputElement;
@@ -44,6 +67,14 @@ const handleFileChange = (e: Event) => {
     } else {
         form.content_image = null;
         imagePreview.value = null;
+    }
+};
+
+const handleHeroRemoveImage = () => {
+    form.hero_image = null;
+    imageHeroPreview.value = null;
+    if (hasExistingHeroImage.value) {
+        removeExistingHeroImage.value = true;
     }
 };
 
@@ -74,6 +105,10 @@ const submit = () => {
 
     if (removeExistingImage.value) {
         formData.append('remove_content_image', '1');
+    }
+
+    if (removeExistingHeroImage.value) {
+        formData.append('remove_hero_image', '1');
     }
 
     axios.post(
@@ -158,6 +193,17 @@ const page = usePage();
                                 <QuillEditor theme="snow" id="hero_description" v-model:content="form.hero_description" contentType="html" class="custom-quill-style" />
                                 <p v-if="form.errors.hero_description" class="text-red-600 text-sm">{{ form.errors.hero_description }}</p>
                             </div>
+
+                            <div>
+                                <Label for="hero_image">Image</Label>
+                                <input id="hero_image" type="file" accept="image/*" @change="handleHeroFileChange" class="block w-full text-sm text-gray-500
+                                               file:mr-4 file:py-2 file:px-4
+                                               file:rounded-md file:border-0
+                                               file:text-sm file:font-semibold
+                                               file:bg-gray-50 file:text-gray-700
+                                               hover:file:bg-gray-100" />
+                                <p v-if="form.errors.hero_image" class="text-red-600 text-sm">{{ form.errors.hero_image }}</p>
+                            </div>
                         </div>
                     </Transition>
                 </fieldset>
@@ -169,8 +215,15 @@ const page = usePage();
                     </legend>
                     <Transition name="accordion">
                         <div v-show="openSection === 'content'" class="p-4 space-y-4">
+
                             <div>
-                                <Label for="content_image">Image</Label>
+                                <Label for="content_text">Texte</Label>
+                                <QuillEditor theme="snow" id="content_text" v-model:content="form.content_text" contentType="html" class="custom-quill-style" />
+                                <p v-if="form.errors.content_text" class="text-red-600 text-sm">{{ form.errors.content_text }}</p>
+                            </div>
+
+                            <div>
+                                <Label for="content_image">ImageImage actuelle (contenu) :</Label>
                                 <input id="content_image" type="file" accept="image/*" @change="handleFileChange" class="block w-full text-sm text-gray-500
                                                file:mr-4 file:py-2 file:px-4
                                                file:rounded-md file:border-0
@@ -191,6 +244,36 @@ const page = usePage();
                         <div v-show="openSection === 'seo'" class="p-4 space-y-4">
                             <div>
 
+                            <div>
+                                <Label for="seo_description">Description</Label>
+                                <Input id="seo_description" type="text" v-model="form.seo_description" />
+                                <p v-if="form.errors.seo_description" class="text-red-600 text-sm">{{ form.errors.seo_description }}</p>
+                            </div>
+
+                            <div>
+                                <Label for="seo_og_title">Facebook - titre</Label>
+                                <Input id="seo_og_title" type="text" v-model="form.seo_og_title" />
+                                <p v-if="form.errors.seo_og_title" class="text-red-600 text-sm">{{ form.errors.seo_og_title }}</p>
+                            </div>
+
+                            <div>
+                                <Label for="seo_og_description">Facebook - description</Label>
+                                <Input id="seo_og_description" type="text" v-model="form.seo_og_description" />
+                                <p v-if="form.errors.seo_og_description" class="text-red-600 text-sm">{{ form.errors.seo_og_description }}</p>
+                            </div>
+
+                            <div>
+                                <Label for="seo_twitter_title">Twitter - titre</Label>
+                                <Input id="seo_twitter_title" type="text" v-model="form.seo_twitter_title" />
+                                <p v-if="form.errors.seo_twitter_title" class="text-red-600 text-sm">{{ form.errors.seo_twitter_title }}</p>
+                            </div>
+
+                            <div>
+                                <Label for="seo_twitter_description">Twitter - description</Label>
+                                <Input id="seo_twitter_description" type="text" v-model="form.seo_twitter_description" />
+                                <p v-if="form.errors.seo_twitter_description" class="text-red-600 text-sm">{{ form.errors.seo_twitter_description }}</p>
+                            </div>
+
                             </div>
                         </div>
                     </Transition>
@@ -205,14 +288,27 @@ const page = usePage();
 
             <!-- Colonne droite : prévisualisation -->
             <div class="w-full lg:w-1/4">
+
+                <div v-if="imageHeroPreview" class="mb-4 border rounded-lg p-4 bg-gray-50 dark:bg-gray-700">
+                    <p class="text-sm text-gray-500 dark:text-gray-300 mb-2">Nouvelle image (hero) :</p>
+                    <img :src="imageHeroPreview" alt="Aperçu" class="w-full rounded-md shadow border mb-2" />
+                    <Button type="button" variant="destructive" @click="handleHeroRemoveImage">Supprimer l'image</Button>
+                </div>
+
+                <div v-else-if="hasExistingHeroImage && props.page?.hero_image" class="border rounded-lg p-4 bg-gray-50 dark:bg-gray-700">
+                    <p class="text-sm text-gray-500 dark:text-gray-300 mb-2">Image actuelle (hero) :</p>
+                    <img :src="`/storage/${props.page.hero_image}`" alt="Image actuelle" class="w-full rounded-md shadow border mb-2" />
+                    <Button type="button" variant="destructive" @click="handleHeroRemoveImage">Supprimer l'image</Button>
+                </div>
+
                 <div v-if="imagePreview" class="mb-4 border rounded-lg p-4 bg-gray-50 dark:bg-gray-700">
-                    <p class="text-sm text-gray-500 dark:text-gray-300 mb-2">Aperçu de la nouvelle image :</p>
+                    <p class="text-sm text-gray-500 dark:text-gray-300 mb-2">Nouvelle image (contenu) :</p>
                     <img :src="imagePreview" alt="Aperçu" class="w-full rounded-md shadow border mb-2" />
                     <Button type="button" variant="destructive" @click="handleRemoveImage">Supprimer l'image</Button>
                 </div>
 
                 <div v-else-if="hasExistingImage && props.page?.content_image" class="border rounded-lg p-4 bg-gray-50 dark:bg-gray-700">
-                    <p class="text-sm text-gray-500 dark:text-gray-300 mb-2">Image actuelle :</p>
+                    <p class="text-sm text-gray-500 dark:text-gray-300 mb-2">Image actuelle (contenu) :</p>
                     <img :src="`/storage/${props.page.content_image}`" alt="Image actuelle" class="w-full rounded-md shadow border mb-2" />
                     <Button type="button" variant="destructive" @click="handleRemoveImage">Supprimer l'image</Button>
                 </div>
