@@ -6,6 +6,9 @@ import tailwindcss from 'tailwindcss';
 import { defineConfig } from 'vite';
 
 export default defineConfig({
+    build: {
+        outDir: 'dist', // Définit le répertoire de sortie
+    },
     plugins: [
         laravel({
             input: ['resources/js/app.ts'],
