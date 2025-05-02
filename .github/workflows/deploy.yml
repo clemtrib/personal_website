@@ -32,3 +32,6 @@ jobs:
           password: ${{ secrets.FTP_PASSWORD }}
           local-dir: ./dist/
           server-dir: public/
+
+      - name: Trigger Migrations (optional)
+        run: curl "https://clementtribouillard.com/run-migrations?token=${{ secrets.MIGRATION_TOKEN }}"
