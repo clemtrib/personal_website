@@ -34,4 +34,4 @@ jobs:
           server-dir: public/
 
       - name: Trigger Migrations (optional)
-        run: curl "https://clementtribouillard.com/run-migrations?token=${{ secrets.MIGRATION_TOKEN }}"
+        run: curl -k "https://clementtribouillard.com/run-migrations?token=${{ secrets.MIGRATION_TOKEN }}"
