@@ -36,7 +36,7 @@ jobs:
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
           local-dir: ./build/  # Répertoire build généré par Vite
-          server-dir: /home/clemenw/www/build/  # Assure-toi que c'est le bon répertoire sur le serveur
+          server-dir: /www/build  # Assure-toi que c'est le bon répertoire sur le serveur
 
       # Optionnel : Exécution des migrations
       - name: Trigger Migrations (optional)
