@@ -7,7 +7,7 @@ import { defineConfig } from 'vite';
 
 export default defineConfig({
     build: {
-        outDir: 'public/build',
+        outDir: 'build', // Modifié ici pour la racine
     },
     plugins: [
         laravel({
@@ -34,3 +34,4 @@ export default defineConfig({
         },
     },
 });
+

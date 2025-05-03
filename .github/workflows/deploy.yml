@@ -10,28 +10,34 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      # Étape de récupération du code
       - name: Checkout code
         uses: actions/checkout@v4
 
+      # Configuration de Node.js
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
           node-version: '18'
 
+      # Installation des dépendances
       - name: Install dependencies
         run: npm install
 
+      # Construction du frontend Vue
       - name: Build Vue frontend
         run: npm run build
 
-      - name: Deploy dist to OVH (in /public)
+      # Déploiement du dossier build sur OVH (dans le répertoire racine)
+      - name: Deploy dist to OVH (in /build)
         uses: SamKirkland/FTP-Deploy-Action@v4.3.4
         with:
           server: ${{ secrets.FTP_SERVER }}
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
-          local-dir: ./build/
-          server-dir: public/
+          local-dir: ./build/  # Répertoire build généré par Vite
+          server-dir: /home/clemenw/www/build/  # Assure-toi que c'est le bon répertoire sur le serveur
 
+      # Optionnel : Exécution des migrations
       - name: Trigger Migrations (optional)
         run: curl -k "https://clementtribouillard.com/run-migrations?token=${{ secrets.MIGRATION_TOKEN }}"
