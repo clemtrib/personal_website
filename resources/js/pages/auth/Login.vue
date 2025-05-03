@@ -25,6 +25,9 @@ const submit = () => {
         onFinish: () => form.reset('password'),
     });
 };
+
+const appEnv = import.meta.env.VITE_APP_ENV || '';
+
 </script>
 
 <template>
@@ -82,10 +85,11 @@ const submit = () => {
                 </Button>
             </div>
 
-            <div class="text-center text-sm text-muted-foreground">
+            <div :v-if="appEnv != 'production'" class="text-center text-sm text-muted-foreground">
                 Don't have an account?
                 <TextLink :href="route('register')" :tabindex="5">Sign up</TextLink>
             </div>
+
         </form>
     </AuthBase>
 </template>
