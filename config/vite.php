@@ -10,7 +10,7 @@ return [
         'url' => env('VITE_DEV_SERVER_URL', 'http://localhost:5173'),
     ],
 
-    'build_directory' => 'build',
+    'build_directory' => 'public/build',
 
     'asset_url' => env('ASSET_URL'),
 ];
