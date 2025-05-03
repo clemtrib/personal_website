@@ -36,8 +36,8 @@ class SPAController extends Controller
             ],
             'experiences' => WorkExperience::orderByRaw('end_at IS NOT NULL, end_at DESC')->get(),
             'schools' => Education::orderByRaw('date IS NOT NULL, date DESC')->get(),
-            'hobbies' => Hobby::orderBy('order ASC')->get(),
-            'skills' => Skill::orderBy('order ASC')->get(),
+            'hobbies' => Hobby::orderBy('order', 'asc')->get(),
+            'skills' => Skill::orderBy('order', 'asc')->get(),
             'content' => Page::where('page_slug', 'home')->first()
         ];
         Cache::add(self::CACHE_KEY, $value, now()->addHours(12));
