@@ -20,10 +20,13 @@ const props = defineProps < {
 </script>
 
 <template>
-    <nav v-if="props.readyToLoad && props.readyToLoad == true" class="fixed top-0 left-0 w-full bg-[#0a192f] text-[#ccd6f6] shadow z-50">
+    <nav
+      v-if="props.readyToLoad && props.readyToLoad === true"
+      class="hidden sm:block fixed top-0 left-0 w-full bg-[#0a192f] text-[#ccd6f6] shadow z-50"
+    >
         <div class="max-w-6xl mx-auto px-6 py-4 flex justify-between items-center">
             <a href="#" class="text-xl font-bold text-green-400">{{ props.home.hero_title }}</a>
-            <ul class="hidden md:flex gap-6 text-sm uppercase tracking-wider">
+            <ul class="flex gap-6 text-sm uppercase tracking-wider">
                 <li><a href="#schools" class="hover:text-green-400">Formation</a></li>
                 <li><a href="#skills" class="hover:text-green-400">Compétences</a></li>
                 <li><a href="#experiences" class="hover:text-green-400">Expériences</a></li>
