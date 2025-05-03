@@ -41,3 +41,7 @@ jobs:
       # Optionnel : Exécution des migrations
       - name: Trigger Migrations (optional)
         run: curl -k "https://clementtribouillard.com/run-migrations?token=${{ secrets.MIGRATION_TOKEN }}"
+
+      # Optionnel : Clear cache
+      - name: Clear Cache (optional)
+        run: curl -k "https://clementtribouillard.com/clear-cache?token=${{ secrets.MIGRATION_TOKEN }}"
