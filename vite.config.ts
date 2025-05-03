@@ -7,7 +7,7 @@ import { defineConfig } from 'vite';
 
 export default defineConfig({
     build: {
-        outDir: 'dist', // Définit le répertoire de sortie
+        outDir: 'build',
     },
     plugins: [
         laravel({
