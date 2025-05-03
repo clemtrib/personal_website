@@ -2,6 +2,11 @@
     Options -MultiViews -Indexes
     RewriteEngine On
 
+    # Redirection vers www.clementtribouillard.com
+    RewriteCond %{HTTP_HOST} ^clementtribouillard\.com$ [NC,OR]
+    RewriteCond %{HTTP_HOST} ^clemenw\.cluster051\.hosting\.ovh\.net$ [NC]
+    RewriteRule ^(.*)$ https://www.clementtribouillard.com/$1 [L,R=301]
+
     # Autorise le header Authorization (ex. pour API)
     RewriteCond %{HTTP:Authorization} .
     RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
