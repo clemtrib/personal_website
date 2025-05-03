@@ -2,7 +2,7 @@
 
 return [
 
-    'manifest_path' => base_path('build/manifest.json'),
+    'manifest_path' => public_path('build/manifest.json'),
 
     'hot_file' => public_path('hot'),
 
