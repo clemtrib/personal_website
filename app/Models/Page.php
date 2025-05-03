@@ -34,13 +34,46 @@ class Page extends Model
     /**
      * Get the attributes that should be cast.
      *
-     * @return array<string, string>
+     * @var list<string>
      */
-    protected function casts(): array
+    protected $casts = [
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
+        'page_seo' => 'array',
+    ];
+
+    /**
+     * Mutateur pour encoder correctement les données avant l'enregistrement
+     *
+     * @param array|string $value
+     */
+    public function setPageSeoAttribute(array|string $value)
     {
-        return [
-            'created_at' => 'datetime',
-            'updated_at' => 'datetime',
-        ];
+        // Si c'est déjà un array, encode-le
+        if (is_array($value)) {
+            $this->attributes['page_seo'] = json_encode($value, JSON_UNESCAPED_SLASHES);
+        }
+        // Si c'est déjà une chaîne JSON valide, stocke-la telle quelle
+        elseif (is_string($value)) {
+            // Optionnel : vérifier si c'est un JSON valide
+            json_decode($value);
+            if (json_last_error() === JSON_ERROR_NONE) {
+                $this->attributes['page_seo'] = $value;
+            } else {
+                // Tenter de réparer les anciens formats (ex: backticks)
+                $fixed = str_replace('`', '"', $value);
+                json_decode($fixed);
+                if (json_last_error() === JSON_ERROR_NONE) {
+                    $this->attributes['page_seo'] = $fixed;
+                } else {
+                    // Dernier recours, stocke un JSON vide
+                    $this->attributes['page_seo'] = '{}';
+                }
+            }
+        }
+        // Sinon, stocke un JSON vide
+        else {
+            $this->attributes['page_seo'] = '{}';
+        }
     }
 }

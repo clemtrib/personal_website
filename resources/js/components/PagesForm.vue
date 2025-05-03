@@ -16,7 +16,20 @@ const props = defineProps({
     }
 });
 
-const seo = JSON.parse(props.page?.page_seo);
+function safeParseSeo(seo: any) {
+    if (!seo) return {};
+    if (typeof seo === 'object') return seo;
+    try {
+        // Corrige les éventuels backticks restants pour éviter une erreur
+        const fixed = seo.replace(/`/g, '"');
+        return JSON.parse(fixed);
+    } catch (e) {
+        console.warn('Impossible de parser page_seo:', seo, e);
+        return {};
+    }
+}
+
+const seo = safeParseSeo(props.page?.page_seo);
 
 const form = useForm({
     id: props.page?.id || '',
