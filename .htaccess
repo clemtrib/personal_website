@@ -1,43 +1,30 @@
 <IfModule mod_rewrite.c>
-    <IfModule mod_negotiation.c>
-        Options -MultiViews -Indexes
-    </IfModule>
-
+    Options -MultiViews -Indexes
     RewriteEngine On
 
-    # Interdire l'accès aux dossiers sensibles
-    RewriteRule ^(vendor|storage|bootstrap|resources|config|database|tests)/ - [F,L,NC]
-
-    # Protéger les fichiers sensibles
-    <FilesMatch "\.(env|htaccess|gitignore|gitattributes|log|lock|json|md|xml|yml|yaml|twig|blade\.php|phpunit\.xml)$">
-        Require all denied
-    </FilesMatch>
-
-    # Handle Authorization Header
+    # Autorise le header Authorization (ex. pour API)
     RewriteCond %{HTTP:Authorization} .
     RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
 
-    # Handle X-XSRF-Token Header
-    RewriteCond %{HTTP:x-xsrf-token} .
-    RewriteRule .* - [E=HTTP_X_XSRF_TOKEN:%{HTTP:X-XSRF-Token}]
-
-    # Redirect Trailing Slashes If Not A Folder...
+    # Redirection des slashes finaux (ex: /about/ -> /about)
     RewriteCond %{REQUEST_FILENAME} !-d
     RewriteCond %{REQUEST_URI} (.+)/$
     RewriteRule ^ %1 [L,R=301]
 
-    # Send Requests To Front Controller...
+    # Redirige toutes les requêtes vers index.php sauf si fichier/dossier réel
     RewriteCond %{REQUEST_FILENAME} !-d
     RewriteCond %{REQUEST_FILENAME} !-f
-    RewriteRule ^ index.php [L]
+    RewriteRule ^ index.php [QSA,L]
+</IfModule>
 
-    # Autoriser l'accès aux fichiers dans /storage ou /images
-    <Directory "storage">
-        Require all granted
-    </Directory>
+# Protège les fichiers .env, composer, etc.
+<FilesMatch "^\.env|composer\.(json|lock)|artisan|server\.php|package\.json|package-lock\.json|vite\.config\.ts|webpack\.mix\.js$">
+    Require all denied
+</FilesMatch>
 
-    <Directory "images">
-        Require all granted
-    </Directory>
-
+# Désactive l'exécution des scripts PHP dans certains dossiers
+<IfModule mod_php.c>
+    <FilesMatch "\.(php|phps|php5|phtml)$">
+        php_flag engine off
+    </FilesMatch>
 </IfModule>
