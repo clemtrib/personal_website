@@ -8,11 +8,14 @@ import { Label } from '@/components/ui/label';
 import AuthBase from '@/layouts/AuthLayout.vue';
 import { Head, useForm } from '@inertiajs/vue3';
 import { LoaderCircle } from 'lucide-vue-next';
+import { route } from 'ziggy-js';
 
 defineProps<{
     status?: string;
     canResetPassword: boolean;
 }>();
+
+const hasRegisterRoute = route().has ? route().has('register') : !!route().routes.register;
 
 const form = useForm({
     email: '',
@@ -25,8 +28,6 @@ const submit = () => {
         onFinish: () => form.reset('password'),
     });
 };
-
-const appEnv = import.meta.env.VITE_APP_ENV || '';
 
 </script>
 
@@ -85,7 +86,7 @@ const appEnv = import.meta.env.VITE_APP_ENV || '';
                 </Button>
             </div>
 
-            <div :v-if="appEnv != 'production'" class="text-center text-sm text-muted-foreground">
+            <div  v-if="hasRegisterRoute" class="text-center text-sm text-muted-foreground">
                 Don't have an account?
                 <TextLink :href="route('register')" :tabindex="5">Sign up</TextLink>
             </div>
