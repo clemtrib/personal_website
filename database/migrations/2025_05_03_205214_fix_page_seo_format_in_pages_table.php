@@ -11,18 +11,22 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('pages', function (Blueprint $table) {
-            //
-        });
+        foreach (\App\Models\Page::all() as $page) {
+            if ($page->page_seo && is_string($page->page_seo)) {
+                // Remplace les backticks par des guillemets doubles
+                $fixed = str_replace('`', '"', $page->page_seo);
+                // Vérifie si c'est décodable
+                $decoded = json_decode($fixed, true);
+                if ($decoded) {
+                    $page->page_seo = $decoded;
+                    $page->save();
+                }
+            }
+        }
     }
 
     /**
      * Reverse the migrations.
      */
-    public function down(): void
-    {
-        Schema::table('pages', function (Blueprint $table) {
-            //
-        });
-    }
+    public function down(): void {y}
 };

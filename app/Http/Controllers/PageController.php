@@ -158,7 +158,7 @@ class PageController extends Controller implements HasMiddleware
     /**
      *
      */
-    private function generateSeoProperty(Page $page, array $validatedData): string
+    private function generateSeoProperty(Page $page, array $validatedData): array
     {
         $seo_image = null;
         if (isset($validatedData['content_image'])) {
@@ -166,7 +166,7 @@ class PageController extends Controller implements HasMiddleware
         } elseif ($page->content_image) {
             $seo_image = $page->content_image;
         }
-        return json_encode([
+        return [
             "description" => $validatedData['seo_description'] ?? '',
             "canonical" => getenv('APP_URL'),
             "og:title" => $validatedData['seo_og_title'] ?? getenv('APP_NAME'),
@@ -179,6 +179,6 @@ class PageController extends Controller implements HasMiddleware
             "twitter:title" =>  $validatedData['seo_twitter_title'] ?? getenv('APP_NAME'),
             "twitter:description" => $validatedData['seo_twitter_description'] ?? '',
             "twitter:image" =>  $seo_image ? getenv('APP_URL') . '/storage/' . $seo_image : '',
-        ]);
+        ];
     }
 }
