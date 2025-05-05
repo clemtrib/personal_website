@@ -18,7 +18,11 @@ const parsedDescription = computed(() => {
 </script>
 
 <template>
-  <section v-if="props.readyToLoad && props.readyToLoad == true" class="min-h-screen flex flex-col justify-center px-6 bg-[#112240] text-[#ccd6f6]" data-aos="fade-up">
+  <section
+  v-if="props.readyToLoad && props.readyToLoad == true"
+  class="min-h-screen flex flex-col justify-center px-6 py-20 bg-[#112240] text-[#ccd6f6]"
+  data-aos="fade-up"
+>
     <p class="text-green-400">{{ props.home?.hero_subtitle }}</p>
     <h1 class="text-5xl font-bold text-white mt-2">{{ props.home?.hero_title }}</h1>
     <span class="mt-4 max-w-xl text-[#8892b0] text-justify" v-html="parsedDescription"></span>
