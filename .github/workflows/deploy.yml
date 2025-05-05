@@ -8,97 +8,105 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    environment: production  # ⬅️ indique l’environnement ici
+    environment: production
 
     steps:
-      # Étape de récupération du code
+      # Récupération du code
       - name: Checkout code
         uses: actions/checkout@v4
 
-      # Configuration de Node.js
+      # Configuration Node.js
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
           node-version: '18'
 
-      # Create .env file
+      # Création du fichier .env
       - name: Create .env file
         run: |
-          APP_NAME="Clément Tribouillard, développeur"
-          APP_ENV=production
-          cat <<EOF > .env
-APP_NAME="$APP_NAME"
-APP_ENV=$APP_ENV
-APP_KEY=${{ secrets.APP_KEY }}
-APP_DEBUG=false
-APP_URL=${{ vars.APP_URL }}
+          echo "APP_NAME=\"Clément Tribouillard, développeur\"" >> .env
+          echo "APP_ENV=production" >> .env
+          echo "APP_KEY=${APP_KEY}" >> .env
+          echo "APP_DEBUG=false" >> .env
+          echo "APP_URL=${APP_URL}" >> .env
 
-APP_LOCALE=fr
-APP_FALLBACK_LOCALE=fr
-APP_FAKER_LOCALE=fr_CA
+          echo "APP_LOCALE=fr" >> .env
+          echo "APP_FALLBACK_LOCALE=fr" >> .env
+          echo "APP_FAKER_LOCALE=fr_CA" >> .env
 
-APP_MAINTENANCE_DRIVER=file
-PHP_CLI_SERVER_WORKERS=4
-BCRYPT_ROUNDS=12
+          echo "APP_MAINTENANCE_DRIVER=file" >> .env
+          echo "PHP_CLI_SERVER_WORKERS=4" >> .env
+          echo "BCRYPT_ROUNDS=12" >> .env
 
-LOG_CHANNEL=stack
-LOG_STACK=single
-LOG_DEPRECATIONS_CHANNEL=null
-LOG_LEVEL=debug
+          echo "LOG_CHANNEL=stack" >> .env
+          echo "LOG_STACK=single" >> .env
+          echo "LOG_DEPRECATIONS_CHANNEL=null" >> .env
+          echo "LOG_LEVEL=debug" >> .env
 
-DB_CONNECTION=mysql
-DB_HOST=${{ secrets.DB_HOST }}
-DB_PORT=${{ secrets.DB_PORT }}
-DB_DATABASE=${{ secrets.DB_DATABASE }}
-DB_USERNAME=${{ secrets.DB_USERNAME }}
-DB_PASSWORD=${{ secrets.DB_PASSWORD }}
+          echo "DB_CONNECTION=mysql" >> .env
+          echo "DB_HOST=${DB_HOST}" >> .env
+          echo "DB_PORT=${DB_PORT}" >> .env
+          echo "DB_DATABASE=${DB_DATABASE}" >> .env
+          echo "DB_USERNAME=${DB_USERNAME}" >> .env
+          echo "DB_PASSWORD=${DB_PASSWORD}" >> .env
 
-SESSION_DRIVER=database
-SESSION_LIFETIME=120
-SESSION_ENCRYPT=false
-SESSION_PATH=/
-SESSION_DOMAIN=null
+          echo "SESSION_DRIVER=database" >> .env
+          echo "SESSION_LIFETIME=120" >> .env
+          echo "SESSION_ENCRYPT=false" >> .env
+          echo "SESSION_PATH=/" >> .env
+          echo "SESSION_DOMAIN=null" >> .env
 
-BROADCAST_CONNECTION=log
-FILESYSTEM_DISK=local
-QUEUE_CONNECTION=database
+          echo "BROADCAST_CONNECTION=log" >> .env
+          echo "FILESYSTEM_DISK=local" >> .env
+          echo "QUEUE_CONNECTION=database" >> .env
 
-CACHE_STORE=database
-MEMCACHED_HOST=127.0.0.1
+          echo "CACHE_STORE=database" >> .env
+          echo "MEMCACHED_HOST=127.0.0.1" >> .env
 
-REDIS_CLIENT=phpredis
-REDIS_HOST=127.0.0.1
-REDIS_PASSWORD=null
-REDIS_PORT=6379
+          echo "REDIS_CLIENT=phpredis" >> .env
+          echo "REDIS_HOST=127.0.0.1" >> .env
+          echo "REDIS_PASSWORD=null" >> .env
+          echo "REDIS_PORT=6379" >> .env
 
-MAIL_MAILER=log
-MAIL_SCHEME=null
-MAIL_HOST=127.0.0.1
-MAIL_PORT=2525
-MAIL_USERNAME=null
-MAIL_PASSWORD=null
-MAIL_FROM_ADDRESS="hello@example.com"
-MAIL_FROM_NAME="$APP_NAME"
+          echo "MAIL_MAILER=log" >> .env
+          echo "MAIL_SCHEME=null" >> .env
+          echo "MAIL_HOST=127.0.0.1" >> .env
+          echo "MAIL_PORT=2525" >> .env
+          echo "MAIL_USERNAME=null" >> .env
+          echo "MAIL_PASSWORD=null" >> .env
+          echo "MAIL_FROM_ADDRESS=\"hello@example.com\"" >> .env
+          echo "MAIL_FROM_NAME=\"Clément Tribouillard, développeur\"" >> .env
 
-AWS_ACCESS_KEY_ID=
-AWS_SECRET_ACCESS_KEY=
-AWS_DEFAULT_REGION=us-east-1
-AWS_BUCKET=
-AWS_USE_PATH_STYLE_ENDPOINT=false
+          echo "AWS_ACCESS_KEY_ID=" >> .env
+          echo "AWS_SECRET_ACCESS_KEY=" >> .env
+          echo "AWS_DEFAULT_REGION=us-east-1" >> .env
+          echo "AWS_BUCKET=" >> .env
+          echo "AWS_USE_PATH_STYLE_ENDPOINT=false" >> .env
 
-FACEBOOK=https://www.facebook.com/clement.tribouillard/
-LINKEDIN=https://www.linkedin.com/in/clement-tribouillard/
-GITHUB=https://github.com/clemtrib/
-TJM=560
-RECAPTCHA_PRIVATE_KEY=${{ secrets.RECAPTCHA_PRIVATE_KEY }}
+          echo "FACEBOOK=https://www.facebook.com/clement.tribouillard/" >> .env
+          echo "LINKEDIN=https://www.linkedin.com/in/clement-tribouillard/" >> .env
+          echo "GITHUB=https://github.com/clemtrib/" >> .env
+          echo "TJM=560" >> .env
+          echo "RECAPTCHA_PRIVATE_KEY=${RECAPTCHA_PRIVATE_KEY}" >> .env
 
-VITE_APP_NAME="$APP_NAME"
-VITE_APP_ENV="$APP_ENV"
-VITE_RECAPTCHA_SITE_KEY=${{ secrets.VITE_RECAPTCHA_SITE_KEY }}
+          echo "VITE_APP_NAME=\"Clément Tribouillard, développeur\"" >> .env
+          echo "VITE_APP_ENV=production" >> .env
+          echo "VITE_RECAPTCHA_SITE_KEY=${VITE_RECAPTCHA_SITE_KEY}" >> .env
 
-MIGRATION_WEBHOOK_TOKEN=${{ secrets.MIGRATION_WEBHOOK_TOKEN }}
-EOF
+          echo "MIGRATION_WEBHOOK_TOKEN=${MIGRATION_WEBHOOK_TOKEN}" >> .env
+        env:
+          APP_KEY: ${{ secrets.APP_KEY }}
+          APP_URL: ${{ vars.APP_URL }}
+          DB_HOST: ${{ secrets.DB_HOST }}
+          DB_PORT: ${{ secrets.DB_PORT }}
+          DB_DATABASE: ${{ secrets.DB_DATABASE }}
+          DB_USERNAME: ${{ secrets.DB_USERNAME }}
+          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+          RECAPTCHA_PRIVATE_KEY: ${{ secrets.RECAPTCHA_PRIVATE_KEY }}
+          VITE_RECAPTCHA_SITE_KEY: ${{ secrets.VITE_RECAPTCHA_SITE_KEY }}
+          MIGRATION_WEBHOOK_TOKEN: ${{ secrets.MIGRATION_WEBHOOK_TOKEN }}
 
+      # Upload du fichier .env
       - name: Upload .env to OVH
         uses: SamKirkland/FTP-Deploy-Action@v4.3.4
         with:
@@ -106,7 +114,7 @@ EOF
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
           local-dir: ./
-          server-dir: /www/  # adapte en fonction de la racine de ton app
+          server-dir: /www/
           exclude: |
             **
             !.env
@@ -115,28 +123,28 @@ EOF
       - name: Install dependencies
         run: npm install
 
-      # Construction du frontend Vue
+      # Build du frontend Vue
       - name: Build Vue frontend
         run: npm run build
 
-      # Déploiement du dossier build sur OVH (dans le répertoire racine)
+      # Déploiement du dossier build
       - name: Deploy dist to OVH (in /build)
         uses: SamKirkland/FTP-Deploy-Action@v4.3.4
         with:
           server: ${{ secrets.FTP_SERVER }}
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
-          local-dir: ./public/build/  # Répertoire build généré par Vite
-          server-dir: /www/public/build/  # Assure-toi que c'est le bon répertoire sur le serveur
+          local-dir: ./public/build/
+          server-dir: /www/public/build/
 
       # Exécution des migrations
       - name: Trigger Migrations
         run: curl -k "https://www.clementtribouillard.com/run-migrations?token=${{ secrets.MIGRATION_WEBHOOK_TOKEN }}"
 
-      # Clear cache
+      # Vider le cache Laravel
       - name: Clear Cache
         run: curl -k "https://www.clementtribouillard.com/clear-cache?token=${{ secrets.MIGRATION_WEBHOOK_TOKEN }}"
 
-      # Crée le lien symbolique public/storage → storage/app/public.
+      # Création du lien symbolique ublic/storage → storage/app/public
       - name: Symbolic link public/storage → storage/app/public.
         run: curl -k "https://www.clementtribouillard.com/storage-link?token=${{ secrets.MIGRATION_WEBHOOK_TOKEN }}"
