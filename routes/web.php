@@ -59,7 +59,10 @@ Route::get('/clear-cache', function (\Illuminate\Http\Request $request) {
     Artisan::call('config:clear');
     Artisan::call('route:clear');
     Artisan::call('view:clear');
-    return 'Caches cleared';
+    return response()->json([
+        'status' => 'success',
+        'output' => Artisan::output()
+    ]);
 });
 
 // Crée le lien symbolique public/storage → storage/app/public.
@@ -72,5 +75,8 @@ Route::get('/storage-link', function (\Illuminate\Http\Request $request) {
     }
 
     Artisan::call('storage:link');
-    return 'Caches cleared';
+    return response()->json([
+        'status' => 'success',
+        'output' => Artisan::output()
+    ]);
 });
