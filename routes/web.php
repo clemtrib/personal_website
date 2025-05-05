@@ -61,3 +61,16 @@ Route::get('/clear-cache', function (\Illuminate\Http\Request $request) {
     Artisan::call('view:clear');
     return 'Caches cleared';
 });
+
+// Crée le lien symbolique public/storage → storage/app/public.
+Route::get('/storage-link', function (\Illuminate\Http\Request $request) {
+    // Protection par token
+    $token = $request->query('token');
+
+    if ($token !== env('MIGRATION_WEBHOOK_TOKEN')) {
+        abort(403, 'Unauthorized');
+    }
+
+    Artisan::call('storage:link');
+    return 'Caches cleared';
+});
