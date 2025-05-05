@@ -19,7 +19,7 @@ return new class extends Migration
         DB::table('messages')
             ->whereRaw("LENGTH(updated_at) != 10 OR updated_at NOT LIKE '____-__-__'")
             ->update(['updated_at' => null]);
-        Schema::table('education', function (Blueprint $table) {
+        Schema::table('messages', function (Blueprint $table) {
             // Modifier la colonne 'date' en type date nullable
             $table->date('created_at')->nullable()->change();
             $table->date('updated_at')->nullable()->change();
