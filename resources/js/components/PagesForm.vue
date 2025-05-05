@@ -16,6 +16,8 @@ const props = defineProps({
     }
 });
 
+const appUrl = import.meta.env.VITE_APP_URL || window.location.origin;
+
 function safeParseSeo(seo: any) {
     if (!seo) return {};
     if (typeof seo === 'object') return seo;
@@ -311,7 +313,7 @@ const page = usePage();
 
                 <div v-else-if="hasExistingHeroImage && props.page?.hero_image" class="border rounded-lg p-4 bg-gray-50 dark:bg-gray-700">
                     <p class="text-sm text-gray-500 dark:text-gray-300 mb-2">Image actuelle (hero) :</p>
-                    <img :src="`/storage/${props.page.hero_image}`" alt="Image actuelle" class="w-full rounded-md shadow border mb-2" />
+                    <img :src="`${appUrl}/uploads-ovh/${props.page?.hero_image.split('/').pop()}`" alt="Image actuelle" class="w-full rounded-md shadow border mb-2" />
                     <Button type="button" variant="destructive" @click="handleHeroRemoveImage">Supprimer l'image</Button>
                 </div>
 
@@ -323,7 +325,7 @@ const page = usePage();
 
                 <div v-else-if="hasExistingImage && props.page?.content_image" class="border rounded-lg p-4 bg-gray-50 dark:bg-gray-700">
                     <p class="text-sm text-gray-500 dark:text-gray-300 mb-2">Image actuelle (contenu) :</p>
-                    <img :src="`/storage/${props.page.content_image}`" alt="Image actuelle" class="w-full rounded-md shadow border mb-2" />
+                    <img :src="`${appUrl}/uploads-ovh/${props.page?.content_image.split('/').pop()}`" alt="Image actuelle" class="w-full rounded-md shadow border mb-2" />
                     <Button type="button" variant="destructive" @click="handleRemoveImage">Supprimer l'image</Button>
                 </div>
             </div>
