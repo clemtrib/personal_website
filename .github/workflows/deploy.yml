@@ -39,13 +39,13 @@ jobs:
           server-dir: /www/public/build/  # Assure-toi que c'est le bon répertoire sur le serveur
 
       # Exécution des migrations
-      - name: Trigger Migrations (optional)
+      - name: Trigger Migrations
         run: curl -k "https://www.clementtribouillard.com/run-migrations?token=${{ secrets.MIGRATION_TOKEN }}"
 
       # Clear cache
-      - name: Clear Cache (optional)
+      - name: Clear Cache
         run: curl -k "https://www.clementtribouillard.com/clear-cache?token=${{ secrets.MIGRATION_TOKEN }}"
 
       # Crée le lien symbolique public/storage → storage/app/public.
-      - name: Clear Cache (optional)
+      - name: Symbolic link public/storage → storage/app/public.
         run: curl -k "https://www.clementtribouillard.com/storage-link?token=${{ secrets.MIGRATION_TOKEN }}"
