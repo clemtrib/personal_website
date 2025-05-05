@@ -107,8 +107,7 @@ jobs:
           server-dir: /www/  # adapte en fonction de la racine de ton app
           exclude: |
             **
-          include: |
-            .env
+            !.env
 
       # Installation des dépendances
       - name: Install dependencies
