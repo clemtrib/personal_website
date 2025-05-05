@@ -21,8 +21,8 @@ return new class extends Migration
             ->update(['updated_at' => null]);
         Schema::table('messages', function (Blueprint $table) {
             // Modifier la colonne 'date' en type date nullable
-            $table->date('created_at')->nullable()->change();
-            $table->date('updated_at')->nullable()->change();
+            $table->datetime('created_at')->nullable()->change();
+            $table->datetime('updated_at')->nullable()->change();
         });
     }
 
