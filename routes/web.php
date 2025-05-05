@@ -5,6 +5,8 @@ use Inertia\Inertia;
 use App\Http\Controllers\SPAController;
 use Illuminate\Support\Facades\Artisan;
 
+use Illuminate\Support\Facades\File;
+
 
 Route::get('/', function () {
     return Inertia::render('Welcome');
@@ -28,7 +30,15 @@ Route::prefix('api/spa')->group(function () {
     Route::get('/list', [SPAController::class, 'index'])->name('spa.index');
 });
 
+Route::get('uploads-ovh/{filename}', function ($filename) {
+    $path = storage_path('app/public/uploads/' . basename($filename));
 
+    if (!File::exists($path)) {
+        abort(404);
+    }
+
+    return response()->file($path);
+});
 
 Route::get('/run-migrations', function (\Illuminate\Http\Request $request) {
     // Protection par token

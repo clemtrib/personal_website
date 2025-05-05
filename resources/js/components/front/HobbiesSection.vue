@@ -23,7 +23,7 @@ const appUrl = import.meta.env.VITE_APP_URL || window.location.origin;
             </ul>
         </div>
         <div class="md:w-1/2" v-if="home?.content_image">
-            <img :src="`${appUrl}/storage/${home.content_image}`" alt="Clément Tribouillard" class="rounded-xl w-64 h-64 object-cover">
+            <img :src="`${appUrl}/uploads-ovh/${home.content_image.split('/').pop()}`" alt="Clément Tribouillard" class="rounded-xl w-64 h-64 object-cover">
         </div>
     </section>
 </template>
