@@ -8,7 +8,7 @@ Route::prefix('api/education')->group(function () {
     Route::get('/list', [EducationController::class, 'index'])->name('education.index');
 });
 
-Route::prefix('dashboard/education')->group(function () {
+Route::prefix('dashboard/education')->middleware('auth')->group(function () {
     Route::get('/list', function () { return Inertia::render('Education'); })->name('education');
     Route::get('/create', function () { return Inertia::render('EducationForm'); })->name('education.create');
     Route::post('/create', [EducationController::class, 'store'])->name('education.store');

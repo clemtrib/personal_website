@@ -8,7 +8,7 @@ Route::prefix('api/experiences')->group(function () {
     Route::get('/list', [WorkExperienceController::class, 'index'])->name('experiences.index');
 });
 
-Route::prefix('dashboard/experiences')->group(function () {
+Route::prefix('dashboard/experiences')->middleware('auth')->group(function () {
     Route::get('/list', function () { return Inertia::render('WorkExperiences'); })->name('experiences');
     Route::get('/create', function () { return Inertia::render('WorkExperiencesForm'); })->name('experiences.create');
     Route::post('/create', [WorkExperienceController::class, 'store'])->name('experiences.store');

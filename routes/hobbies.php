@@ -8,7 +8,7 @@ Route::prefix('api/hobbies')->group(function () {
     Route::get('/list', [HobbyController::class, 'index'])->name('hobbies.index');
 });
 
-Route::prefix('dashboard/hobbies')->group(function () {
+Route::prefix('dashboard/hobbies')->middleware('auth')->group(function () {
     Route::get('/list', function () {
         return Inertia::render('Hobbies');
     })->name('hobbies');

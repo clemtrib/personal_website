@@ -8,7 +8,7 @@ Route::prefix('api/skills')->group(function () {
     Route::get('/list', [SkillController::class, 'index'])->name('skills.index');
 });
 
-Route::prefix('dashboard/skills')->group(function () {
+Route::prefix('dashboard/skills')->middleware('auth')->group(function () {
     Route::get('/list', function () {
         return Inertia::render('Skills');
     })->name('skills');

@@ -78,7 +78,7 @@ const submit = async () => {
     const token = await window.grecaptcha.execute(siteKey, { action: 'submit' });
     form.recaptcha_token = token;
 
-    form.post(route('contact'), {
+    form.post(route('messages.store'), {
         preserveScroll: true,
         onSuccess: () => {
             nextTick(() => {
@@ -120,7 +120,7 @@ const submit = async () => {
             </div>
 
             <div>
-                <Input id="email" type="email" required autocomplete="email" v-model="form.email" placeholder="email@example.com" class="gsap-hover p-2 rounded bg-[#0a192f] text-white border border-[#64ffda]" />
+                <Input id="email" type="email" required autocomplete="email" v-model="form.email" placeholder="Email" class="gsap-hover p-2 rounded bg-[#0a192f] text-white border border-[#64ffda]" />
                 <InputError :message="form.errors.email" />
             </div>
 

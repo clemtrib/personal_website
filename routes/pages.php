@@ -8,7 +8,7 @@ Route::prefix('api/pages')->group(function () {
     Route::get('/list', [PageController::class, 'index'])->name('pages.index');
 });
 
-Route::prefix('dashboard/pages')->group(function () {
+Route::prefix('dashboard/pages')->middleware('auth')->group(function () {
     Route::get('/list', function () { return Inertia::render('Pages'); })->name('pages');
     Route::get('/create', function () { return Inertia::render('PagesForm'); })->name('pages.create');
     Route::post('/create', [PageController::class, 'store'])->name('pages.store');

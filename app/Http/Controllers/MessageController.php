@@ -19,7 +19,7 @@ class MessageController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(int $page)
     {
         $messages = Message::orderBy('created_at', 'desc')->get();
         return response()->json($messages);
@@ -70,8 +70,13 @@ class MessageController extends Controller
     public function update(Request $request, Message $message)
     {
         $validatedData = $request->validate(self::VALIDATION_RULES);
-        $message->update($validatedData);
-        return response()->json(['message' => 'Message mis à jour avec succès']);
+
+        try {
+            $message->update($validatedData);
+            return to_route('messages', ['json' => false])->with('success', 'Message modifié avec succès');
+        } catch (\Exception $e) {
+            return back()->with('error',  $e->getMessage());
+        }
     }
 
     /**
@@ -79,8 +84,12 @@ class MessageController extends Controller
      */
     public function destroy(Message $message)
     {
-        $message->delete();
-        return response()->json(['message' => 'Message supprimé avec succès']);
+        try {
+            $message->delete();
+            return to_route('messages', ['json' => false])->with('success', 'Message supprimé  avec succès');
+        } catch (\Exception $e) {
+            return back()->with('error',  $e->getMessage());
+        }
     }
 
     /**

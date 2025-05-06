@@ -40,7 +40,7 @@ const mainNavItems: NavItem[] = [{
     },
     {
         title: 'Messages',
-        url: '/dashboard/messages',
+        url: '/dashboard/messages/list',
         icon: Mail,
     },
 ];
