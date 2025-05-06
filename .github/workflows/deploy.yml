@@ -139,12 +139,12 @@ jobs:
 
       # Exécution des migrations
       - name: Trigger Migrations
-        run: curl -k "https://www.clementtribouillard.com/run-migrations?token=${{ secrets.MIGRATION_WEBHOOK_TOKEN }}"
+        run: curl -k "https://www.clementtribouillard.com/deploy/run-migrations?token=${{ secrets.MIGRATION_WEBHOOK_TOKEN }}"
 
       # Vider le cache Laravel
       - name: Clear Cache
-        run: curl -k "https://www.clementtribouillard.com/clear-cache?token=${{ secrets.MIGRATION_WEBHOOK_TOKEN }}"
+        run: curl -k "https://www.clementtribouillard.com/deploy/clear-cache?token=${{ secrets.MIGRATION_WEBHOOK_TOKEN }}"
 
-      # Création du lien symbolique ublic/storage → storage/app/public
+      # Création du lien symbolique public/storage → storage/app/public
       - name: Symbolic link public/storage → storage/app/public.
-        run: curl -k "https://www.clementtribouillard.com/storage-link?token=${{ secrets.MIGRATION_WEBHOOK_TOKEN }}"
+        run: curl -k "https://www.clementtribouillard.com/deploy/storage-link?token=${{ secrets.MIGRATION_WEBHOOK_TOKEN }}"

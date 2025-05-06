@@ -83,7 +83,11 @@ class MessageController extends Controller
         return response()->json(['message' => 'Message supprimé avec succès']);
     }
 
-    private function sanitizeInput(String $input) : String {
+    /**
+     * Sanitize input
+     */
+    private function sanitizeInput(string $input): string
+    {
         // Remove <script> blocks
         $input = preg_replace('#<script(.*?)>(.*?)</script>#is', '', $input);
         // Remove other tags
