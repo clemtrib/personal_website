@@ -6,7 +6,7 @@ import { Head, usePage } from '@inertiajs/vue3';
 import HobbiesList from '../components/HobbiesList.vue';
 import DeleteModale from '../components/DeleteModale.vue';
 import Toast from '../components/Toast.vue';
-import { onMounted, ref } from 'vue';
+import { onMounted, ref, computed } from 'vue';
 import { CirclePlus } from 'lucide-vue-next';
 
 // État de la modale
@@ -23,24 +23,9 @@ const closeDeleteModal = () => {
     objectIdToDelete.value = null;
 };
 
-// Données des expériences
-const hobbies = ref([]);
-
-onMounted(async () => {
-    try {
-        const response = await api.get('/api/hobbies/list');
-        hobbies.value = response.data;
-    } catch (error) {
-        console.error('Erreur lors de la récupération des messages:', error);
-    }
-});
-
-// Props Inertia
-defineProps < {
-    name ? : string;
-} > ();
-
 const page = usePage();
+const hobbies = computed(() => page.props.hobbies);
+
 </script>
 
 <template>

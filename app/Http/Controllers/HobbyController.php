@@ -5,10 +5,8 @@ namespace App\Http\Controllers;
 use Inertia\Inertia;
 use App\Models\Hobby;
 use Illuminate\Http\Request;
-use Illuminate\Routing\Controllers\HasMiddleware;
-use Illuminate\Routing\Controllers\Middleware;
 
-class HobbyController extends Controller implements HasMiddleware
+class HobbyController extends Controller
 {
 
     const VALIDATION_RULES = [
@@ -17,30 +15,15 @@ class HobbyController extends Controller implements HasMiddleware
         'order' => '',
     ];
 
-    public static function middleware(): array
-    {
-        return [];
-        /*
-        return [
-            'auth',
-            new Middleware('can:edit-experiences', except: ['index', 'show'])
-        ];
-        */
-    }
-
     /**
      * Display a listing of the resource.
      */
-    public function index(bool $json = true)
+    public function index()
     {
         $hobbies = Hobby::orderBy('order ASC')->get();
-        if ($json) {
-            return response()->json($hobbies);
-        } else {
-            return Inertia::render('Hobbies', [
-                'hobbies' => $hobbies
-            ]);
-        }
+        return Inertia::render('Hobbies', [
+            'hobbies' => $hobbies
+        ]);
     }
 
     /**

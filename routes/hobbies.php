@@ -4,14 +4,8 @@ use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use App\Http\Controllers\HobbyController;
 
-Route::prefix('api/hobbies')->group(function () {
-    Route::get('/list', [HobbyController::class, 'index'])->name('hobbies.index');
-});
-
 Route::prefix('dashboard/hobbies')->middleware('auth')->group(function () {
-    Route::get('/list', function () {
-        return Inertia::render('Hobbies');
-    })->name('hobbies');
+    Route::get('/list', [HobbyController::class, 'index'])->name('hobbies');
     Route::get('/create', function () {
         return Inertia::render('HobbiesForm');
     })->name('hobbies.create');
