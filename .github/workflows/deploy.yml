@@ -83,7 +83,7 @@ jobs:
           echo "AWS_BUCKET=" >> .env
           echo "AWS_USE_PATH_STYLE_ENDPOINT=false" >> .env
 
-          echo "FACEBOOK=https://www.facebook.com/clement.tribouillard/" >> .env
+          echo "FACEBOOK=" >> .env
           echo "LINKEDIN=https://www.linkedin.com/in/clement-tribouillard/" >> .env
           echo "GITHUB=https://github.com/clemtrib/" >> .env
           echo "TJM=560" >> .env
