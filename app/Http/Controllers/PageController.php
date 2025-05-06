@@ -164,14 +164,14 @@ class PageController extends Controller
             "canonical" => config('app.url'),
             "og:title" => $validatedData['seo_og_title'] ?? config('app.name'),
             "og:description" => $validatedData['seo_og_description'] ?? '',
-            "og:image" => $seo_image ? config('app.url') . '/storage/' . $seo_image : '',
+            "og:image" => $seo_image ? config('app.url') . '/uploads-ovh/' . basename($seo_image) : '',
             "og:url" => config('app.url'),
             "og:type" => "website",
             "og:site_name" => config('app.name'),
             "twitter:card" => "summary_large_image",
             "twitter:title" =>  $validatedData['seo_twitter_title'] ?? config('app.name'),
             "twitter:description" => $validatedData['seo_twitter_description'] ?? '',
-            "twitter:image" =>  $seo_image ? config('app.url') . '/storage/' . $seo_image : '',
+            "twitter:image" =>  $seo_image ? config('app.url') . '/uploads-ovh/' . basename($seo_image) : '',
         ];
     }
 }
