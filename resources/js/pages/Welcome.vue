@@ -63,14 +63,14 @@ onMounted(async () => {
         <meta property="og:site_name" :content="home.value?.page_seo['og:site_name']" />
         <meta property="og:title" :content="home.value?.page_seo['og:title']" />
         <meta property="og:description" :content="home.value?.page_seo['og:description']" />
-        <meta property="og:image" :content="`${appUrl}/uploads-ovh/${home.value?.page_seo['og:image'].split('/').pop()}`" />
+        <meta property="og:image" :content="`${home.value?.page_seo['og:image']}`" />
         <meta property="og:type" content="home.value?.page_seo['og:type']" />
         <meta property="og:url" :content="home.value?.page_seo['og:url']" />
         <!-- Twitter -->
         <meta name="twitter:card" content="home.value?.page_seo['twitter:card']" />
         <meta name="twitter:title" :content="home.value?.page_seo['twitter:title']" />
         <meta name="twitter:description" :content="home.value?.page_seo['twitter:description']" />
-        <meta name="twitter:image" :content="`${appUrl}/uploads-ovh/${home.value?.page_seo['twitter:image'].split('/').pop()}`" />
+        <meta name="twitter:image" :content="`${home.value?.page_seo['twitter:image']}`" />
     </Head>
     <div class="font-sans scroll-smooth">
         <Navigation :home=home :config=config :readyToLoad=readyToLoad />
