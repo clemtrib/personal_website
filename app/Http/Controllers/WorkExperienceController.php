@@ -21,16 +21,12 @@ class WorkExperienceController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(bool $json = true)
+    public function index()
     {
         $workExperiences = WorkExperience::orderByRaw('end_at IS NOT NULL, end_at DESC')->get();
-        if ($json) {
-            return response()->json($workExperiences);
-        } else {
-            return Inertia::render('WorkExperiences', [
-                'experiences' => $workExperiences
-            ]);
-        }
+        return Inertia::render('WorkExperiences', [
+            'experiences' => $workExperiences
+        ]);
     }
 
     /**

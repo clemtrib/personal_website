@@ -6,7 +6,7 @@ import { Head, usePage } from '@inertiajs/vue3';
 import WorkExperiencesList from '../components/WorkExperiencesList.vue';
 import DeleteModale from '../components/DeleteModale.vue';
 import Toast from '../components/Toast.vue';
-import { onMounted, ref } from 'vue';
+import { onMounted, ref, computed } from 'vue';
 import { CirclePlus } from 'lucide-vue-next';
 
 // État de la modale
@@ -24,23 +24,9 @@ const closeDeleteModal = () => {
 };
 
 // Données des expériences
-const workExperiences = ref([]);
-
-onMounted(async () => {
-  try {
-    const response = await api.get('/api/experiences/list');
-    workExperiences.value = response.data;
-  } catch (error) {
-    console.error('Erreur lors de la récupération des messages:', error);
-  }
-});
-
-// Props Inertia
-defineProps<{
-  name?: string;
-}>();
-
 const page = usePage();
+const workExperiences = computed(() => page.props.experiences);
+
 </script>
 
 <template>

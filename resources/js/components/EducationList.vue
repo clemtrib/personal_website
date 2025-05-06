@@ -35,7 +35,7 @@ const openDeleteModal = (id: number) => {
                     <p class="text-sm text-gray-600 dark:text-gray-400">
                         {{ new Date(education.date).toLocaleDateString() }}
                     </p>
-                    <p class="mt-2" v-html="education.description"></p>
+                    <p class="mt-2 prose prose-invert max-w-none" v-html="education.description"></p>
 
                     <div class="flex gap-2 mt-4">
                         <Link :href="route('education.edit', education.id)" class="flex items-center gap-2 px-3 py-2 text-sm bg-blue-100 dark:bg-blue-900/30 hover:bg-blue-200 dark:hover:bg-blue-900/50 rounded-lg transition">
