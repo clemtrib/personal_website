@@ -31,7 +31,7 @@ const openDeleteModal = (id: number) => {
           :key="experience.id"
           class="bg-white dark:bg-gray-800 p-4 rounded-lg shadow"
         >
-          <h3 class="font-semibold">{{ experience.job }} @ <span class="text-gray-500 dark:text-green-400">{{ experience.company }}</span> <small>{{ experience.location }}</small></h3>
+          <h3 class="font-semibold">{{ experience.job }} <span :v-if="experience.company">@ <span class="text-gray-500 dark:text-green-400">{{ experience.company }}</span></span> <small>{{ experience.location }}</small></h3>
           <p class="text-sm text-gray-600 dark:text-green-400">
             Du {{ new Date(experience.begin_at).toLocaleDateString() }}
             <template v-if="experience.end_at">

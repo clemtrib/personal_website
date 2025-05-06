@@ -11,7 +11,7 @@ class WorkExperienceController extends Controller
 
     const VALIDATION_RULES = [
         'location' => 'required|string|max:255',
-        'company' => 'required|string|max:255',
+        'company' => 'string|max:255',
         'job' => 'required|string|max:255',
         'description' => 'string',
         'begin_at' => 'required|date_format:Y-m-d',

@@ -16,7 +16,7 @@ const props = defineProps < {
         <h2 class="text-3xl font-bold mb-10 border-b-2 border-green-400 inline-block">Formation</h2>
         <div class="space-y-10"  v-for="school in schools" :key="school.id">
             <p class="mt-4 text-[#8892b0]">
-                <span class="text-green-400">{{ new Date(school.date).toLocaleDateString('fr-FR', { year: 'numeric' }) }}</span> - {{ school.school }} <small>{{ school.location }}</small>
+                <span class="text-green-400">{{ new Date(school.date).toLocaleDateString('fr-CA', { year: 'numeric' }) }}</span> - {{ school.school }} <small>{{ school.location }}</small>
                 <span v-html="school.graduation"></span>
             </p>
         </div>

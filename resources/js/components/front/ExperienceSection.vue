@@ -20,16 +20,17 @@ defineProps < {
             <div v-for="experience in experiences" :key="experience.id">
                 <h3 class="text-1xl">
                     <span class="text-green-400">
-                        De {{ new Date(experience.begin_at).toLocaleDateString('fr-FR', { month: 'long', year: 'numeric' }) }}
+                        De {{ new Date(experience.begin_at).toLocaleDateString('fr-CA', { month: 'long', year: 'numeric' }) }}
                         <span v-if="experience.end_at">
-                            à {{ new Date(experience.end_at).toLocaleDateString('fr-FR', { month: 'long', year: 'numeric' }) }}
+                            à {{ new Date(experience.end_at).toLocaleDateString('fr-CA', { month: 'long', year: 'numeric' }) }}
                         </span>
                         <span v-else>
                             à aujourd'hui
                         </span>
                     </span> <small>- {{ experience.location }}</small>
                 </h3>
-                <h2 class="text-xl font-semibold text-white">{{ experience.job }} @ <span class="text-green-400">{{ experience.company }}</span></h2>
+                <h2 class="text-xl font-semibold text-white">{{ experience.job }}
+                    <span :v-if="experience.company"> @ <span class="text-green-400">{{ experience.company }}</span></span></h2>
                 <div class="block w-full md:w-1/2 text-1xl text-gray-600 dark:text-gray-400 text-justify prose prose-invert max-w-none" v-html="experience.description"></div>
             </div>
         </div>

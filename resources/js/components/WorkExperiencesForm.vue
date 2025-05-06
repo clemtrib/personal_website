@@ -72,7 +72,7 @@ const page = usePage();
         <!-- Entreprise -->
         <div class="mb-4">
             <Label for="company" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Entreprise</Label>
-            <Input id="company" type="text" required tabindex="1" autocomplete="company" v-model="form.company" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 dark:bg-gray-700 dark:border-gray-600 dark:text-white" />
+            <Input id="company" type="text" tabindex="1" autocomplete="company" v-model="form.company" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 dark:bg-gray-700 dark:border-gray-600 dark:text-white" />
         </div>
 
         <!-- Ville -->
