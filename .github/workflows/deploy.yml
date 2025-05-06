@@ -92,6 +92,7 @@ jobs:
           echo "VITE_APP_NAME=\"Clément Tribouillard, développeur\"" >> .env
           echo "VITE_APP_ENV=production" >> .env
           echo "VITE_RECAPTCHA_SITE_KEY=${VITE_RECAPTCHA_SITE_KEY}" >> .env
+          echo "VITE_SHOW_HERO_IMAGE=1" >> .env
 
           echo "MIGRATION_WEBHOOK_TOKEN=${MIGRATION_WEBHOOK_TOKEN}" >> .env
 
