@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Message;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
+use Inertia\Inertia;
 
 class MessageController extends Controller
 {
@@ -19,10 +20,13 @@ class MessageController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(int $page)
+    public function index()
     {
-        $messages = Message::orderBy('created_at', 'desc')->get();
-        return response()->json($messages);
+        $messages = Message::orderBy('created_at', 'desc')->paginate(10);
+
+        return Inertia::render('Messages', [
+            'messages' => $messages,
+        ]);
     }
 
     /**

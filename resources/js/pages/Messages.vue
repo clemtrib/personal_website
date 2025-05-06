@@ -4,31 +4,16 @@ import { type BreadcrumbItem } from '@/types';
 import { Head, usePage } from '@inertiajs/vue3';
 import MessagesList from '../components/MessagesList.vue';
 import Toast from '../components/Toast.vue';
-import { onMounted, ref } from 'vue';
-import axios from 'axios';
+import { computed } from 'vue';
 
 const breadcrumbs: BreadcrumbItem[] = [{
     title: 'Messages',
     href: '/dashboard/messages',
 }, ];
 
-const messages = ref([]);
-
-onMounted(async () => {
-    try {
-        const response = await axios.get('list/1');
-        messages.value = response.data;
-    } catch (error) {
-        console.error('Erreur lors de la récupération des messages:', error);
-    }
-});
-
-defineProps < {
-    name ? : string;
-} > ();
-
+// Récupération des props envoyées par Inertia
 const page = usePage();
-
+const messages = computed(() => page.props.messages);
 </script>
 
 <template>

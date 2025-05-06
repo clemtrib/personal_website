@@ -9,9 +9,6 @@ Route::post('message', [MessageController::class, 'store'])->name('messages.stor
 
 // Routes pour les actions CRUD du MessageController
 Route::prefix('dashboard/messages')->middleware('auth')->group(function () {
-    Route::get('/list', function () {
-        return Inertia::render('Messages');
-    })->name('messages');
-    Route::get('/list/{page}', [MessageController::class, 'index'])->name('messages.index');
+    Route::get('/list', [MessageController::class, 'index'])->name('messages');
     Route::delete('/{message}', [MessageController::class, 'destroy'])->name('messages.destroy');
 });
