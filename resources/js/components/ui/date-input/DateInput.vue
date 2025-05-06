@@ -20,8 +20,12 @@ const modelValue = useVModel(props, 'modelValue', emits, {
   defaultValue: props.defaultValue,
 });
 
-const handleUpdate = (date: Date) => {
-  emits('update:modelValue', date.toISOString().split('T')[0]);
+const handleUpdate = (date: unknown) => {
+  if (date instanceof Date) {
+    emits('update:modelValue', date.toLocaleDateString('fr-CA'));
+  } else {
+    console.warn('Date invalide reçue :', date);
+  }
 };
 </script>
 
