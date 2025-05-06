@@ -4,14 +4,8 @@ use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use App\Http\Controllers\SkillController;
 
-Route::prefix('api/skills')->group(function () {
-    Route::get('/list', [SkillController::class, 'index'])->name('skills.index');
-});
-
 Route::prefix('dashboard/skills')->middleware('auth')->group(function () {
-    Route::get('/list', function () {
-        return Inertia::render('Skills');
-    })->name('skills');
+    Route::get('/list', [SkillController::class, 'index'])->name('skills');
     Route::get('/create', function () {
         return Inertia::render('SkillsForm');
     })->name('skills.create');

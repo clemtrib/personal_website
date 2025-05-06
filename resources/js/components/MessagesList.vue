@@ -91,7 +91,7 @@ defineExpose({
             <h2 class="text-2xl font-bold mb-4">Messages</h2>
             <ul class="space-y-4">
                 <li v-for="message in messages.data" :key="message.id" class="bg-white dark:bg-gray-800 p-4 rounded-lg shadow">
-                    <p class="text-xs text-gray-500 dark:text-gray-400 mt-2">Le {{ new Date(message.created_at).toLocaleString() }}</p>
+                    <p class="text-xs text-gray-500 dark:text-green-400 mt-2">Le {{ new Date(message.created_at).toLocaleString() }}</p>
 
                     <p class="text-sm text-gray-600 dark:text-gray-400">De {{ message.fullname }} &lt;{{ message.email }}&gt;</p>
                     <p class="mt-2">{{ message.message }}</p>
