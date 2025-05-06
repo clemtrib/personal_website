@@ -5,10 +5,8 @@ namespace App\Http\Controllers;
 use Inertia\Inertia;
 use App\Models\WorkExperience;
 use Illuminate\Http\Request;
-use Illuminate\Routing\Controllers\HasMiddleware;
-use Illuminate\Routing\Controllers\Middleware;
 
-class WorkExperienceController extends Controller implements HasMiddleware
+class WorkExperienceController extends Controller
 {
 
     const VALIDATION_RULES = [
@@ -19,17 +17,6 @@ class WorkExperienceController extends Controller implements HasMiddleware
         'begin_at' => 'required|date_format:Y-m-d',
         'end_at' => 'nullable|date_format:Y-m-d|after:begin_at'
     ];
-
-    public static function middleware(): array
-    {
-        return [];
-        /*
-        return [
-            'auth',
-            new Middleware('can:edit-experiences', except: ['index', 'show'])
-        ];
-        */
-    }
 
     /**
      * Display a listing of the resource.
@@ -63,6 +50,7 @@ class WorkExperienceController extends Controller implements HasMiddleware
 
         try {
             $workExperience->save();
+            $this->forgetCache();
             return to_route('experiences', ['json' => false])->with('success', 'Expérience créée avec succès');
         } catch (\Exception $e) {
             return back()->with('error', $e->getMessage());
@@ -91,6 +79,7 @@ class WorkExperienceController extends Controller implements HasMiddleware
 
         try {
             $workExperience->update($validatedData);
+            $this->forgetCache();
             return to_route('experiences', ['json' => false])->with('success', 'Expérience modifiée avec succès');
         } catch (\Exception $e) {
             return back()->with('error', $e->getMessage());
@@ -104,6 +93,7 @@ class WorkExperienceController extends Controller implements HasMiddleware
     {
         try {
             $workExperience->delete();
+            $this->forgetCache();
             return to_route('experiences', ['json' => false])->with('success', 'Expérience supprimée  avec succès');
         } catch (\Exception $e) {
             return back()->with('error',  $e->getMessage());

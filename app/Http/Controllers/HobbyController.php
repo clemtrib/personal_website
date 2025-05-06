@@ -57,6 +57,7 @@ class HobbyController extends Controller implements HasMiddleware
 
         try {
             $hobby->save();
+            $this->forgetCache();
             return to_route('hobbies', ['json' => false])->with('success', 'Loisirs créé avec succès');
         } catch (\Exception $e) {
             return back()->with('error', $e->getMessage());
@@ -85,6 +86,7 @@ class HobbyController extends Controller implements HasMiddleware
 
         try {
             $hobby->update($validatedData);
+            $this->forgetCache();
             return to_route('hobbies', ['json' => false])->with('success', 'Loisirs modifié avec succès');
         } catch (\Exception $e) {
             return back()->with('error', $e->getMessage());
@@ -98,6 +100,7 @@ class HobbyController extends Controller implements HasMiddleware
     {
         try {
             $hobby->delete();
+            $this->forgetCache();
             return to_route('hobbies', ['json' => false])->with('success', 'Loisirs supprimé  avec succès');
         } catch (\Exception $e) {
             return back()->with('error',  $e->getMessage());

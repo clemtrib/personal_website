@@ -2,19 +2,15 @@
 
 namespace App\Http\Controllers;
 
-use Inertia\Inertia;
 use App\Models\WorkExperience;
 use App\Models\Education;
 use App\Models\Hobby;
 use App\Models\Skill;
 use App\Models\Page;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 
 class SPAController extends Controller
 {
-
-    const CACHE_KEY = '';
 
     /**
      * Display a listing of the resource.
@@ -22,26 +18,28 @@ class SPAController extends Controller
     public function index()
     {
 
-        //if (Cache::has(self::CACHE_KEY)) {
-        //  $value = Cache::get(self::CACHE_KEY);
-        //} else {
-        $value = [
-            'config' => [
-                'social_networks' => [
-                    'facebook' => getenv('FACEBOOK') ?? null,
-                    'github' => getenv('GITHUB') ?? null,
-                    'linkedin' => getenv('LINKEDIN') ?? null,
+        $key = config('app.cache_key');
+        if (Cache::has($key)) {
+            $value = array_merge(Cache::get($key), ['cache' => 1]);
+        } else {
+            $response = [
+                'config' => [
+                    'social_networks' => [
+                        'facebook' => getenv('FACEBOOK') ?? null,
+                        'github' => getenv('GITHUB') ?? null,
+                        'linkedin' => getenv('LINKEDIN') ?? null,
+                    ],
+                    'tjm' => getenv('TJM') ?? null,
                 ],
-                'tjm' => getenv('TJM') ?? null,
-            ],
-            'experiences' => WorkExperience::orderByRaw('end_at IS NOT NULL, end_at DESC')->get(),
-            'schools' => Education::orderByRaw('date IS NOT NULL, date DESC')->get(),
-            'hobbies' => Hobby::orderBy('order', 'asc')->get(),
-            'skills' => Skill::orderBy('order', 'asc')->get(),
-            'content' => Page::where('page_slug', 'home')->first()
-        ];
-        Cache::add(self::CACHE_KEY, $value, now()->addHours(12));
-        //}
+                'experiences' => WorkExperience::orderByRaw('end_at IS NOT NULL, end_at DESC')->get(),
+                'schools' => Education::orderByRaw('date IS NOT NULL, date DESC')->get(),
+                'hobbies' => Hobby::orderBy('order', 'asc')->get(),
+                'skills' => Skill::orderBy('order', 'asc')->get(),
+                'content' => Page::where('page_slug', 'home')->first()
+            ];
+            Cache::add($key, $response, now()->addHours(12));
+            $value = array_merge($response, ['cache' => 0]);
+        }
         return response()->json($value);
     }
 }

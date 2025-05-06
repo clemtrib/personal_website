@@ -6,28 +6,15 @@ use Inertia\Inertia;
 use App\Models\Education;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controllers\HasMiddleware;
-use Illuminate\Routing\Controllers\Middleware;
 
-class EducationController extends Controller implements HasMiddleware
+class EducationController extends Controller
 {
-
     const VALIDATION_RULES = [
         //'location' => 'required|string|max:255',
         'school' => 'required|string|max:255',
         'graduation' => 'string',
         'date' => 'required|date_format:Y-m-d',
     ];
-
-    public static function middleware(): array
-    {
-        return [];
-        /*
-        return [
-            'auth',
-            new Middleware('can:edit-education', except: ['index', 'show'])
-        ];
-        */
-    }
 
     /**
      * Display a listing of the resource.
@@ -52,13 +39,13 @@ class EducationController extends Controller implements HasMiddleware
         $validatedData = $request->validate(self::VALIDATION_RULES);
 
         $education = new Education();
-        //$education->location = $validatedData['location'];
         $education->school = $validatedData['school'];
         $education->graduation = $validatedData['graduation'];
         $education->date = $validatedData['date'];
 
         try {
             $education->save();
+            $this->forgetCache();
             return to_route('education', ['json' => false])->with('success', 'Diplôme créée avec succès');
         } catch (\Exception $e) {
             return back()->with('error', $e->getMessage());
@@ -87,6 +74,7 @@ class EducationController extends Controller implements HasMiddleware
 
         try {
             $education->update($validatedData);
+            $this->forgetCache();
             return to_route('education', ['json' => false])->with('success', 'Diplôme modifié avec succès');
         } catch (\Exception $e) {
             return back()->with('error', $e->getMessage());
@@ -100,6 +88,7 @@ class EducationController extends Controller implements HasMiddleware
     {
         try {
             $education->delete();
+            $this->forgetCache();
             return to_route('education', ['json' => false])->with('success', 'Diplôme supprimé avec succès');
         } catch (\Exception $e) {
             return back()->with('error', $e->getMessage());

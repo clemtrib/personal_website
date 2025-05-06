@@ -5,27 +5,14 @@ namespace App\Http\Controllers;
 use Inertia\Inertia;
 use App\Models\Skill;
 use Illuminate\Http\Request;
-use Illuminate\Routing\Controllers\HasMiddleware;
-use Illuminate\Routing\Controllers\Middleware;
 
-class SkillController extends Controller implements HasMiddleware
+class SkillController extends Controller
 {
 
     const VALIDATION_RULES = [
         'label' => 'required|string|max:255',
         'order' => '',
     ];
-
-    public static function middleware(): array
-    {
-        return [];
-        /*
-        return [
-            'auth',
-            new Middleware('can:edit-experiences', except: ['index', 'show'])
-        ];
-        */
-    }
 
     /**
      * Display a listing of the resource.
@@ -55,6 +42,7 @@ class SkillController extends Controller implements HasMiddleware
 
         try {
             $skill->save();
+            $this->forgetCache();
             return to_route('skills', ['json' => false])->with('success', 'Compétence créé avec succès');
         } catch (\Exception $e) {
             return back()->with('error', $e->getMessage());
@@ -83,6 +71,7 @@ class SkillController extends Controller implements HasMiddleware
 
         try {
             $skill->update($validatedData);
+            $this->forgetCache();
             return to_route('skills', ['json' => false])->with('success', 'Compétence modifié avec succès');
         } catch (\Exception $e) {
             return back()->with('error', $e->getMessage());
@@ -96,6 +85,7 @@ class SkillController extends Controller implements HasMiddleware
     {
         try {
             $skill->delete();
+            $this->forgetCache();
             return to_route('skills', ['json' => false])->with('success', 'Compétence supprimé  avec succès');
         } catch (\Exception $e) {
             return back()->with('error',  $e->getMessage());

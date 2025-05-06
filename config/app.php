@@ -123,4 +123,6 @@ return [
         'store' => env('APP_MAINTENANCE_STORE', 'database'),
     ],
 
+    'cache_key' => env('CACHE_KEY', 'cache_key'),
+
 ];

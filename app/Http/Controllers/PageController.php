@@ -81,6 +81,7 @@ class PageController extends Controller implements HasMiddleware
 
         try {
             $page->save();
+            $this->forgetCache();
             return to_route('pages', ['json' => false])->with('success', 'Page créée avec succès');
         } catch (\Exception $e) {
             return back()->with('error', $e->getMessage());
@@ -130,6 +131,7 @@ class PageController extends Controller implements HasMiddleware
 
         try {
             $page->update($validatedData);
+            $this->forgetCache();
             return response()->json([
                 'success' => true,
                 'message' => 'Page modifiée avec succès'
@@ -149,6 +151,7 @@ class PageController extends Controller implements HasMiddleware
     {
         try {
             $page->delete();
+            $this->forgetCache();
             return to_route('pages', ['json' => false])->with('success', 'Page supprimée  avec succès');
         } catch (\Exception $e) {
             return back()->with('error',  $e->getMessage());

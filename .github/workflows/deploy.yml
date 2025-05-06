@@ -94,6 +94,8 @@ jobs:
           echo "VITE_RECAPTCHA_SITE_KEY=${VITE_RECAPTCHA_SITE_KEY}" >> .env
 
           echo "MIGRATION_WEBHOOK_TOKEN=${MIGRATION_WEBHOOK_TOKEN}" >> .env
+
+          echo "CACHE_KEY=spa_content" >> .env
         env:
           APP_KEY: ${{ secrets.APP_KEY }}
           APP_URL: ${{ vars.APP_URL }}
