@@ -6,10 +6,9 @@ import { Head, usePage } from '@inertiajs/vue3';
 import EducationList from '../components/EducationList.vue';
 import DeleteModale from '../components/DeleteModale.vue';
 import Toast from '../components/Toast.vue';
-import { onMounted, ref } from 'vue';
+import { onMounted, ref, computed } from 'vue';
 import axios from 'axios';
 import { CirclePlus } from 'lucide-vue-next';
-
 
 // État de la modale
 const showDeleteModal = ref(false);
@@ -32,22 +31,8 @@ const breadcrumbs: BreadcrumbItem[] = [
     },
 ];
 
-const educations = ref([]);
-
-onMounted(async () => {
-    try {
-        const response = await api.get('/api/education/list');
-        educations.value = response.data;
-    } catch (error) {
-        console.error('Erreur lors de la récupération des messages:', error);
-    }
-});
-
-defineProps<{
-    name?: string;
-}>();
-
 const page = usePage();
+const educations = computed(() => page.props.educations);
 
 </script>
 

@@ -16,7 +16,8 @@ const props = defineProps({
     }
 });
 
-const appUrl = import.meta.env.VITE_APP_URL || window.location.origin;
+const appUrl =
+    import.meta.env.VITE_APP_URL || window.location.origin;
 
 function safeParseSeo(seo: any) {
     if (!seo) return {};
@@ -194,30 +195,30 @@ const page = usePage();
 
                             <div>
                                 <Label for="hero_subtitle">Surtitre</Label>
-                                <Input id="hero_subtitle" type="text" v-model="form.hero_subtitle" />
+                                <Input id="hero_subtitle" type="text" v-model="form.hero_subtitle" required />
                                 <p v-if="form.errors.hero_subtitle" class="text-red-600 text-sm">{{ form.errors.hero_subtitle }}</p>
                             </div>
 
                             <div>
                                 <Label for="hero_title">Titre</Label>
-                                <Input id="hero_title" type="text" v-model="form.hero_title" />
+                                <Input id="hero_title" type="text" v-model="form.hero_title" required />
                                 <p v-if="form.errors.hero_title" class="text-red-600 text-sm">{{ form.errors.hero_title }}</p>
                             </div>
 
                             <div>
                                 <Label for="hero_description">Texte</Label>
-                                <QuillEditor theme="snow" id="hero_description" v-model:content="form.hero_description" contentType="html" class="custom-quill-style" />
+                                <QuillEditor theme="snow" id="hero_description" v-model:content="form.hero_description" contentType="html" class="custom-quill-style" required />
                                 <p v-if="form.errors.hero_description" class="text-red-600 text-sm">{{ form.errors.hero_description }}</p>
                             </div>
 
                             <div>
                                 <Label for="hero_image">Image</Label>
                                 <input id="hero_image" type="file" accept="image/*" @change="handleHeroFileChange" class="block w-full text-sm text-gray-500
-                                               file:mr-4 file:py-2 file:px-4
-                                               file:rounded-md file:border-0
-                                               file:text-sm file:font-semibold
-                                               file:bg-gray-50 file:text-gray-700
-                                               hover:file:bg-gray-100" />
+                                                   file:mr-4 file:py-2 file:px-4
+                                                   file:rounded-md file:border-0
+                                                   file:text-sm file:font-semibold
+                                                   file:bg-gray-50 file:text-gray-700
+                                                   hover:file:bg-gray-100" />
                                 <p v-if="form.errors.hero_image" class="text-red-600 text-sm">{{ form.errors.hero_image }}</p>
                             </div>
                         </div>
@@ -241,11 +242,11 @@ const page = usePage();
                             <div>
                                 <Label for="content_image">Image</Label>
                                 <input id="content_image" type="file" accept="image/*" @change="handleFileChange" class="block w-full text-sm text-gray-500
-                                               file:mr-4 file:py-2 file:px-4
-                                               file:rounded-md file:border-0
-                                               file:text-sm file:font-semibold
-                                               file:bg-gray-50 file:text-gray-700
-                                               hover:file:bg-gray-100" />
+                                                   file:mr-4 file:py-2 file:px-4
+                                                   file:rounded-md file:border-0
+                                                   file:text-sm file:font-semibold
+                                                   file:bg-gray-50 file:text-gray-700
+                                                   hover:file:bg-gray-100" />
                                 <p v-if="form.errors.content_image" class="text-red-600 text-sm">{{ form.errors.content_image }}</p>
                             </div>
                         </div>
@@ -260,35 +261,35 @@ const page = usePage();
                         <div v-show="openSection === 'seo'" class="p-4 space-y-4">
                             <div>
 
-                            <div>
-                                <Label for="seo_description">Description</Label>
-                                <Input id="seo_description" type="text" v-model="form.seo_description" />
-                                <p v-if="form.errors.seo_description" class="text-red-600 text-sm">{{ form.errors.seo_description }}</p>
-                            </div>
+                                <div>
+                                    <Label for="seo_description">Description</Label>
+                                    <Input id="seo_description" type="text" v-model="form.seo_description" />
+                                    <p v-if="form.errors.seo_description" class="text-red-600 text-sm">{{ form.errors.seo_description }}</p>
+                                </div>
 
-                            <div>
-                                <Label for="seo_og_title">Facebook - titre</Label>
-                                <Input id="seo_og_title" type="text" v-model="form.seo_og_title" />
-                                <p v-if="form.errors.seo_og_title" class="text-red-600 text-sm">{{ form.errors.seo_og_title }}</p>
-                            </div>
+                                <div>
+                                    <Label for="seo_og_title">Facebook - titre</Label>
+                                    <Input id="seo_og_title" type="text" v-model="form.seo_og_title" />
+                                    <p v-if="form.errors.seo_og_title" class="text-red-600 text-sm">{{ form.errors.seo_og_title }}</p>
+                                </div>
 
-                            <div>
-                                <Label for="seo_og_description">Facebook - description</Label>
-                                <Input id="seo_og_description" type="text" v-model="form.seo_og_description" />
-                                <p v-if="form.errors.seo_og_description" class="text-red-600 text-sm">{{ form.errors.seo_og_description }}</p>
-                            </div>
+                                <div>
+                                    <Label for="seo_og_description">Facebook - description</Label>
+                                    <Input id="seo_og_description" type="text" v-model="form.seo_og_description" />
+                                    <p v-if="form.errors.seo_og_description" class="text-red-600 text-sm">{{ form.errors.seo_og_description }}</p>
+                                </div>
 
-                            <div>
-                                <Label for="seo_twitter_title">Twitter - titre</Label>
-                                <Input id="seo_twitter_title" type="text" v-model="form.seo_twitter_title" />
-                                <p v-if="form.errors.seo_twitter_title" class="text-red-600 text-sm">{{ form.errors.seo_twitter_title }}</p>
-                            </div>
+                                <div>
+                                    <Label for="seo_twitter_title">Twitter - titre</Label>
+                                    <Input id="seo_twitter_title" type="text" v-model="form.seo_twitter_title" />
+                                    <p v-if="form.errors.seo_twitter_title" class="text-red-600 text-sm">{{ form.errors.seo_twitter_title }}</p>
+                                </div>
 
-                            <div>
-                                <Label for="seo_twitter_description">Twitter - description</Label>
-                                <Input id="seo_twitter_description" type="text" v-model="form.seo_twitter_description" />
-                                <p v-if="form.errors.seo_twitter_description" class="text-red-600 text-sm">{{ form.errors.seo_twitter_description }}</p>
-                            </div>
+                                <div>
+                                    <Label for="seo_twitter_description">Twitter - description</Label>
+                                    <Input id="seo_twitter_description" type="text" v-model="form.seo_twitter_description" />
+                                    <p v-if="form.errors.seo_twitter_description" class="text-red-600 text-sm">{{ form.errors.seo_twitter_description }}</p>
+                                </div>
 
                             </div>
                         </div>
@@ -297,8 +298,8 @@ const page = usePage();
 
                 <div class="mt-6">
                     <Button type="submit" :disabled="form.processing">
-                            {{ isEditMode ? 'Mettre à jour' : 'Créer' }}
-                        </Button>
+                                {{ isEditMode ? 'Mettre à jour' : 'Créer' }}
+                            </Button>
                 </div>
             </div>
 

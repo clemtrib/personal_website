@@ -5,11 +5,9 @@ namespace App\Http\Controllers;
 use Inertia\Inertia;
 use App\Models\Page;
 use Illuminate\Http\Request;
-use Illuminate\Routing\Controllers\HasMiddleware;
-use Illuminate\Routing\Controllers\Middleware;
 use Illuminate\Support\Facades\Storage;
 
-class PageController extends Controller implements HasMiddleware
+class PageController extends Controller
 {
 
     const VALIDATION_RULES = [
@@ -28,30 +26,15 @@ class PageController extends Controller implements HasMiddleware
         'seo_twitter_description' => 'nullable|string|max:255',
     ];
 
-    public static function middleware(): array
-    {
-        return [];
-        /*
-        return [
-            'auth',
-            new Middleware('can:edit-experiences', except: ['index', 'show'])
-        ];
-        */
-    }
-
     /**
      * Display a listing of the resource.
      */
     public function index(bool $json = true)
     {
         $pages = Page::get();
-        if ($json) {
-            return response()->json($pages);
-        } else {
-            return Inertia::render('pages', [
-                'pages' => $pages
-            ]);
-        }
+        return Inertia::render('Pages', [
+            'pages' => $pages
+        ]);
     }
 
     /**
@@ -61,10 +44,12 @@ class PageController extends Controller implements HasMiddleware
     {
         $validatedData = $request->validate(self::VALIDATION_RULES);
 
+        $validatedData['hero_image'] = "";
         if ($request->hasFile('hero_image')) {
             $validatedData['hero_image'] = $request->file('hero_image')->store('uploads', 'public');
         }
 
+        $validatedData['content_image'] = "";
         if ($request->hasFile('content_image')) {
             $validatedData['content_image'] = $request->file('content_image')->store('uploads', 'public');
         }
@@ -76,15 +61,21 @@ class PageController extends Controller implements HasMiddleware
         $page->hero_title = $validatedData['hero_title'];
         $page->hero_description = $validatedData['hero_description'];
         $page->content_text = $validatedData['content_text'];
-        $page->content_image = $validatedData['content_image'];
+        $page->content_image = $validatedData['content_image'] ?? '';
         $page->page_seo = $this->generateSeoProperty($page, $validatedData);
 
         try {
-            $page->save();
+            $page->save($validatedData);
             $this->forgetCache();
-            return to_route('pages', ['json' => false])->with('success', 'Page créée avec succès');
+            return response()->json([
+                'success' => true,
+                'message' => 'Page créée avec succès'
+            ]);
         } catch (\Exception $e) {
-            return back()->with('error', $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage()
+            ], 500);
         }
     }
 
@@ -106,7 +97,6 @@ class PageController extends Controller implements HasMiddleware
      */
     public function update(Request $request, Page $page)
     {
-
         $validatedData = $request->validate(self::VALIDATION_RULES);
 
         // Supprime l'ancienne image si elle existe
@@ -171,17 +161,17 @@ class PageController extends Controller implements HasMiddleware
         }
         return [
             "description" => $validatedData['seo_description'] ?? '',
-            "canonical" => getenv('APP_URL'),
-            "og:title" => $validatedData['seo_og_title'] ?? getenv('APP_NAME'),
+            "canonical" => config('app.url'),
+            "og:title" => $validatedData['seo_og_title'] ?? config('app.name'),
             "og:description" => $validatedData['seo_og_description'] ?? '',
-            "og:image" => $seo_image ? getenv('APP_URL') . '/storage/' . $seo_image : '',
-            "og:url" => getenv('APP_URL'),
+            "og:image" => $seo_image ? config('app.url') . '/storage/' . $seo_image : '',
+            "og:url" => config('app.url'),
             "og:type" => "website",
-            "og:site_name" => getenv('APP_NAME'),
+            "og:site_name" => config('app.name'),
             "twitter:card" => "summary_large_image",
-            "twitter:title" =>  $validatedData['seo_twitter_title'] ?? getenv('APP_NAME'),
+            "twitter:title" =>  $validatedData['seo_twitter_title'] ?? config('app.name'),
             "twitter:description" => $validatedData['seo_twitter_description'] ?? '',
-            "twitter:image" =>  $seo_image ? getenv('APP_URL') . '/storage/' . $seo_image : '',
+            "twitter:image" =>  $seo_image ? config('app.url') . '/storage/' . $seo_image : '',
         ];
     }
 }

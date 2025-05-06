@@ -5,12 +5,10 @@ namespace App\Http\Controllers;
 use Inertia\Inertia;
 use App\Models\Education;
 use Illuminate\Http\Request;
-use Illuminate\Routing\Controllers\HasMiddleware;
 
 class EducationController extends Controller
 {
     const VALIDATION_RULES = [
-        //'location' => 'required|string|max:255',
         'school' => 'required|string|max:255',
         'graduation' => 'string',
         'date' => 'required|date_format:Y-m-d',
@@ -19,16 +17,12 @@ class EducationController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(bool $json = true)
+    public function index()
     {
         $educations = Education::orderByRaw('date IS NOT NULL, date DESC')->get();
-        if ($json) {
-            return response()->json($educations);
-        } else {
-            return Inertia::render('educations', [
-                'educations' => $educations
-            ]);
-        }
+        return Inertia::render('Education', [
+            'educations' => $educations
+        ]);
     }
 
     /**
@@ -61,7 +55,7 @@ class EducationController extends Controller
             abort(404, "Expérience non trouvée");
         }
         return Inertia::render('EducationForm', [
-            'education' => $education->only(['id', /*'location',*/ 'school', 'graduation', 'date'])
+            'education' => $education->only(['id', 'school', 'graduation', 'date'])
         ]);
     }
 

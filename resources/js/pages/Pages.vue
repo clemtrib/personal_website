@@ -6,13 +6,8 @@ import { Head, usePage } from '@inertiajs/vue3';
 import PagesList from '../components/PagesList.vue';
 import DeleteModale from '../components/DeleteModale.vue';
 import Toast from '../components/Toast.vue';
-import { onMounted, ref } from 'vue';
+import { onMounted, ref, computed } from 'vue';
 import { CirclePlus } from 'lucide-vue-next';
-
-const breadcrumbs: BreadcrumbItem[] = [{
-    title: 'Pages',
-    href: '/dashboard/pages',
-}, ];
 
 // État de la modale
 const showDeleteModal = ref(false);
@@ -28,35 +23,26 @@ const closeDeleteModal = () => {
     objectIdToDelete.value = null;
 };
 
-// Données des expériences
-const pages = ref([]);
+const breadcrumbs: BreadcrumbItem[] = [{
+    title: 'Pages',
+    href: '/dashboard/pages',
+}, ];
+
+const page = usePage();
+const pages = computed(() => page.props.pages);
 
 onMounted(async () => {
-    try {
-        const response = await api.get('/api/pages/list');
-        pages.value = response.data;
-    } catch (error) {
-        console.error('Erreur lors de la récupération des pages:', error);
-    }
     const message = localStorage.getItem('flashMessage');
     const type = localStorage.getItem('flashType');
-
     if (message) {
         page.props.flash = {
             [type]: message
         };
-
         localStorage.removeItem('flashMessage');
         localStorage.removeItem('flashType');
     }
 });
 
-// Props Inertia
-defineProps < {
-    name ? : string;
-} > ();
-
-const page = usePage();
 </script>
 
 <template>
