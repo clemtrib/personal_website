@@ -154,10 +154,10 @@ class PageController extends Controller
     private function generateSeoProperty(Page $page, array $validatedData): array
     {
         $seo_image = null;
-        if (isset($validatedData['content_image'])) {
-            $seo_image = $validatedData['content_image'];
-        } elseif ($page->content_image) {
-            $seo_image = $page->content_image;
+        if (isset($validatedData['hero_image'])) {
+            $seo_image = $validatedData['hero_image'];
+        } elseif ($page->hero_image) {
+            $seo_image = $page->hero_image;
         }
         return [
             "description" => $validatedData['seo_description'] ?? '',
