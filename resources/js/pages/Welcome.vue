@@ -28,7 +28,8 @@ readyToLoad.value = false;
 const siteKey =
     import.meta.env.VITE_RECAPTCHA_SITE_KEY;
 
-const appUrl = import.meta.env.VITE_APP_URL || window.location.origin;
+const appUrl =
+    import.meta.env.VITE_APP_URL || window.location.origin;
 
 onMounted(async () => {
     if (siteKey && typeof window.grecaptcha === 'undefined') {
@@ -54,23 +55,9 @@ onMounted(async () => {
 </script>
 
 <template>
-    <Head  v-if="readyToLoad" title="Portfolio">
+    <Head v-if="readyToLoad" title="Portfolio">
         <link rel="preconnect" href="https://rsms.me/" />
         <link rel="stylesheet" href="https://rsms.me/inter/inter.css" />
-        <!-- SEO -->
-        <meta name="description" content="home.value?.page_seo?.description || ''" />
-        <!-- Facebook Open Graph -->
-        <meta property="og:site_name" content="home.value?.page_seo['og:site_name']" />
-        <meta property="og:title" content="home.value?.page_seo['og:title']" />
-        <meta property="og:description" content="home.value?.page_seo['og:description']" />
-        <meta property="og:image" content="`${home.value?.page_seo['og:image']}`" />
-        <meta property="og:type" content="home.value?.page_seo['og:type']" />
-        <meta property="og:url" content="home.value?.page_seo['og:url']" />
-        <!-- Twitter -->
-        <meta name="twitter:card" content="home.value?.page_seo['twitter:card']" />
-        <meta name="twitter:title" content="home.value?.page_seo['twitter:title']" />
-        <meta name="twitter:description" content="home.value?.page_seo['twitter:description']" />
-        <meta name="twitter:image" content="`${home.value?.page_seo['twitter:image']}`" />
     </Head>
     <div class="font-sans scroll-smooth">
         <Navigation :home=home :config=config :readyToLoad=readyToLoad />

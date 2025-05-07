@@ -8,9 +8,31 @@ use App\Models\Hobby;
 use App\Models\Skill;
 use App\Models\Page;
 use Illuminate\Support\Facades\Cache;
+use Inertia\Inertia;
 
 class SPAController extends Controller
 {
+
+    public function load()
+    {
+        $seo = (Page::where('page_slug', 'home')->first())->page_seo;
+        return Inertia::render('Welcome')->withViewData([
+            "meta" => [
+                "description" => $seo['description'] ?? '',
+                "canonical" => $seo['canonical'] ?? '',
+                "og:title" => $seo['og:title'] ?? '',
+                "og:description" => $seo['og:description'] ?? '',
+                "og:image" => $seo['og:image'] ?? '',
+                "og:url" => $seo['og:url'] ?? '',
+                "og:type" => $seo['og:type'] ?? '',
+                "og:site_name" => $seo['og:site_name'] ?? '',
+                "twitter:card" => $seo['twitter:card'] ?? '',
+                "twitter:title" =>  $seo['twitter:title'] ?? '',
+                "twitter:description" => $seo['twitter:description'] ?? '',
+                "twitter:image" =>  $seo['twitter:image'] ?? '',
+            ]
+        ]);
+    }
 
     /**
      * Display a listing of the resource.
