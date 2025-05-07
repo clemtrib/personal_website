@@ -30,7 +30,7 @@ defineProps < {
                     </span> <small>- {{ experience.location }}</small>
                 </h3>
                 <h2 class="text-xl font-semibold text-white">{{ experience.job }}
-                    <span :v-if="experience.company"> @ <span class="text-green-400">{{ experience.company }}</span></span></h2>
+                    <span v-if="experience.company"> @ <span class="text-green-400">{{ experience.company }}</span></span></h2>
                 <div class="block w-full md:w-1/2 text-1xl text-gray-600 dark:text-gray-400 text-justify prose prose-invert max-w-none" v-html="experience.description"></div>
             </div>
         </div>
