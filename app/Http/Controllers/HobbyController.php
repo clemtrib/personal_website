@@ -20,7 +20,7 @@ class HobbyController extends Controller
      */
     public function index()
     {
-        $hobbies = Hobby::orderBy('order ASC')->get();
+        $hobbies = Hobby::orderBy('order', 'ASC')->get();
         return Inertia::render('Hobbies', [
             'hobbies' => $hobbies
         ]);

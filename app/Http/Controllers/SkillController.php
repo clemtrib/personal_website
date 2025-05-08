@@ -19,7 +19,7 @@ class SkillController extends Controller
      */
     public function index(bool $json = true)
     {
-        $skills = Skill::orderBy('order ASC')->get();
+        $skills = Skill::orderBy('order', 'ASC')->get();
         return Inertia::render('Skills', [
             'skills' => $skills
         ]);
