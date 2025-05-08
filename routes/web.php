@@ -7,7 +7,7 @@ use App\Http\Controllers\SPAController;
 
 /* Starter Laravel + VueJS */
 
-Route::get('/', [SPAController::class, 'load'])->name('welcome');
+Route::get('/', [SPAController::class, 'load'])->name('home');
 
 Route::get('dashboard', function () {
     return Inertia::render('Dashboard');

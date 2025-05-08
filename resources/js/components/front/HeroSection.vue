@@ -36,7 +36,7 @@ const showImage = import.meta.env.VITE_SHOW_HERO_IMAGE || 0;
       <div class="md:w-1/2 max-w-xl">
         <p class="text-green-400">{{ props.home?.hero_subtitle }}</p>
         <h1 class="text-5xl font-bold text-white mt-2">{{ props.home?.hero_title }}</h1>
-        <span class="mt-4 text-[#8892b0] text-justify" v-html="parsedDescription"></span>
+        <span class="mt-4 text-[#8892b0]" v-html="parsedDescription"></span>
       </div>
 
       <!-- Colonne droite : image -->
