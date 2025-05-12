@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { computed } from 'vue';
+import { computed, onMounted, nextTick } from 'vue';
+import gsap from 'gsap';
 
 const props = defineProps<{
   readyToLoad: boolean,
@@ -20,8 +21,39 @@ const parsedDescription = computed(() => {
 });
 
 const appUrl = import.meta.env.VITE_APP_URL || window.location.origin;
+const appName = import.meta.env.VITE_APP_NAME || '';
 const showImage = import.meta.env.VITE_SHOW_HERO_IMAGE || 0;
 
+// GSAP animation setup for button hover
+function setupGsapAnimations() {
+  const button = document.querySelector('.gsap-hover');
+  if (button) {
+    button.addEventListener('mouseenter', () => {
+      gsap.to(button, {
+        scale: 1.05,
+        boxShadow: '0 6px 18px rgba(100, 255, 218, 0.4)',
+        duration: 0.3,
+        ease: 'power2.out',
+      });
+    });
+    button.addEventListener('mouseleave', () => {
+      gsap.to(button, {
+        scale: 1,
+        boxShadow: '0 0 0 rgba(0,0,0,0)',
+        duration: 0.3,
+        ease: 'power2.out',
+      });
+    });
+  }
+}
+
+onMounted(() => {
+  if (props.readyToLoad) {
+    nextTick(() => {
+      setupGsapAnimations();
+    });
+  }
+});
 </script>
 
 <template>
@@ -43,7 +75,7 @@ const showImage = import.meta.env.VITE_SHOW_HERO_IMAGE || 0;
       <div class="md:w-1/2 flex justify-center items-center mt-10 md:mt-0 " v-if="props.home?.hero_image && showImage">
         <img
           :src="`${appUrl}/uploads-ovh/${props.home.hero_image.split('/').pop()}`"
-          alt="Image d'illustration"
+          :alt="`${appName}`"
           class="rounded-xl w-64 h-64 object-cover"
         />
       </div>
@@ -53,7 +85,7 @@ const showImage = import.meta.env.VITE_SHOW_HERO_IMAGE || 0;
     <div class="mt-12 w-full">
       <a
         href="#contact"
-        class="block w-full md:w-auto text-center bg-green-400 text-[#0a192f] px-6 py-3 rounded hover:bg-green-300 transition"
+        class="gsap-hover block w-full md:w-auto text-center bg-green-400 text-[#0a192f] px-6 py-3 rounded hover:bg-green-300 transition"
       >
         Me contacter
       </a>

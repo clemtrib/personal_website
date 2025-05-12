@@ -12,6 +12,7 @@ defineProps < {
     } > ;
 } > ();
 const appUrl = import.meta.env.VITE_APP_URL || window.location.origin;
+const appName = import.meta.env.VITE_APP_NAME || '';
 </script>
 
 <template>
@@ -23,7 +24,7 @@ const appUrl = import.meta.env.VITE_APP_URL || window.location.origin;
             </ul>
         </div>
         <div class="md:w-1/2 flex justify-center items-center mt-10 md:mt-0" v-if="home?.content_image">
-            <img :src="`${appUrl}/uploads-ovh/${home.content_image.split('/').pop()}`" alt="Clément Tribouillard" class="rounded-xl w-64 h-64 object-cover">
+            <img :src="`${appUrl}/uploads-ovh/${home.content_image.split('/').pop()}`" :alt="`${appName}`" class="rounded-xl w-64 h-64 object-cover">
         </div>
     </section>
 </template>
