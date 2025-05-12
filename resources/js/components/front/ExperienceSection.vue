@@ -28,22 +28,23 @@ function togglePanel(index: number) {
         </h2>
         <div class="space-y-10">
             <div v-for="(experience, index) in experiences" :key="experience.id">
-                <div class="title-section">
-                    <h3 class="text-1xl cursor-pointer" @click="togglePanel(index)">
+                <div class="title-section cursor-pointer hover:bg-[#112240] transition-colors duration-200 rounded-md p-3" @click="togglePanel(index)" role="button" tabindex="0">
+                    <h3 class="text-1xl">
                         <span class="text-green-400">
-                            De {{ new Date(experience.begin_at).toLocaleDateString('fr-CA', { month: 'long', year: 'numeric' }) }}
-                            <span v-if="experience.end_at">
-                                à {{ new Date(experience.end_at).toLocaleDateString('fr-CA', { month: 'long', year: 'numeric' }) }}
-                            </span>
+                  De {{ new Date(experience.begin_at).toLocaleDateString('fr-CA', { month: 'long', year: 'numeric' }) }}
+                  <span v-if="experience.end_at">
+                    à {{ new Date(experience.end_at).toLocaleDateString('fr-CA', { month: 'long', year: 'numeric' }) }}
+                  </span>
                         <span v-else>à aujourd'hui</span>
                         </span>
                         <small>- {{ experience.location }}</small>
                     </h3>
-                    <h2 class="text-xl font-semibold text-white cursor-pointer" @click="togglePanel(index)">
+                    <h2 class="text-xl font-semibold text-white">
                         {{ experience.job }}
                         <span v-if="experience.company"> @ <span class="text-green-400">{{ experience.company }}</span></span>
                     </h2>
                 </div>
+
                 <!-- Transition -->
                 <transition name="expand">
                     <div v-show="activeIndex === index" class="overflow-hidden text-1xl text-gray-600 dark:text-gray-400 leading-relaxed prose prose-invert max-w-none transition-all duration-300" v-html="experience.description"></div>
@@ -56,12 +57,9 @@ function togglePanel(index: number) {
 <style scoped>
 .prose-custom {
     line-height: 1.4 !important;
-    /* réduit l'espacement vertical */
     margin: 0 !important;
     padding: 0 !important;
 }
-
-/* Pour ajuster les marges internes des paragraphes et listes */
 
 .prose-custom p,
 .prose-custom ul,
@@ -87,7 +85,6 @@ function togglePanel(index: number) {
 .expand-enter-to,
 .expand-leave-from {
     max-height: 1000px;
-    /* ou plus selon contenu */
     opacity: 1;
 }
 </style>
