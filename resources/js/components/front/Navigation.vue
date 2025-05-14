@@ -79,4 +79,9 @@ const toggleMenu = () => {
 .fade-leave-from {
     opacity: 1;
 }
+
+nav {
+    border-bottom: 0.1em solid rgb(74, 222, 128);
+}
+
 </style>
