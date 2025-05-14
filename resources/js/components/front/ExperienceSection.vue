@@ -28,13 +28,13 @@ function togglePanel(index: number) {
         </h2>
         <div class="space-y-10">
             <div v-for="(experience, index) in experiences" :key="experience.id">
-                <div class="title-section cursor-pointer hover:bg-[#112240] transition-colors duration-200 rounded-md p-3" @click="togglePanel(index)" role="button" tabindex="0">
+                <div class="title-section cursor-pointer hover:bg-[#112240] transition-colors duration-200 rounded-md p-3" :class="{ 'bg-[#112240]': activeIndex === index }" @click="togglePanel(index)" role="button" tabindex="0">
                     <h3 class="text-1xl">
                         <span class="text-green-400">
-                  De {{ new Date(experience.begin_at).toLocaleDateString('fr-CA', { month: 'long', year: 'numeric' }) }}
-                  <span v-if="experience.end_at">
-                    à {{ new Date(experience.end_at).toLocaleDateString('fr-CA', { month: 'long', year: 'numeric' }) }}
-                  </span>
+                                De {{ new Date(experience.begin_at).toLocaleDateString('fr-CA', { month: 'long', year: 'numeric' }) }}
+                                <span v-if="experience.end_at">
+                                    à {{ new Date(experience.end_at).toLocaleDateString('fr-CA', { month: 'long', year: 'numeric' }) }}
+                                </span>
                         <span v-else>à aujourd'hui</span>
                         </span>
                         <small>- {{ experience.location }}</small>
