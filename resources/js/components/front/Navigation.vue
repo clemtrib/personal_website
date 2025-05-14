@@ -27,12 +27,12 @@ const toggleMenu = () => {
 </script>
 
 <template>
-    <nav v-if="props.readyToLoad" class="fixed top-0 left-0 w-full bg-[#0a192f] text-[#ccd6f6] shadow z-50">
-        <div class="max-w-6xl mx-auto px-6 py-4 flex justify-between items-center">
-            <a href="#" class="text-xl font-bold text-green-400">{{ props.home.hero_title }}</a>
-    
+    <nav v-if="props.readyToLoad" class="fixed top-0 left-0 w-full box-border bg-[#0a192f] text-[#ccd6f6] shadow z-50 overflow-x-hidden">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 py-4 flex justify-between items-center">
+            <a href="#" class="text-sm font-bold text-green-400">{{ props.home.hero_title }}</a>
+
             <!-- Menu desktop -->
-            <ul class="hidden sm:flex gap-6 text-sm uppercase tracking-wider">
+            <ul class="hidden sm:flex gap-6 text-xs uppercase tracking-wider">
                 <li><a href="#schools" class="hover:text-green-400">Formation</a></li>
                 <li><a href="#skills" class="hover:text-green-400">Compétences</a></li>
                 <li><a href="#experiences" class="hover:text-green-400">Expériences</a></li>
@@ -40,7 +40,7 @@ const toggleMenu = () => {
                 <li v-if="props.config?.tjm"><a href="#tjm" class="hover:text-green-400">TJM</a></li>
                 <li><a href="#contact" class="hover:text-green-400">Contact</a></li>
             </ul>
-    
+
             <!-- Icône burger -->
             <button class="sm:hidden text-green-400 focus:outline-none" @click="toggleMenu">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none"
@@ -49,7 +49,7 @@ const toggleMenu = () => {
             </svg>
           </button>
         </div>
-    
+
         <!-- Menu mobile -->
         <transition name="fade">
             <ul v-show="isOpen" class="sm:hidden bg-[#0a192f] px-6 pb-4 space-y-3 text-sm uppercase tracking-wider">
