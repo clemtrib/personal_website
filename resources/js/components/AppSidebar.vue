@@ -19,7 +19,7 @@ const mainNavItems: NavItem[] = [{
         icon: FileText,
     },
     {
-        title: 'Éducation',
+        title: 'Diplômes',
         url: '/dashboard/education/list',
         icon: GraduationCap,
     },

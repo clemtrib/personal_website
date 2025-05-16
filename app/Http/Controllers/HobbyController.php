@@ -77,6 +77,29 @@ class HobbyController extends Controller
     }
 
     /**
+     *
+     */
+    public function reorder(Request $request)
+    {
+        try {
+            $data = $request->validate([
+                'hobbies' => 'required|array',
+                'hobbies.*.id' => 'required|exists:hobbies,id',
+                'hobbies.*.order' => 'required|integer',
+            ]);
+
+            foreach ($data['hobbies'] as $hobbyData) {
+                Hobby::where('id', $hobbyData['id'])->update(['order' => $hobbyData['order']]);
+            }
+
+            $this->forgetCache();
+            return response()->json(['success' => true]);
+        } catch (\Exception $e) {
+            return back()->with('error', $e->getMessage());
+        }
+    }
+
+    /**
      * Remove the specified resource from storage.
      */
     public function destroy(Hobby $hobby)

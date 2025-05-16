@@ -12,8 +12,11 @@ import { usePage } from '@inertiajs/vue3';
 const breadcrumbs: BreadcrumbItem[] = [
     {
         title: 'Pages',
-        href: '/dashboard/pages',
+        href: '/dashboard/pages/list',
     },
+    {
+        title: 'Édition'
+    }
 ];
 
 const props = defineProps({

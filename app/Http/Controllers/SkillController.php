@@ -75,6 +75,30 @@ class SkillController extends Controller
     }
 
     /**
+     *
+     */
+    public function reorder(Request $request)
+    {
+        try {
+            $data = $request->validate([
+                'skills' => 'required|array',
+                'skills.*.id' => 'required|exists:skills,id',
+                'skills.*.order' => 'required|integer',
+            ]);
+
+            foreach ($data['skills'] as $skillData) {
+                Skill::where('id', $skillData['id'])->update(['order' => $skillData['order']]);
+            }
+
+            $this->forgetCache();
+            return response()->json(['success' => true]);
+        } catch (\Exception $e) {
+            return back()->with('error', $e->getMessage());
+        }
+    }
+
+
+    /**
      * Remove the specified resource from storage.
      */
     public function destroy(Skill $skill)

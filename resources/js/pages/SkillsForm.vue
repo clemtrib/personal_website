@@ -11,8 +11,11 @@ import { usePage } from '@inertiajs/vue3';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
-        title: 'Loisirs',
-        href: '/dashboard/skills',
+        title: 'Compétences',
+        href: '/dashboard/skills/list',
+    },
+    {
+        title: 'Édition',
     },
 ];
 

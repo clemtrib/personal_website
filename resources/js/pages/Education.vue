@@ -27,7 +27,7 @@ const closeDeleteModal = () => {
 const breadcrumbs: BreadcrumbItem[] = [
     {
         title: 'Diplômes',
-        href: '/dashboard/education',
+        href: '/dashboard/education/list',
     },
 ];
 

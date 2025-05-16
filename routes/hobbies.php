@@ -13,4 +13,5 @@ Route::prefix('dashboard/hobbies')->middleware('auth')->group(function () {
     Route::get('/{hobby}/edit', [HobbyController::class, 'edit'])->name('hobbies.edit');
     Route::put('/{hobby}', [HobbyController::class, 'update'])->name('hobbies.update');
     Route::delete('/{hobby}', [HobbyController::class, 'destroy'])->name('hobbies.destroy');
+    Route::post('/reorder', [HobbyController::class, 'reorder'])->name('hobbies.reorder');
 });

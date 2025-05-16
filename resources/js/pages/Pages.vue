@@ -23,10 +23,12 @@ const closeDeleteModal = () => {
     objectIdToDelete.value = null;
 };
 
-const breadcrumbs: BreadcrumbItem[] = [{
-    title: 'Pages',
-    href: '/dashboard/pages',
-}, ];
+const breadcrumbs: BreadcrumbItem[] = [
+    {
+        title: 'Pages',
+        href: '/dashboard/pages/list',
+    },
+];
 
 const page = usePage();
 const pages = computed(() => page.props.pages);

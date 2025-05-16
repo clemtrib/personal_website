@@ -8,7 +8,7 @@ import { computed } from 'vue';
 
 const breadcrumbs: BreadcrumbItem[] = [{
     title: 'Messages',
-    href: '/dashboard/messages',
+    href: '/dashboard/messages/list',
 }, ];
 
 // Récupération des props envoyées par Inertia

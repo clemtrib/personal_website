@@ -9,6 +9,13 @@ import Toast from '../components/Toast.vue';
 import { onMounted, ref, computed } from 'vue';
 import { CirclePlus } from 'lucide-vue-next';
 
+const breadcrumbs: BreadcrumbItem[] = [
+    {
+        title: 'Expériences',
+        href: '/dashboard/experiences/list',
+    },
+];
+
 // État de la modale
 const showDeleteModal = ref(false);
 const objectIdToDelete = ref<number | null>(null);

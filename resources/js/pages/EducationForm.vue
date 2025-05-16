@@ -11,9 +11,12 @@ import { usePage } from '@inertiajs/vue3';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
-        title: 'Éducation',
-        href: '/dashboard/education',
+        title: 'Diplômes',
+        href: '/dashboard/education/list',
     },
+    {
+       title: 'Édition',
+    }
 ];
 
 const props = defineProps({
@@ -39,7 +42,7 @@ onMounted(() => {
         {{ $page.props.flash.success }}
     </div>
 
-    <Head title="Éducation" />
+    <Head title="Diplômes" />
 
     <AppLayout :breadcrumbs="breadcrumbs">
         <div class="flex h-full flex-1 flex-col gap-4 rounded-xl p-4">

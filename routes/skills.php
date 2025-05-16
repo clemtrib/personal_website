@@ -13,4 +13,5 @@ Route::prefix('dashboard/skills')->middleware('auth')->group(function () {
     Route::get('/{skill}/edit', [SkillController::class, 'edit'])->name('skills.edit');
     Route::put('/{skill}', [SkillController::class, 'update'])->name('skills.update');
     Route::delete('/{skill}', [SkillController::class, 'destroy'])->name('skills.destroy');
+    Route::post('/reorder', [SkillController::class, 'reorder'])->name('skills.reorder');
 });
