@@ -97,6 +97,8 @@ jobs:
           echo "MIGRATION_WEBHOOK_TOKEN=${MIGRATION_WEBHOOK_TOKEN}" >> .env
 
           echo "CACHE_KEY=spa_content" >> .env
+
+          echo "GOOGLE_MEET_EMAIL='clement.tribouillard@gmail.com'" >> .env
         env:
           APP_KEY: ${{ secrets.APP_KEY }}
           APP_URL: ${{ vars.APP_URL }}
