@@ -13,9 +13,10 @@ return new class extends Migration
     {
         Schema::create('timeslots', function (Blueprint $table) {
             $table->id();
-            $table->dateTime('startDateTime');
-            $table->dateTime('endDateTime');
-            $table->string('recipient', 255)->nullable();
+            $table->dateTime('start_datetime');
+            $table->dateTime('end_datetime');
+            $table->string('recipient_email', 255)->nullable();
+            $table->string('recipient_fullname', 255)->nullable();
             $table->string('summary', 255)->nullable();
             $table->timestamps();
         });

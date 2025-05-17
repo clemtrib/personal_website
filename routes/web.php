@@ -23,6 +23,7 @@ require __DIR__ . '/education.php';
 require __DIR__ . '/hobbies.php';
 require __DIR__ . '/skills.php';
 require __DIR__ . '/pages.php';
+require __DIR__ . '/meets.php';
 
 /* Front: affichage des données */
 Route::prefix('api/spa')->group(function () {

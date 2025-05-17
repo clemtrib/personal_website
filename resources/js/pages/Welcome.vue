@@ -14,6 +14,7 @@ import ExperienceSection from '@/components/front/ExperienceSection.vue';
 import HobbiesSection from '@/components/front/HobbiesSection.vue';
 import TJMSection from '@/components/front/TJMSection.vue';
 import ContactForm from '@/components/front/ContactForm.vue';
+import Meets from '@/components/front/Meets.vue';
 import Footer from '@/components/front/Footer.vue';
 
 const page = ref([]);
@@ -68,6 +69,7 @@ onMounted(async () => {
         <HobbiesSection :home=home :hobbies=hobbies :readyToLoad=readyToLoad />
         <TJMSection :config=config :readyToLoad=readyToLoad />
         <ContactForm :readyToLoad=readyToLoad :siteKey=siteKey />
+        <Meets :readyToLoad=readyToLoad :siteKey=siteKey />
         <Footer :config=config :readyToLoad=readyToLoad />
     </div>
 </template>

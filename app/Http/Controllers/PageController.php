@@ -29,7 +29,7 @@ class PageController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(bool $json = true)
+    public function index()
     {
         $pages = Page::get();
         return Inertia::render('Pages', [

@@ -13,9 +13,10 @@ class Timeslot extends Model
      */
     protected $fillable = [
         'summary',
-        'recipient',
-        'startDateTime',
-        'endDateTime'
+        'recipient_email',
+        'recipient_fullname',
+        'start_datetime',
+        'end_datetime'
     ];
 
     /**
