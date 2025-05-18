@@ -17,6 +17,14 @@ class GoogleMeetController extends Controller
         'end_datetime' => 'required|date_format:Y-m-d H:i:s',
     ];
 
+    const VALIDATION_RULES_GENERATE_MEETS = [
+        'days_multiple' => ['required', 'array'],
+        'days_multiple.*' => ['in:1,2,3,4,5,6,7'], // 1=Lundi, 7=Dimanche (par exemple)
+        'duration' => ['required', 'in:15,30,45,60,90'],
+        'datetime_range' => ['required', 'array', 'size:2'],
+        'datetime_range.*' => ['required', 'date_format:Y-m-d\TH:i:sP'],
+    ];
+
 
     /**
      * Display a listing of the resource.
@@ -34,29 +42,53 @@ class GoogleMeetController extends Controller
      */
     public function store(Request $request)
     {
-        $validatedData = $request->validate(self::VALIDATION_RULES);
+        $validatedData = $request->validate(self::VALIDATION_RULES_GENERATE_MEETS);
 
-        $timeslot = new Timeslot();
-        $timeslot->summary = $validatedData['summary'] ?? null;
-        $timeslot->recipient_email = $validatedData['recipient_email'] ?? null;
-        $timeslot->recipient_fullname = $validatedData['recipient_fullname'] ?? null;
-        $timeslot->start_datetime = $validatedData['start_datetime'];
-        $timeslot->end_datetime = $validatedData['end_datetime'];
+
+        $start = new \DateTime($validatedData['datetime_range'][0]);
+        $end = new \DateTime($validatedData['datetime_range'][1]);
+        $duration = (int) $validatedData['duration'];
+        $targetDays = array_map('intval', $validatedData['days_multiple']); // convertit ["3", "4", "5"] en [3, 4, 5]
+
+        $interval = new \DateInterval("PT{$duration}M"); // 30 min interval
+
+        // Parcours de chaque jour de la plage
+        $period = new \DatePeriod($start, new \DateInterval('P1D'), $end->modify('+1 day'));
+
+        $h_start = ($start->format('H') < $end->format('H')) || ($start->format('H') == $end->format('H') && $start->format('H') < $end->format('H')) ? $start : $end;
+        $h_end = $start == $h_start ? $end : $start;
 
         try {
-            $timeslot->save($validatedData);
+            foreach ($period as $day) {
+                // Vérifie si c'est un des jours sélectionnés
+                if (in_array((int) $day->format('N'), $targetDays)) {
+                    // Génère les horaires entre 10h et 16h
+                    $slotStart = clone $day;
+                    $slotStart->setTime($h_start->format('H'), $h_start->format('i')); // 10h00
 
-            var_dump('siccess');
-            die;
+                    $slotEnd = clone $day;
+                    $slotEnd->setTime($h_end->format('H'), $h_end->format('i')); // 16h00
 
+                    while ($slotStart < $slotEnd) {
+                        $nextSlot = (clone $slotStart)->add($interval);
+
+                        $timeslot = new Timeslot();
+                        $timeslot->summary = null;
+                        $timeslot->recipient_email = null;
+                        $timeslot->recipient_fullname = null;
+                        $timeslot->start_datetime = $slotStart->format('Y-m-d H:i:s');
+                        $timeslot->end_datetime = $nextSlot->format('Y-m-d H:i:s');
+                        $timeslot->save($validatedData);
+
+                        $slotStart = $nextSlot;
+                    }
+                }
+            }
             return response()->json([
                 'success' => true,
-                'message' => 'Page horaire créée avec succès'
+                'message' => 'Plages horaire créée avec succès'
             ]);
         } catch (\Exception $e) {
-            var_dump($e->getMessage());
-            die;
-
             return response()->json([
                 'success' => false,
                 'message' => $e->getMessage()
@@ -104,7 +136,7 @@ class GoogleMeetController extends Controller
     {
         try {
             $timeslot->delete();
-            return to_route('Meets', ['json' => false])->with('success', 'Plage horaire supprimée  avec succès');
+            return to_route('meets', ['json' => false])->with('success', 'Plage horaire supprimée  avec succès');
         } catch (\Exception $e) {
             return back()->with('error',  $e->getMessage());
         }
