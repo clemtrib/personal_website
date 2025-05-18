@@ -24,6 +24,7 @@ const experiences = ref([]);
 const hobbies = ref([]);
 const config = ref([]);
 const home = ref([]);
+const meetings = ref([]);
 const readyToLoad = ref([]);
 readyToLoad.value = false;
 const siteKey =
@@ -48,6 +49,8 @@ onMounted(async () => {
         skills.value = response.data.skills;
         config.value = response.data.config;
         home.value = response.data.content;
+        meetings.value = response.data.meetings;
+        console.log(meetings.value);
         readyToLoad.value = true;
     } catch (error) {
         console.error('Erreur lors de la récupération des messages:', error);
@@ -69,7 +72,7 @@ onMounted(async () => {
         <HobbiesSection :home=home :hobbies=hobbies :readyToLoad=readyToLoad />
         <TJMSection :config=config :readyToLoad=readyToLoad />
         <ContactForm :readyToLoad=readyToLoad :siteKey=siteKey />
-        <Meets :readyToLoad=readyToLoad :siteKey=siteKey />
+        <Meets :readyToLoad=readyToLoad :siteKey=siteKey :meetings=meetings />
         <Footer :config=config :readyToLoad=readyToLoad />
     </div>
 </template>
