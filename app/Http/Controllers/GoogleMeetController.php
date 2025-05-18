@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Timeslot;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 use Inertia\Inertia;
 
 class GoogleMeetController extends Controller
@@ -31,7 +32,9 @@ class GoogleMeetController extends Controller
      */
     public function index()
     {
-        $timeslots = Timeslot::get();
+        $timeslots = Timeslot::where('start_datetime', '>', Carbon::tomorrow())
+        ->orderBy('start_datetime', 'asc')
+        ->get();
         return Inertia::render('Meets', [
             'timeslots' => $timeslots
         ]);

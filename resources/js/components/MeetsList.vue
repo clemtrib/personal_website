@@ -27,23 +27,29 @@ const openDeleteModal = (id: number) => {
             <ul class="space-y-4">
                 <li v-for="meet in timeslots" :key="meet.id" class="bg-white dark:bg-gray-800 p-4 rounded-lg shadow flex items-center gap-4">
                     <!-- Bloc date -->
-                    <div class="text-center text-lg font-semibold text-gray-700 dark:text-gray-300 w-12 shrink-0">
-                        <div class="text-gray-600 dark:text-green-400">{{ new Date(meet.start_datetime).getDate().toString().padStart(2, '0') }}</div>
-                        <div>{{ (new Date(meet.start_datetime).getMonth() + 1).toString().padStart(2, '0') }}</div>
-                        <div>{{ new Date(meet.start_datetime).getFullYear().toString().slice(-2) }}</div>
+                    <div class="text-center text-xl font-bold text-gray-700 dark:text-gray-300 w-12 shrink-0">
+                        <div class="text-gray-600 dark:text-green-400"><pre>{{ new Date(meet.start_datetime).getDate().toString().padStart(2, '0') }}</pre></div>
+                        <div><pre>{{ (new Date(meet.start_datetime).getMonth() + 1).toString().padStart(2, '0') }}</pre></div>
+                        <div><pre>{{ new Date(meet.start_datetime).getFullYear().toString().slice(-2) }}</pre></div>
                     </div>
 
                     <!-- Contenu principal -->
                     <div class="flex-1">
                         <div class="flex justify-between items-center text-sm text-gray-600 dark:text-green-400 mb-1">
-                            <span>
+
+                            <div>
+                                <span v-if="meet.recipient_fullname == null && meet.recipient_email == null" class="text-gray-600 dark:text-gray-400">
+                                    Plage horaire disponible de
+                                </span>
+                                <span>
                                 {{
                                 new Date(meet.start_datetime).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })
-                                }} -
+                                }}  <span class="text-gray-600 dark:text-gray-400"> à </span>
                                 {{
                                 new Date(meet.end_datetime).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })
                                 }}
-                            </span>
+                                </span>
+                            </div>
                         </div>
 
                         <h3 class="font-semibold" v-if="meet.recipient_fullname && meet.recipient_email">

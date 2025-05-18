@@ -7,7 +7,9 @@ use App\Models\Education;
 use App\Models\Hobby;
 use App\Models\Skill;
 use App\Models\Page;
+use App\Models\Timeslot;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Carbon;
 use Inertia\Inertia;
 
 class SPAController extends Controller
@@ -41,8 +43,13 @@ class SPAController extends Controller
     {
 
         $key = config('app.cache_key');
+        $timeslots = Timeslot::where('start_datetime', '>', now())
+        ->orderBy('start_datetime')
+        ->get()
+        ->groupBy(fn($slot) => Carbon::parse($slot->start_datetime)->toDateString())
+        ->keys();
         if (Cache::has($key)) {
-            $value = array_merge(Cache::get($key), ['cache' => 1]);
+            $value = array_merge(Cache::get($key), ['cache' => 1, 'meetings' => $timeslots]);
         } else {
             $response = [
                 'config' => [
@@ -60,8 +67,11 @@ class SPAController extends Controller
                 'content' => Page::where('page_slug', 'home')->first()
             ];
             Cache::add($key, $response, now()->addHours(12));
-            $value = array_merge($response, ['cache' => 0]);
+            $value = array_merge($response, ['cache' => 0, 'meetings' => $timeslots]);
         }
         return response()->json($value);
     }
+
+
+    public function getMeetingTimeslots($date) {}
 }
