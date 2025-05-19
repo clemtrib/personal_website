@@ -9,7 +9,7 @@ import { ref, onMounted, nextTick, computed, watch } from 'vue';
 import gsap from 'gsap';
 
 // Props
-const props = defineProps < { readyToLoad: boolean, siteKey: string } > ();
+const props = defineProps < { readyToLoad: boolean } > ();
 
 // Formulaire Inertia
 const form = useForm({

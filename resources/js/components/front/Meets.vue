@@ -118,7 +118,7 @@ const submit = async () => {
 </script>
 
 <template>
-    <section v-if="props.readyToLoad && props.meetings?.length" id="meets" class="px-6 py-20 bg-[#0a192f] text-[#ccd6f6]" data-aos="fade-bottom">
+    <section v-if="props.readyToLoad && props.meetings?.length" class="px-6 py-20 bg-[#0a192f] text-[#ccd6f6]" data-aos="fade-bottom">
         <h2 class="text-3xl font-bold mb-10 inline-block border-b-2 border-green-400">
             Prendre rendez-vous
         </h2>
@@ -140,14 +140,15 @@ const submit = async () => {
                     <div ref="timeslotContainer" class="w-full">
                         <h3 class="text-lg font-semibold mb-2" v-if="selectedDate">Plages horaire disponibles :</h3>
                         <div v-if="timeslots.length" class="flex flex-wrap gap-2">
-                            <button v-for="slot in timeslots" :key="slot.id" @click="selectTimeslot(slot.id)" class="px-4 py-2 rounded border transition-all duration-200" :class="[
+                            <button v-for="slot in timeslots" :key="slot.id" @click="selectTimeslot(slot.id)" class="px-4 py-2 rounded border transition-all duration-200 font-mono" :class="[
                                         selectedTimeslotId === slot.id
                                             ? 'bg-green-400 text-[#0a192f] border-green-400'
                                             : 'bg-[#0a192f] text-white border-green-400 hover:bg-green-800'
                                     ]">
-                                    {{ new Date(slot.start_datetime).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' }) }}
+
+                                    {{ new Date(slot.start_datetime).toLocaleTimeString('fr-CA', { hour: '2-digit', minute: '2-digit' }) }}
                                     -
-                                    {{ new Date(slot.end_datetime).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' }) }}
+                                    {{ new Date(slot.end_datetime).toLocaleTimeString('fr-CA', { hour: '2-digit', minute: '2-digit' }) }}
                                 </button>
                         </div>
                         <p v-else-if="selectedDate" class="text-gray-400">

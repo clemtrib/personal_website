@@ -75,8 +75,10 @@ onMounted(async () => {
         <ExperienceSection :experiences=experiences :readyToLoad=readyToLoad />
         <HobbiesSection :home=home :hobbies=hobbies :readyToLoad=readyToLoad />
         <TJMSection :config=config :readyToLoad=readyToLoad />
-        <ContactForm :readyToLoad=readyToLoad :siteKey=siteKey />
-        <Meets v-if="readyToLoad" :readyToLoad=readyToLoad :siteKey=siteKey :meetings=meetings :googleauth=googleauth :googleauthurl=googleauthurl />
+        <ContactForm :readyToLoad=readyToLoad />
+        <div id="meets">
+            <Meets v-if="readyToLoad" :readyToLoad=readyToLoad :meetings=meetings :googleauth=googleauth :googleauthurl=googleauthurl />
+        </div>
         <Footer :config=config :readyToLoad=readyToLoad />
     </div>
 </template>

@@ -50,8 +50,8 @@ class GoogleMeetController extends Controller
         $validatedData = $request->validate(self::VALIDATION_RULES_GENERATE_MEETS);
 
 
-        $start = new \DateTime($validatedData['datetime_range'][0]);
-        $end = new \DateTime($validatedData['datetime_range'][1]);
+        $start = new \DateTime($validatedData['datetime_range'][0], new \DateTimeZone(getenv('TIME_ZONE')));
+        $end = new \DateTime($validatedData['datetime_range'][1], new \DateTimeZone(getenv('TIME_ZONE')));
         $duration = (int) $validatedData['duration'];
         $targetDays = array_map('intval', $validatedData['days_multiple']); // convertit ["3", "4", "5"] en [3, 4, 5]
 
@@ -62,6 +62,8 @@ class GoogleMeetController extends Controller
 
         $h_start = ($start->format('H') < $end->format('H')) || ($start->format('H') == $end->format('H') && $start->format('H') < $end->format('H')) ? $start : $end;
         $h_end = $start == $h_start ? $end : $start;
+
+        $i = 0;
 
         try {
             foreach ($period as $day) {
@@ -84,23 +86,21 @@ class GoogleMeetController extends Controller
                         $timeslot->start_datetime = $slotStart->format('Y-m-d H:i:s');
                         $timeslot->end_datetime = $nextSlot->format('Y-m-d H:i:s');
                         $timeslot->save($validatedData);
+                        $i++;
 
                         $slotStart = $nextSlot;
                     }
                 }
             }
-            return response()->json([
-                'success' => true,
-                'message' => 'Plages horaire créée avec succès'
-            ]);
+            return to_route('meets')->with('success', "{$i} plages horaires créées  avec succès");
         } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => $e->getMessage()
-            ], 500);
+            return to_route('meets')->with('error', $e->getMessage());
         }
     }
 
+    /**
+     *
+     */
     public function book(Request $request, GoogleMeetService $meet, Timeslot $timeslot)
     {
 
@@ -124,8 +124,8 @@ class GoogleMeetController extends Controller
 
         $event = $meet->createEvent(
             $validatedData['summary'],
-            new \DateTime($timeslot->start_datetime),
-            new \DateTime($timeslot->end_datetime),
+            new \DateTime($timeslot->start_datetime, new \DateTimeZone(getenv('TIME_ZONE'))),
+            new \DateTime($timeslot->end_datetime, new \DateTimeZone(getenv('TIME_ZONE'))),
             $google_auth['email'],
             $google_auth['name']
         );
@@ -142,43 +142,6 @@ class GoogleMeetController extends Controller
             ], 500);
         }
     }
-
-    /**
-     * Display the specified resource.
-     */
-    /*
-    public function edit(Timeslot $timeslot)
-    {
-        if (!$timeslot->exists) {
-            abort(404, "Page non trouvée");
-        }
-        return Inertia::render('MeetsForm', [
-            'page' => $$timeslot->only(['id', 'summary', 'recipient_email', 'recipient_fullname', 'start_datetime', 'end_datetime'])
-        ]);
-    }
-        */
-
-    /**
-     * Update the specified resource in storage.
-     */
-    /*
-    public function update(Request $request, Timeslot $timeslot)
-    {
-        $validatedData = $request->validate(self::VALIDATION_RULES);
-        try {
-            $timeslot->update($validatedData);
-            return response()->json([
-                'success' => true,
-                'message' => 'Plage horaire modifiée avec succès'
-            ]);
-        } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => $e->getMessage()
-            ], 500);
-        }
-    }
-        */
 
     /**
      * Remove the specified resource from storage.
