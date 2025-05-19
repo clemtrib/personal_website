@@ -60,6 +60,7 @@ const handleDateClick = async ({ date }) => {
 const selectTimeslot = (id: number) => {
     selectedTimeslotId.value = id;
     form.timeslot_id = id;
+    console.log(route('meets.book', {'timeslot': form.timeslot_id}));
 
     nextTick(() => {
         if (formContainer.value) {
@@ -78,16 +79,21 @@ onMounted(() => {
     }
 });
 
+const hasGoogleToken = computed(() => {
+    return page.props.googleToken !== null;
+});
+
 const submit = async () => {
-    if (!window.grecaptcha) {
-        alert('reCAPTCHA non chargé');
+    if (!hasGoogleToken.value) {
+        window.location.href = route('google.auth');
         return;
     }
 
+    // Sinon, on continue normalement
     const token = await window.grecaptcha.execute(siteKey, { action: 'submit' });
     form.recaptcha_token = token;
 
-    form.post(route('meeting.store'), {
+    form.put(route('meets.book', {'timeslot': form.timeslot_id}), {
         preserveScroll: true,
         onSuccess: () => {
             nextTick(() => {
@@ -99,10 +105,16 @@ const submit = async () => {
         onFinish: () => form.reset('recipient_fullname', 'recipient_email', 'summary'),
     });
 };
+
 </script>
 
 <template>
-    <section v-if="props.readyToLoad && props.meetings?.length" id="meets" class="px-6 py-20 bg-[#0a192f] text-[#ccd6f6]" data-aos="fade-bottom">
+    <section
+        v-if="props.readyToLoad && props.meetings?.length"
+        id="meets"
+        class="px-6 py-20 bg-[#0a192f] text-[#ccd6f6]"
+        data-aos="fade-bottom"
+    >
         <h2 class="text-3xl font-bold mb-10 inline-block border-b-2 border-green-400">
             Prendre rendez-vous
         </h2>
@@ -110,49 +122,99 @@ const submit = async () => {
         <!-- Grille -->
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6 items-start">
 
-            <!-- Calendrier -->
+            <!-- Colonne calendrier (1/3) -->
             <div class="w-full flex justify-center">
-                <VCalendar :min-date="new Date()" :attributes="attrs" :is-dark="true" @dayclick="handleDateClick" />
+                <VCalendar
+                    :min-date="new Date()"
+                    :attributes="attrs"
+                    :is-dark="true"
+                    @dayclick="handleDateClick"
+                />
             </div>
 
-            <!-- Créneaux -->
-            <div ref="timeslotContainer" class="w-full">
-                <h3 class="text-lg font-semibold mb-2" v-if="selectedDate">Créneaux disponibles :</h3>
-                <div v-if="timeslots.length" class="flex flex-wrap gap-2">
-                    <button v-for="slot in timeslots" :key="slot.id" @click="selectTimeslot(slot.id)" class="px-4 py-2 rounded border transition-all duration-200" :class="[
+            <!-- Colonne créneaux + formulaire (2/3) -->
+            <div class="md:col-span-2 space-y-6">
+
+                <!-- Créneaux -->
+                <div ref="timeslotContainer" class="w-full">
+                    <h3 class="text-lg font-semibold mb-2" v-if="selectedDate">Créneaux disponibles :</h3>
+                    <div v-if="timeslots.length" class="flex flex-wrap gap-2">
+                        <button
+                            v-for="slot in timeslots"
+                            :key="slot.id"
+                            @click="selectTimeslot(slot.id)"
+                            class="px-4 py-2 rounded border transition-all duration-200"
+                            :class="[
                                 selectedTimeslotId === slot.id
                                     ? 'bg-green-400 text-[#0a192f] border-green-400'
                                     : 'bg-[#0a192f] text-white border-green-400 hover:bg-green-800'
-                            ]">
-                            {{ new Date(slot.start_datetime).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' }) }} -
+                            ]"
+                        >
+                            {{ new Date(slot.start_datetime).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' }) }}
+                            -
                             {{ new Date(slot.end_datetime).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' }) }}
                         </button>
-                </div>
-                <p v-else-if="selectedDate" class="text-gray-400">Aucun créneau disponible pour cette date.</p>
-            </div>
-
-            <!-- Formulaire -->
-            <form v-if="selectedTimeslotId && !formSubmitted" ref="formContainer" @submit.prevent="submit" class="max-w-full w-full grid gap-4">
-                <div>
-                    <Input id="recipient_fullname" type="text" required autocomplete="name" v-model="form.recipient_fullname" placeholder="Nom" class="p-2 rounded bg-[#0a192f] text-white border border-[#64ffda] w-full" />
-                    <InputError :message="form.errors.recipient_fullname" />
+                    </div>
+                    <p v-else-if="selectedDate" class="text-gray-400">
+                        Aucun créneau disponible pour cette date.
+                    </p>
                 </div>
 
-                <div>
-                    <Input id="recipient_email" type="email" required autocomplete="email" v-model="form.recipient_email" placeholder="Email" class="p-2 rounded bg-[#0a192f] text-white border border-[#64ffda] w-full" />
-                    <InputError :message="form.errors.recipient_email" />
-                </div>
+                <!-- Formulaire -->
+                <form
+                    v-if="selectedTimeslotId && !formSubmitted"
+                    ref="formContainer"
+                    @submit.prevent="submit"
+                    class="max-w-full w-full grid gap-4"
+                >
+                    <div>
+                        <Input
+                            id="recipient_fullname"
+                            type="text"
+                            required
+                            autocomplete="name"
+                            v-model="form.recipient_fullname"
+                            placeholder="Nom"
+                            class="p-2 rounded bg-[#0a192f] text-white border border-[#64ffda] w-full"
+                        />
+                        <InputError :message="form.errors.recipient_fullname" />
+                    </div>
 
-                <div>
-                    <Input id="summary" type="text" required v-model="form.summary" placeholder="Objet de la rencontre" class="p-2 rounded bg-[#0a192f] text-white border border-[#64ffda] w-full" />
-                    <InputError :message="form.errors.summary" />
-                </div>
+                    <div>
+                        <Input
+                            id="recipient_email"
+                            type="email"
+                            required
+                            autocomplete="email"
+                            v-model="form.recipient_email"
+                            placeholder="Email"
+                            class="p-2 rounded bg-[#0a192f] text-white border border-[#64ffda] w-full"
+                        />
+                        <InputError :message="form.errors.recipient_email" />
+                    </div>
 
-                <Button type="submit" class="mt-2 w-full bg-green-400 text-[#0a192f] px-4 py-2 rounded hover:bg-green-300 transition" :disabled="form.processing">
+                    <div>
+                        <Input
+                            id="summary"
+                            type="text"
+                            required
+                            v-model="form.summary"
+                            placeholder="Objet de la rencontre"
+                            class="p-2 rounded bg-[#0a192f] text-white border border-[#64ffda] w-full"
+                        />
+                        <InputError :message="form.errors.summary" />
+                    </div>
+
+                    <Button
+                        type="submit"
+                        class="mt-2 w-full bg-green-400 text-[#0a192f] px-4 py-2 rounded hover:bg-green-300 transition"
+                        :disabled="form.processing"
+                    >
                         <LoaderCircle v-if="form.processing" class="h-4 w-4 animate-spin" />
                         <span v-else>Envoyer</span>
                     </Button>
-            </form>
+                </form>
+            </div>
         </div>
 
         <!-- Messages -->
@@ -165,3 +227,4 @@ const submit = async () => {
         </div>
     </section>
 </template>
+

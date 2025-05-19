@@ -1,9 +1,13 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Session;
 use Inertia\Inertia;
 use App\Http\Controllers\OvhController;
 use App\Http\Controllers\SPAController;
+use App\Http\Controllers\GoogleAuthController;
+
+use App\Services\GoogleMeetService;
 
 /* Starter Laravel + VueJS */
 
@@ -40,3 +44,10 @@ Route::prefix('deploy')->group(function () {
     Route::get('/clear-cache', [OvhController::class, 'clearCache']);
     Route::get('/storage-link', [OvhController::class, 'storageLink']);
 });
+
+Route::get('/google/redirect', [GoogleAuthController::class, 'redirect']);
+Route::get('/auth/google/callback', [GoogleAuthController::class, 'callback'])->name('google.callback');
+
+Route::get('/auth/google', function (GoogleMeetService $meet) {
+    return redirect()->away($meet->getAuthUrl());
+})->name('google.auth');

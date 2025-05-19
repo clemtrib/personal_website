@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\Message;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Http;
 use Inertia\Inertia;
 
 class MessageController extends Controller
@@ -36,15 +35,7 @@ class MessageController extends Controller
     {
         try {
 
-            $response = Http::asForm()->post('https://www.google.com/recaptcha/api/siteverify', [
-                'secret' => getenv('RECAPTCHA_PRIVATE_KEY') ?? null,
-                'response' => $request->recaptcha_token,
-                'remoteip' => $request->ip(),
-            ]);
-
-            $result = $response->json();
-
-            if (!($result['success'] ?? false) || ($result['score'] ?? 0) < 0.5) {
+            if (!$this->verifyCaptcha($request)) {
                 return back()->withErrors(['general' => 'Échec de la vérification reCAPTCHA.']);
             }
 

@@ -4,6 +4,10 @@ use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use App\Http\Controllers\GoogleMeetController;
 
+// Route pour afficher la liste de messages
+//Route::post('meet', [GoogleMeetController::class, 'book'])->name('meets.book');
+Route::put('meet/{timeslot}', [GoogleMeetController::class, 'book'])->name('meets.book');
+
 Route::prefix('dashboard/meets')->middleware('auth')->group(function () {
     Route::get('/list', [GoogleMeetController::class, 'index'])->name('meets');
     Route::get('/create', function () { return Inertia::render('MeetsForm'); })->name('meets.create');

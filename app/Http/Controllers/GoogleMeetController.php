@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\Timeslot;
+use App\Services\GoogleMeetService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Session;
 use Inertia\Inertia;
 
 class GoogleMeetController extends Controller
@@ -14,8 +16,8 @@ class GoogleMeetController extends Controller
         'summary' => 'nullable|string|max:255',
         'recipient_email' => 'nullable|email|max:255',
         'recipient_fullname' => 'nullable|string|max:255',
-        'start_datetime' => 'required|date_format:Y-m-d H:i:s',
-        'end_datetime' => 'required|date_format:Y-m-d H:i:s',
+        //'start_datetime' => 'required|date_format:Y-m-d H:i:s',
+        //'end_datetime' => 'required|date_format:Y-m-d H:i:s',
     ];
 
     const VALIDATION_RULES_GENERATE_MEETS = [
@@ -33,8 +35,8 @@ class GoogleMeetController extends Controller
     public function index()
     {
         $timeslots = Timeslot::where('start_datetime', '>', Carbon::tomorrow())
-        ->orderBy('start_datetime', 'asc')
-        ->get();
+            ->orderBy('start_datetime', 'asc')
+            ->get();
         return Inertia::render('Meets', [
             'timeslots' => $timeslots
         ]);
@@ -99,9 +101,51 @@ class GoogleMeetController extends Controller
         }
     }
 
+    public function book(Request $request, GoogleMeetService $meet, Timeslot $timeslot)
+    {
+
+        if (!$this->verifyCaptcha($request)) {
+            return back()->withErrors(['general' => 'Échec de la vérification reCAPTCHA.']);
+        }
+
+        $validatedData = $request->validate(self::VALIDATION_RULES);
+
+        $token = Session::get('google_token');
+
+        if (!$token) {
+            return redirect()->route('google.auth');
+        }
+
+        $meet->setAccessToken($token);
+
+        $event = $meet->createEvent(
+            $validatedData['summary'],
+            new \DateTime($timeslot->start_datetime),
+            new \DateTime($timeslot->end_datetime),
+            $validatedData['recipient_email']
+        );
+
+        return response()->json([
+            'link' => $event->getHangoutLink(),
+        ]);
+
+        try {
+            $timeslot->update($validatedData);
+            return response()->json([
+                'link' => $event->getHangoutLink(),
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage()
+            ], 500);
+        }
+    }
+
     /**
      * Display the specified resource.
      */
+    /*
     public function edit(Timeslot $timeslot)
     {
         if (!$timeslot->exists) {
@@ -111,10 +155,12 @@ class GoogleMeetController extends Controller
             'page' => $$timeslot->only(['id', 'summary', 'recipient_email', 'recipient_fullname', 'start_datetime', 'end_datetime'])
         ]);
     }
+        */
 
     /**
      * Update the specified resource in storage.
      */
+    /*
     public function update(Request $request, Timeslot $timeslot)
     {
         $validatedData = $request->validate(self::VALIDATION_RULES);
@@ -131,6 +177,7 @@ class GoogleMeetController extends Controller
             ], 500);
         }
     }
+        */
 
     /**
      * Remove the specified resource from storage.
