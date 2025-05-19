@@ -10,6 +10,7 @@ use App\Models\Page;
 use App\Models\Timeslot;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Session;
 use Inertia\Inertia;
 
 class SPAController extends Controller
@@ -51,8 +52,9 @@ class SPAController extends Controller
             ->get()
             ->groupBy(fn($slot) => Carbon::parse($slot->start_datetime)->toDateString())
             ->keys();
+        $google_auth = Session::get('google_userinfo');
         if (Cache::has($key)) {
-            $value = array_merge(Cache::get($key), ['cache' => 1, 'meetings' => $timeslots]);
+            $value = array_merge(Cache::get($key), ['cache' => 1, 'meetings' => $timeslots, 'google_auth' => $google_auth]);
         } else {
             $response = [
                 'config' => [
@@ -67,10 +69,11 @@ class SPAController extends Controller
                 'schools' => Education::orderByRaw('date IS NOT NULL, date DESC')->get(),
                 'hobbies' => Hobby::orderBy('order', 'asc')->get(),
                 'skills' => Skill::orderBy('order', 'asc')->get(),
-                'content' => Page::where('page_slug', 'home')->first()
+                'content' => Page::where('page_slug', 'home')->first(),
+                'google_auth_url' => route('google.auth'),
             ];
             Cache::add($key, $response, now()->addHours(12));
-            $value = array_merge($response, ['cache' => 0, 'meetings' => $timeslots]);
+            $value = array_merge($response, ['cache' => 0, 'meetings' => $timeslots, 'google_auth' => $google_auth]);
         }
         return response()->json($value);
     }

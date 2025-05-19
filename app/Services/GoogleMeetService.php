@@ -39,12 +39,12 @@ class GoogleMeetService
         $this->client->setAccessToken($token);
     }
 
-    public function createEvent(string $summary, DateTime $startDateTime, DateTime $endDateTime, string $recipient)
+    public function createEvent(string $summary, DateTime $startDateTime, DateTime $endDateTime, string $recipientEmail, string $recipientFullname)
     {
         $calendarService = new Google_Service_Calendar($this->client);
 
         $event = new Google_Service_Calendar_Event([
-            'summary' => $summary,
+            'summary' => "{$recipientFullname} - {$summary}",
             'start' => [
                 'dateTime' => $startDateTime->format(DateTime::ATOM),
                 'timeZone' => 'America/Montreal',
@@ -54,7 +54,7 @@ class GoogleMeetService
                 'timeZone' => 'America/Montreal',
             ],
             'attendees' => [
-                ['email' => Session::get('google_email')],
+                ['email' => $recipientEmail],
                 ['email' => env('GOOGLE_MEET_EMAIL')],
             ],
             'conferenceData' => [

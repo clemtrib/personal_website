@@ -14,8 +14,8 @@ class GoogleMeetController extends Controller
 
     const VALIDATION_RULES = [
         'summary' => 'nullable|string|max:255',
-        'recipient_email' => 'nullable|email|max:255',
-        'recipient_fullname' => 'nullable|string|max:255',
+        //'recipient_email' => 'nullable|email|max:255',
+        //'recipient_fullname' => 'nullable|string|max:255',
         //'start_datetime' => 'required|date_format:Y-m-d H:i:s',
         //'end_datetime' => 'required|date_format:Y-m-d H:i:s',
     ];
@@ -111,6 +111,7 @@ class GoogleMeetController extends Controller
         $validatedData = $request->validate(self::VALIDATION_RULES);
 
         $token = Session::get('google_token');
+        $google_auth = Session::get('google_userinfo');
 
         if (!$token) {
             return redirect()->route('google.auth');
@@ -118,11 +119,15 @@ class GoogleMeetController extends Controller
 
         $meet->setAccessToken($token);
 
+        $timeslot->recipient_email = $google_auth['email'];
+        $timeslot->recipient_fullname = $google_auth['name'];
+
         $event = $meet->createEvent(
             $validatedData['summary'],
             new \DateTime($timeslot->start_datetime),
             new \DateTime($timeslot->end_datetime),
-            $validatedData['recipient_email']
+            $google_auth['email'],
+            $google_auth['name']
         );
 
         return response()->json([

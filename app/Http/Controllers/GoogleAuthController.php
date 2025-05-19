@@ -43,11 +43,13 @@ class GoogleAuthController extends Controller
             $userInfo = $oauth2->userinfo->get();
 
             // Exemple : récupérer l'email
-            $email = $userInfo->email;
-            Session::put('google_email', $email);
+            Session::put('google_userinfo', [
+                'email' => $userInfo->email,
+                'name' => $userInfo->name,
+                'picture' => $userInfo->picture,
+            ]);
 
-            //return redirect('/dashboard')->with('success', 'Google connecté !');
-            return redirect('/');
+            return redirect('/#meets');
         }
 
         return redirect('/')->withErrors('Erreur OAuth');

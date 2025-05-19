@@ -17,15 +17,18 @@ import ContactForm from '@/components/front/ContactForm.vue';
 import Meets from '@/components/front/Meets.vue';
 import Footer from '@/components/front/Footer.vue';
 
-const page = ref([]);
-const schools = ref([]);
-const skills = ref([]);
-const experiences = ref([]);
-const hobbies = ref([]);
-const config = ref([]);
-const home = ref([]);
-const meetings = ref([]);
-const readyToLoad = ref([]);
+const page = ref([]),
+    schools = ref([]),
+    skills = ref([]),
+    experiences = ref([]),
+    hobbies = ref([]),
+    config = ref([]),
+    home = ref([]),
+    meetings = ref([]),
+    readyToLoad = ref([]),
+    googleauth = ref([]),
+    googleauthurl = ref([]);
+
 readyToLoad.value = false;
 const siteKey =
     import.meta.env.VITE_RECAPTCHA_SITE_KEY;
@@ -50,7 +53,8 @@ onMounted(async () => {
         config.value = response.data.config;
         home.value = response.data.content;
         meetings.value = response.data.meetings;
-        console.log(meetings.value);
+        googleauth.value = response.data.google_auth;
+        googleauthurl.value = response.data.google_auth_url;
         readyToLoad.value = true;
     } catch (error) {
         console.error('Erreur lors de la récupération des messages:', error);
@@ -72,7 +76,7 @@ onMounted(async () => {
         <HobbiesSection :home=home :hobbies=hobbies :readyToLoad=readyToLoad />
         <TJMSection :config=config :readyToLoad=readyToLoad />
         <ContactForm :readyToLoad=readyToLoad :siteKey=siteKey />
-        <Meets v-if="readyToLoad" :readyToLoad=readyToLoad :siteKey=siteKey :meetings=meetings />
+        <Meets v-if="readyToLoad" :readyToLoad=readyToLoad :siteKey=siteKey :meetings=meetings :googleauth=googleauth :googleauthurl=googleauthurl />
         <Footer :config=config :readyToLoad=readyToLoad />
     </div>
 </template>
