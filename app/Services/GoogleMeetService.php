@@ -5,6 +5,7 @@ namespace App\Services;
 use Google_Client;
 use Google_Service_Calendar;
 use Google_Service_Calendar_Event;
+use Illuminate\Support\Facades\Session;
 use DateTime;
 
 class GoogleMeetService
@@ -16,6 +17,8 @@ class GoogleMeetService
         $this->client = new Google_Client();
         $this->client->setAuthConfig(storage_path('app/google/credentials.json'));
         $this->client->addScope(Google_Service_Calendar::CALENDAR);
+        $this->client->addScope('email');
+        $this->client->addScope('profile');
         $this->client->setRedirectUri(route('google.callback'));
         $this->client->setAccessType('offline');
     }
@@ -51,7 +54,7 @@ class GoogleMeetService
                 'timeZone' => 'America/Montreal',
             ],
             'attendees' => [
-                ['email' => $recipient],
+                ['email' => Session::get('google_email')],
                 ['email' => env('GOOGLE_MEET_EMAIL')],
             ],
             'conferenceData' => [
