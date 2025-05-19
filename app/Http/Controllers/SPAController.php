@@ -44,10 +44,13 @@ class SPAController extends Controller
 
         $key = config('app.cache_key');
         $timeslots = Timeslot::where('start_datetime', '>', now())
-        ->orderBy('start_datetime')
-        ->get()
-        ->groupBy(fn($slot) => Carbon::parse($slot->start_datetime)->toDateString())
-        ->keys();
+            ->whereNull('summary')
+            ->whereNull('recipient_fullname')
+            ->whereNull('recipient_email')
+            ->orderBy('start_datetime')
+            ->get()
+            ->groupBy(fn($slot) => Carbon::parse($slot->start_datetime)->toDateString())
+            ->keys();
         if (Cache::has($key)) {
             $value = array_merge(Cache::get($key), ['cache' => 1, 'meetings' => $timeslots]);
         } else {
@@ -72,6 +75,18 @@ class SPAController extends Controller
         return response()->json($value);
     }
 
-
-    public function getMeetingTimeslots($date) {}
+    /**
+     *
+     */
+    public function getMeetingTimeslots(string $date)
+    {
+        $timeslots = Timeslot::where('start_datetime', '>=', $date . ' 00:00:00')
+            ->where('start_datetime', '<=', $date . ' 23:59:59')
+            ->whereNull('summary')
+            ->whereNull('recipient_fullname')
+            ->whereNull('recipient_email')
+            ->orderBy('start_datetime')
+            ->get();
+        return response()->json($timeslots);
+    }
 }

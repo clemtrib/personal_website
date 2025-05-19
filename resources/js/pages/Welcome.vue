@@ -72,7 +72,7 @@ onMounted(async () => {
         <HobbiesSection :home=home :hobbies=hobbies :readyToLoad=readyToLoad />
         <TJMSection :config=config :readyToLoad=readyToLoad />
         <ContactForm :readyToLoad=readyToLoad :siteKey=siteKey />
-        <Meets :readyToLoad=readyToLoad :siteKey=siteKey :meetings=meetings />
+        <Meets v-if="readyToLoad" :readyToLoad=readyToLoad :siteKey=siteKey :meetings=meetings />
         <Footer :config=config :readyToLoad=readyToLoad />
     </div>
 </template>

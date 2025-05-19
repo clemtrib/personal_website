@@ -28,6 +28,7 @@ require __DIR__ . '/meets.php';
 /* Front: affichage des données */
 Route::prefix('api/spa')->group(function () {
     Route::get('/list', [SPAController::class, 'index'])->name('spa.index');
+    Route::get('/timeslots/{date}', [SPAController::class, 'getMeetingTimeslots'])->name('spa.timeslots');
 });
 
 /* OVH: gestion des images */

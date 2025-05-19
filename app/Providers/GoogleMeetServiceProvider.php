@@ -41,7 +41,7 @@ class GoogleMeetServiceProvider extends ServiceProvider
             ],
             'attendees' => [
                 ['email' => $recipient],
-                ['email' => getenv('')],
+                ['email' => getenv('GOOGLE_MEET_EMAIL')],
             ],
             'conferenceData' => [
                 'createRequest' => [
