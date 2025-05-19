@@ -76,7 +76,12 @@ const selectTimeslot = (id: number) => {
 
 onMounted(() => {
     if (props.meetings?.length) {
-        const parsedDates = props.meetings.map(date => new Date(date + 'T00:00:00.000Z'));
+        const parsedDates = props.meetings.map(date => {
+            // Crée la date en local, sans UTC
+            const [year, month, day] = date.split('-').map(Number);
+            return new Date(year, month - 1, day);
+        });
+
         attrs.value = [{
             highlight: 'green',
             dates: parsedDates
@@ -133,7 +138,7 @@ const submit = async () => {
 
                     <!-- Créneaux -->
                     <div ref="timeslotContainer" class="w-full">
-                        <h3 class="text-lg font-semibold mb-2" v-if="selectedDate">Créneaux disponibles :</h3>
+                        <h3 class="text-lg font-semibold mb-2" v-if="selectedDate">Plages horaire disponibles :</h3>
                         <div v-if="timeslots.length" class="flex flex-wrap gap-2">
                             <button v-for="slot in timeslots" :key="slot.id" @click="selectTimeslot(slot.id)" class="px-4 py-2 rounded border transition-all duration-200" :class="[
                                         selectedTimeslotId === slot.id
@@ -146,14 +151,14 @@ const submit = async () => {
                                 </button>
                         </div>
                         <p v-else-if="selectedDate" class="text-gray-400">
-                            Aucun créneau disponible pour cette date.
+                            Aucune plage horaire disponible pour cette date.
                         </p>
                         <template v-else>
                             <h3 class="text-lg font-semibold mb-2">
                                 {{ props.googleauth?.email }} est identifié.
                             </h3>
                             <p class="text-gray-400">
-                                Choisir une date.
+                                Choisir une date dans le calendrier.
                             </p>
                         </template>
                     </div>

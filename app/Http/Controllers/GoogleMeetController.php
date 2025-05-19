@@ -130,10 +130,6 @@ class GoogleMeetController extends Controller
             $google_auth['name']
         );
 
-        return response()->json([
-            'link' => $event->getHangoutLink(),
-        ]);
-
         try {
             $timeslot->update($validatedData);
             return response()->json([
