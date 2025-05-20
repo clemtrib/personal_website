@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Head, useForm, usePage } from '@inertiajs/vue3';
-import { LoaderCircle, MailCheck } from 'lucide-vue-next';
+import { LoaderCircle, MailCheck, MailX } from 'lucide-vue-next';
 import { ref, onMounted, nextTick, computed, watch } from 'vue';
 import gsap from 'gsap';
 
@@ -20,9 +20,10 @@ const form = useForm({
 });
 
 // Variables
-const successMessage = ref < HTMLElement | null > (null);
 const page = usePage();
-const formSubmitted = computed(() => !!page.props.flash.success);
+const successMessage = computed(() => page.props.flash?.success_message);
+const failureMessage = computed(() => page.props.flash?.failure_message);
+
 const siteKey =
     import.meta.env.VITE_RECAPTCHA_SITE_KEY;
 
@@ -82,6 +83,7 @@ const submit = async () => {
         preserveScroll: true,
         onSuccess: () => {
             nextTick(() => {
+                /*
                 if (successMessage.value) {
                     gsap.fromTo(
                         successMessage.value, { opacity: 0, y: 30 }, {
@@ -92,6 +94,7 @@ const submit = async () => {
                         }
                     );
                 }
+                */
             });
         },
         onFinish: () => form.reset('fullname', 'email', 'message'),
@@ -105,16 +108,21 @@ const submit = async () => {
             Contact
         </h2>
 
-        <div v-if="formSubmitted" ref="successMessage" class="text-center justify-center text-lg text-green-400 gap-4 mt-2">
-            <p class="w-full">{{ page.props.flash.success }}</p>
+        <div v-if="successMessage" ref="successMessage" class="text-center justify-center text-lg text-green-400 gap-4 mt-2">
+            <p class="w-full">{{ successMessage }}</p>
             <p class="w-full flex justify-center pt-10"><MailCheck :size="40" /></p>
+        </div>
+
+        <div v-if="failureMessage" ref="failureMessage" class="text-center justify-center text-lg text-green-400 gap-4 mt-2">
+            <p class="w-full">{{ failureMessage }}</p>
+            <p class="w-full flex justify-center pt-10"><MailX :size="40" /></p>
         </div>
 
         <div v-if="form.hasErrors && form.errors.general" class="text-red-400 text-center mb-4">
             {{ form.errors.general }}
         </div>
 
-        <form v-if="!formSubmitted" @submit.prevent="submit" class="max-w-xl mx-auto grid gap-4">
+        <form v-if="!successMessage" @submit.prevent="submit" class="max-w-xl mx-auto grid gap-4">
             <div>
                 <Input id="fullname" type="text" required autocomplete="name" v-model="form.fullname" placeholder="Nom" class="gsap-hover p-2 rounded bg-[#0a192f] text-white border border-[#64ffda]" />
                 <InputError :message="form.errors.fullname" />

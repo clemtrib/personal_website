@@ -2,14 +2,13 @@
 import VueDatePicker from '@vuepic/vue-datepicker';
 import '@vuepic/vue-datepicker/dist/main.css';
 import axios from 'axios';
-
 import InputError from '@/components/InputError.vue';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useForm, usePage } from '@inertiajs/vue3';
-import { LoaderCircle } from 'lucide-vue-next';
 import { ref, onMounted, nextTick, computed } from 'vue';
 import gsap from 'gsap';
+import { LoaderCircle, CalendarCheck2, CalendarX2 } from 'lucide-vue-next';
 
 const props = defineProps < {
     readyToLoad: boolean;
@@ -27,15 +26,15 @@ const props = defineProps < {
 } > ();
 
 const form = useForm({
-    recipient_fullname: '',
-    recipient_email: '',
     summary: '',
     timeslot_id: null,
     recaptcha_token: '',
 });
 
 const page = usePage();
-const formSubmitted = computed(() => !!page.props.flash.success);
+const successMeeting = computed(() => page.props.flash?.success_meeting);
+const failureMeeting = computed(() => page.props.flash?.failure_meeting);
+const confirmedMeeting = computed(() => page.props.flash?.confirmed_meeting);
 
 const selectedDate = ref < Date | null > (null);
 const attrs = ref([]);
@@ -47,6 +46,7 @@ const siteKey =
 const timeslotContainer = ref(null);
 const formContainer = ref(null);
 const successMessage = ref < HTMLElement | null > (null);
+const confirmedSlot = ref<{ start: string; end: string } | null>(null);
 
 const handleDateClick = async ({ date }) => {
     selectedDate.value = date;
@@ -110,11 +110,14 @@ const submit = async () => {
     form.put(route('meets.book', { 'timeslot': form.timeslot_id }), {
         preserveScroll: true,
         onSuccess: () => {
-            nextTick(() => {
-                if (successMessage.value) {
-                    gsap.fromTo(successMessage.value, { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.8 });
-                }
-            });
+            const selectedSlot = timeslots.value.find(slot => slot.id === selectedTimeslotId.value);
+
+            if (selectedSlot) {
+                confirmedSlot.value = {
+                    start: selectedSlot.start_datetime,
+                    end: selectedSlot.end_datetime,
+                };
+            }
         },
         onFinish: () => form.reset('recipient_fullname', 'recipient_email', 'summary'),
     });
@@ -127,8 +130,30 @@ const submit = async () => {
             Prendre rendez-vous
         </h2>
 
+        <!-- Message de confirmation -->
+        <template v-if="successMeeting">
+            <div  class="text-center justify-center text-lg text-green-400 gap-4 mt-2">
+                <p class="w-full">{{ successMeeting }}</p>
+                <p class="w-full flex justify-center pt-10 pb-10"><CalendarCheck2 :size="40" /></p>
+                <p v-if="confirmedMeeting" class="w-full">
+                📅 {{ confirmedMeeting.date }}<br>
+                🕒 {{ confirmedMeeting.start }} – {{ confirmedMeeting.end }}<br>
+                🔗 <a :href="confirmedMeeting.link" class="text-blue-600 underline" target="_blank">Lien Google Meet</a>
+                </p>
+            </div>
+        </template>
+
+        <template v-else-if="failureMeeting">
+            <div  class="text-center justify-center text-lg text-green-400 gap-4 mt-2">
+                <p class="w-full">{{ failureMeeting }}</p>
+                <p class="w-full flex justify-center pt-10 pb-10"><CalendarX2 :size="40" /></p>
+            </div>
+        </template>
+
+        <!-- Contenu normal (calendrier + formulaire) -->
+
         <!-- Grille -->
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 items-start">
+        <div v-else class="grid grid-cols-1 md:grid-cols-3 gap-6 items-start">
 
             <!-- Colonne calendrier (1/3) -->
             <div class="w-full flex justify-center">
@@ -179,7 +204,7 @@ const submit = async () => {
                     </div>
 
                     <!-- Formulaire -->
-                    <form v-if="selectedTimeslotId && !formSubmitted" ref="formContainer" @submit.prevent="submit" class="max-w-full w-full grid gap-4">
+                    <form v-if="selectedTimeslotId && !successMeeting" ref="formContainer" @submit.prevent="submit" class="max-w-full w-full grid gap-4">
                         <div>
                             <p class="p-2 rounded bg-[#0a192f] text-white border border-[#64ffda] w-full">{{ props.googleauth?.name }}</p>
                         </div>

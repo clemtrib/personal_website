@@ -7,6 +7,7 @@ use Google_Service_Calendar;
 use Google_Service_Calendar_Event;
 use Illuminate\Support\Facades\Session;
 use DateTime;
+use DateTimeImmutable;
 
 class GoogleMeetService
 {
@@ -39,7 +40,7 @@ class GoogleMeetService
         $this->client->setAccessToken($token);
     }
 
-    public function createEvent(string $summary, DateTime $startDateTime, DateTime $endDateTime, string $recipientEmail, string $recipientFullname)
+    public function createEvent(string $summary, DateTime|DateTimeImmutable $startDateTime, DateTime|DateTimeImmutable $endDateTime, string $recipientEmail, string $recipientFullname)
     {
         $calendarService = new Google_Service_Calendar($this->client);
 

@@ -50,8 +50,8 @@ class GoogleMeetController extends Controller
         $validatedData = $request->validate(self::VALIDATION_RULES_GENERATE_MEETS);
 
 
-        $start = new \DateTime($validatedData['datetime_range'][0], new \DateTimeZone(getenv('TIME_ZONE')));
-        $end = new \DateTime($validatedData['datetime_range'][1], new \DateTimeZone(getenv('TIME_ZONE')));
+        $start = new \DateTimeImmutable($validatedData['datetime_range'][0], new \DateTimeZone(getenv('TIME_ZONE')));
+        $end = new \DateTimeImmutable($validatedData['datetime_range'][1], new \DateTimeZone(getenv('TIME_ZONE')));
         $duration = (int) $validatedData['duration'];
         $targetDays = array_map('intval', $validatedData['days_multiple']); // convertit ["3", "4", "5"] en [3, 4, 5]
 
@@ -85,7 +85,7 @@ class GoogleMeetController extends Controller
                         $timeslot->recipient_fullname = null;
                         $timeslot->start_datetime = $slotStart->format('Y-m-d H:i:s');
                         $timeslot->end_datetime = $nextSlot->format('Y-m-d H:i:s');
-                        $timeslot->save($validatedData);
+                        $timeslot->save();
                         $i++;
 
                         $slotStart = $nextSlot;
@@ -105,7 +105,17 @@ class GoogleMeetController extends Controller
     {
 
         if (!$this->verifyCaptcha($request)) {
-            return back()->withErrors(['general' => 'Échec de la vérification reCAPTCHA.']);
+            return back()->with([
+                'flash' =>
+                ['failure_meeting' => 'Échec de la vérification reCAPTCHA.']
+            ]);
+        }
+
+        if ($timeslot->recipient_email !== null) {
+            return back()->with([
+                'flash' =>
+                ['failure_meeting' => 'Cette plage horaire a déjà été réservé.']
+            ]);
         }
 
         $validatedData = $request->validate(self::VALIDATION_RULES);
@@ -122,24 +132,36 @@ class GoogleMeetController extends Controller
         $timeslot->recipient_email = $google_auth['email'];
         $timeslot->recipient_fullname = $google_auth['name'];
 
+        $startDt = new \DateTimeImmutable($timeslot->start_datetime, new \DateTimeZone(getenv('TIME_ZONE')));
+        $endDt = new \DateTimeImmutable($timeslot->end_datetime, new \DateTimeZone(getenv('TIME_ZONE')));
+
         $event = $meet->createEvent(
             $validatedData['summary'],
-            new \DateTime($timeslot->start_datetime, new \DateTimeZone(getenv('TIME_ZONE'))),
-            new \DateTime($timeslot->end_datetime, new \DateTimeZone(getenv('TIME_ZONE'))),
+            $startDt,
+            $endDt,
             $google_auth['email'],
             $google_auth['name']
         );
 
         try {
             $timeslot->update($validatedData);
-            return response()->json([
-                'link' => $event->getHangoutLink(),
+
+            return back()->with([
+                'flash' => [
+                    'success_meeting' => 'Votre rendez-vous est confirmé !',
+                    'confirmed_meeting' => [
+                        'date' => $startDt->format('d/m/Y'),
+                        'start' => $startDt->format('H:i'),
+                        'end' => $endDt->format('H:i'),
+                        'link' => $event->getHangoutLink(),
+                    ]
+                ]
             ]);
         } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => $e->getMessage()
-            ], 500);
+            return back()->with([
+                'flash' =>
+                ['failure_meeting' => $e->getMessage()]
+            ]);
         }
     }
 

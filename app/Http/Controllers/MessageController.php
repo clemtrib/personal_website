@@ -36,7 +36,11 @@ class MessageController extends Controller
         try {
 
             if (!$this->verifyCaptcha($request)) {
-                return back()->withErrors(['general' => 'Échec de la vérification reCAPTCHA.']);
+                return back()->with([
+                    'flash' => [
+                        'failure_message' => 'Échec de la vérification reCAPTCHA.'
+                    ]
+                ]);
             }
 
             $validatedData = $request->validate(self::VALIDATION_RULES);
@@ -45,9 +49,17 @@ class MessageController extends Controller
             $message->email = $this->sanitizeInput($validatedData['email']);
             $message->message = $this->sanitizeInput($validatedData['message']);
             $message->save();
-            return redirect()->back()->with('success', 'Merci pour votre message ! Je vous répondrai dès que possible.');
+            return back()->with([
+                'flash' => [
+                    'success_message' => 'Merci pour votre message ! Je vous répondrai dès que possible.',
+                ]
+            ]);
         } catch (\Exception $e) {
-            return back()->withErrors(['error' => $e->getMessage()]);
+            return back()->with([
+                'flash' => [
+                    'failure_message' => $e->getMessage(),
+                ]
+            ]);
         }
     }
 
