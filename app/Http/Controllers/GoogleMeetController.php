@@ -14,10 +14,6 @@ class GoogleMeetController extends Controller
 
     const VALIDATION_RULES = [
         'summary' => 'nullable|string|max:255',
-        //'recipient_email' => 'nullable|email|max:255',
-        //'recipient_fullname' => 'nullable|string|max:255',
-        //'start_datetime' => 'required|date_format:Y-m-d H:i:s',
-        //'end_datetime' => 'required|date_format:Y-m-d H:i:s',
     ];
 
     const VALIDATION_RULES_GENERATE_MEETS = [
@@ -27,7 +23,6 @@ class GoogleMeetController extends Controller
         'datetime_range' => ['required', 'array', 'size:2'],
         'datetime_range.*' => ['required', 'date_format:Y-m-d\TH:i:sP'],
     ];
-
 
     /**
      * Display a listing of the resource.

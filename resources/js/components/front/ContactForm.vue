@@ -9,7 +9,7 @@ import { ref, onMounted, nextTick, computed, watch } from 'vue';
 import gsap from 'gsap';
 
 // Props
-const props = defineProps < { readyToLoad: boolean } > ();
+const props = defineProps<{ readyToLoad: boolean }>();
 
 // Formulaire Inertia
 const form = useForm({
@@ -24,8 +24,8 @@ const page = usePage();
 const successMessage = computed(() => page.props.flash?.success_message);
 const failureMessage = computed(() => page.props.flash?.failure_message);
 
-const siteKey =
-    import.meta.env.VITE_RECAPTCHA_SITE_KEY;
+const siteKey = import.meta.env.VITE_RECAPTCHA_SITE_KEY;
+const showForm = ref(true); // 🔁 Pour forcer le re-render du formulaire
 
 // Animation GSAP
 function setupGsapAnimations() {
@@ -58,16 +58,25 @@ onMounted(() => {
     }
 });
 
-watch(
-    () => props.readyToLoad,
-    (newValue) => {
-        if (newValue) {
-            nextTick(() => {
-                setupGsapAnimations();
-            });
-        }
+watch(() => props.readyToLoad, (newValue) => {
+    if (newValue) {
+        nextTick(() => {
+            setupGsapAnimations();
+        });
     }
-);
+});
+
+// Fonction pour vider les champs sans toucher à recaptcha_token
+const resetFormFields = () => {
+    form.fullname = '';
+    form.email = '';
+    form.message = '';
+
+    showForm.value = false;
+    nextTick(() => {
+        showForm.value = true;
+    });
+};
 
 // Envoi du formulaire avec reCAPTCHA
 const submit = async () => {
@@ -83,21 +92,12 @@ const submit = async () => {
         preserveScroll: true,
         onSuccess: () => {
             nextTick(() => {
-                /*
-                if (successMessage.value) {
-                    gsap.fromTo(
-                        successMessage.value, { opacity: 0, y: 30 }, {
-                            opacity: 1,
-                            y: 0,
-                            duration: 0.8,
-                            ease: 'power2.out',
-                        }
-                    );
-                }
-                */
+                // éventuelle animation sur succès
             });
         },
-        onFinish: () => form.reset('fullname', 'email', 'message'),
+        onFinish: () => {
+            resetFormFields(); // 👈 vide les champs et déclenche le remount
+        },
     });
 };
 </script>
@@ -122,26 +122,53 @@ const submit = async () => {
             {{ form.errors.general }}
         </div>
 
-        <form v-if="!successMessage" @submit.prevent="submit" class="max-w-xl mx-auto grid gap-4">
+        <form v-if="!successMessage && !failureMessage && showForm" @submit.prevent="submit" class="max-w-xl mx-auto grid gap-4">
             <div>
-                <Input id="fullname" type="text" required autocomplete="name" v-model="form.fullname" placeholder="Nom" class="gsap-hover p-2 rounded bg-[#0a192f] text-white border border-[#64ffda]" />
+                <Input
+                    id="fullname"
+                    type="text"
+                    required
+                    autocomplete="name"
+                    v-model="form.fullname"
+                    placeholder="Nom"
+                    class="gsap-hover p-2 rounded bg-[#0a192f] text-white border border-[#64ffda]"
+                />
                 <InputError :message="form.errors.fullname" />
             </div>
 
             <div>
-                <Input id="email" type="email" required autocomplete="email" v-model="form.email" placeholder="Email" class="gsap-hover p-2 rounded bg-[#0a192f] text-white border border-[#64ffda]" />
+                <Input
+                    id="email"
+                    type="email"
+                    required
+                    autocomplete="email"
+                    v-model="form.email"
+                    placeholder="Email"
+                    class="gsap-hover p-2 rounded bg-[#0a192f] text-white border border-[#64ffda]"
+                />
                 <InputError :message="form.errors.email" />
             </div>
 
             <div>
-                <Textarea id="message" required v-model.trim="form.message" placeholder="Message" :rows="4" class="gsap-hover rounded bg-[#0a192f] text-white border border-[#64ffda]" />
+                <Textarea
+                    id="message"
+                    required
+                    v-model.trim="form.message"
+                    placeholder="Message"
+                    :rows="4"
+                    class="gsap-hover rounded bg-[#0a192f] text-white border border-[#64ffda]"
+                />
                 <InputError :message="form.errors.message" />
             </div>
 
-            <Button type="submit" class="mt-2 w-full gsap-hover bg-green-400 text-[#0a192f] px-4 py-2 rounded hover:bg-green-300 transition" :disabled="form.processing">
-            <LoaderCircle v-if="form.processing" class="h-4 w-4 animate-spin" />
-            <span v-else>Envoyer</span>
-          </Button>
+            <Button
+                type="submit"
+                class="mt-2 w-full gsap-hover bg-green-400 text-[#0a192f] px-4 py-2 rounded hover:bg-green-300 transition"
+                :disabled="form.processing"
+            >
+                <LoaderCircle v-if="form.processing" class="h-4 w-4 animate-spin" />
+                <span v-else>Envoyer</span>
+            </Button>
         </form>
     </section>
 </template>
