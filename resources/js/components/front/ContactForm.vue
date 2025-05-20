@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Head, useForm, usePage } from '@inertiajs/vue3';
-import { LoaderCircle } from 'lucide-vue-next';
+import { LoaderCircle, MailCheck } from 'lucide-vue-next';
 import { ref, onMounted, nextTick, computed, watch } from 'vue';
 import gsap from 'gsap';
 
@@ -105,8 +105,9 @@ const submit = async () => {
             Contact
         </h2>
 
-        <div v-if="formSubmitted" ref="successMessage" class="text-center text-lg text-green-400">
-            {{ page.props.flash.success }}
+        <div v-if="formSubmitted" ref="successMessage" class="text-center justify-center text-lg text-green-400 gap-4 mt-2">
+            <p class="w-full">{{ page.props.flash.success }}</p>
+            <p class="w-full flex justify-center pt-10"><MailCheck :size="40" /></p>
         </div>
 
         <div v-if="form.hasErrors && form.errors.general" class="text-red-400 text-center mb-4">

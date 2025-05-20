@@ -42,7 +42,6 @@ class SPAController extends Controller
      */
     public function index()
     {
-
         $key = config('app.cache_key');
         $timeslots = Timeslot::where('start_datetime', '>', now())
             ->whereNull('summary')
@@ -53,8 +52,16 @@ class SPAController extends Controller
             ->groupBy(fn($slot) => Carbon::parse($slot->start_datetime)->toDateString())
             ->keys();
         $google_auth = Session::get('google_userinfo');
+        $user_meet = null;
+        if ($google_auth) {
+            $user_meet = Timeslot::select('start_datetime', 'end_datetime')
+                ->where('start_datetime', '>', now())
+                ->where('recipient_email', '=', $google_auth['email'])
+                ->orderBy('start_datetime')
+                ->first();
+        }
         if (Cache::has($key)) {
-            $value = array_merge(Cache::get($key), ['cache' => 1, 'meetings' => $timeslots, 'google_auth' => $google_auth]);
+            $value = array_merge(Cache::get($key), ['cache' => 1, 'meetings' => $timeslots, 'google_auth' => $google_auth, 'user_meet' => $user_meet]);
         } else {
             $response = [
                 'config' => [
@@ -73,7 +80,7 @@ class SPAController extends Controller
                 'google_auth_url' => route('google.auth'),
             ];
             Cache::add($key, $response, now()->addHours(12));
-            $value = array_merge($response, ['cache' => 0, 'meetings' => $timeslots, 'google_auth' => $google_auth]);
+            $value = array_merge($response, ['cache' => 0, 'meetings' => $timeslots, 'google_auth' => $google_auth, 'user_meet' => $user_meet]);
         }
         return response()->json($value);
     }

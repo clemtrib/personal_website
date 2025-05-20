@@ -45,7 +45,7 @@ class MessageController extends Controller
             $message->email = $this->sanitizeInput($validatedData['email']);
             $message->message = $this->sanitizeInput($validatedData['message']);
             $message->save();
-            return redirect()->back()->with('success', 'Message envoyé avec succès');
+            return redirect()->back()->with('success', 'Merci pour votre message ! Je vous répondrai dès que possible.');
         } catch (\Exception $e) {
             return back()->withErrors(['error' => $e->getMessage()]);
         }

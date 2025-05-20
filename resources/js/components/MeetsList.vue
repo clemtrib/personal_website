@@ -43,10 +43,10 @@ const openDeleteModal = (id: number) => {
                                 </span>
                                 <span>
                                 {{
-                                new Date(meet.start_datetime).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })
+                                new Date(meet.start_datetime).toLocaleTimeString('fr-CA', { hour: '2-digit', minute: '2-digit' })
                                 }}  <span class="text-gray-600 dark:text-gray-400"> à </span>
                                 {{
-                                new Date(meet.end_datetime).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })
+                                new Date(meet.end_datetime).toLocaleTimeString('fr-CA', { hour: '2-digit', minute: '2-digit' })
                                 }}
                                 </span>
                             </div>

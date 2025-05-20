@@ -27,7 +27,8 @@ const page = ref([]),
     meetings = ref([]),
     readyToLoad = ref([]),
     googleauth = ref([]),
-    googleauthurl = ref([]);
+    googleauthurl = ref([]),
+    usermeet = ref([]);
 
 readyToLoad.value = false;
 const siteKey =
@@ -55,6 +56,7 @@ onMounted(async () => {
         meetings.value = response.data.meetings;
         googleauth.value = response.data.google_auth;
         googleauthurl.value = response.data.google_auth_url;
+        usermeet.value = response.data.user_meet;
         readyToLoad.value = true;
     } catch (error) {
         console.error('Erreur lors de la récupération des messages:', error);
@@ -77,7 +79,7 @@ onMounted(async () => {
         <TJMSection :config=config :readyToLoad=readyToLoad />
         <ContactForm :readyToLoad=readyToLoad />
         <div id="meets">
-            <Meets v-if="readyToLoad" :readyToLoad=readyToLoad :meetings=meetings :googleauth=googleauth :googleauthurl=googleauthurl />
+            <Meets v-if="readyToLoad" :readyToLoad=readyToLoad :meetings=meetings :googleauth=googleauth :googleauthurl=googleauthurl :usermeet=usermeet />
         </div>
         <Footer :config=config :readyToLoad=readyToLoad />
     </div>

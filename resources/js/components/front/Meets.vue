@@ -14,12 +14,16 @@ import gsap from 'gsap';
 const props = defineProps < {
     readyToLoad: boolean;
     meetings: Array < string > ;
-    googleauth: Array < {
+    googleauth: {
         email: string,
         name: string,
         picture: string,
-    } >;
+    };
     googleauthurl: string;
+    usermeet: {
+        start_datetime: string,
+        end_datetime: string,
+    };
 } > ();
 
 const form = useForm({
@@ -136,32 +140,42 @@ const submit = async () => {
 
                 <template v-if="props.googleauth">
 
-                    <!-- Créneaux -->
-                    <div ref="timeslotContainer" class="w-full">
-                        <h3 class="text-lg font-semibold mb-2" v-if="selectedDate">Plages horaire disponibles :</h3>
-                        <div v-if="timeslots.length" class="flex flex-wrap gap-2">
-                            <button v-for="slot in timeslots" :key="slot.id" @click="selectTimeslot(slot.id)" class="px-4 py-2 rounded border transition-all duration-200 font-mono" :class="[
-                                        selectedTimeslotId === slot.id
-                                            ? 'bg-green-400 text-[#0a192f] border-green-400'
-                                            : 'bg-[#0a192f] text-white border-green-400 hover:bg-green-800'
-                                    ]">
+                        <!-- Créneaux -->
+                        <div ref="timeslotContainer" class="w-full">
+                            <h3 class="text-lg font-semibold mb-2" v-if="selectedDate">Plages horaire disponibles :</h3>
+                            <div v-if="timeslots.length" class="flex flex-wrap gap-2">
+                                <button v-for="slot in timeslots" :key="slot.id" @click="selectTimeslot(slot.id)" class="px-4 py-2 rounded border transition-all duration-200 font-mono" :class="[
+                                            selectedTimeslotId === slot.id
+                                                ? 'bg-green-400 text-[#0a192f] border-green-400'
+                                                : 'bg-[#0a192f] text-white border-green-400 hover:bg-green-800'
+                                        ]">
 
-                                    {{ new Date(slot.start_datetime).toLocaleTimeString('fr-CA', { hour: '2-digit', minute: '2-digit' }) }}
-                                    -
-                                    {{ new Date(slot.end_datetime).toLocaleTimeString('fr-CA', { hour: '2-digit', minute: '2-digit' }) }}
-                                </button>
-                        </div>
-                        <p v-else-if="selectedDate" class="text-gray-400">
-                            Aucune plage horaire disponible pour cette date.
-                        </p>
-                        <template v-else>
-                            <h3 class="text-lg font-semibold mb-2">
-                                {{ props.googleauth?.email }} est identifié.
-                            </h3>
-                            <p class="text-gray-400">
-                                Choisir une date dans le calendrier.
+                                        {{ new Date(slot.start_datetime).toLocaleTimeString('fr-CA', { hour: '2-digit', minute: '2-digit' }) }}
+                                        -
+                                        {{ new Date(slot.end_datetime).toLocaleTimeString('fr-CA', { hour: '2-digit', minute: '2-digit' }) }}
+                                    </button>
+                            </div>
+                            <p v-else-if="selectedDate" class="text-gray-400">
+                                Aucune plage horaire disponible pour cette date.
                             </p>
-                        </template>
+                            <template v-else>
+                                <h3 class="text-lg font-semibold mb-2">
+                                    {{ props.googleauth?.email }} est identifié.
+                                </h3>
+                                <p v-if="props.usermeet">
+                                    Nous avons déjà une rencontre de prévue le <span> {{ new Date(props.usermeet.start_datetime).toLocaleDateString() }} de
+                                    {{
+                                    new Date(props.usermeet.start_datetime).toLocaleTimeString('fr-CA', { hour: '2-digit', minute: '2-digit' })
+                                    }}  <span class="text-gray-600 dark:text-gray-400"> à </span>
+                                    {{
+                                    new Date(props.usermeet.end_datetime).toLocaleTimeString('fr-CA', { hour: '2-digit', minute: '2-digit' })
+                                    }}.
+                                </span>
+                                </p>
+                                <p class="text-gray-400">
+                                    Choisir une date dans le calendrier.
+                                </p>
+                            </template>
                     </div>
 
                     <!-- Formulaire -->
@@ -194,15 +208,6 @@ const submit = async () => {
                 </template>
 
             </div>
-        </div>
-
-        <!-- Messages -->
-        <div v-if="formSubmitted" ref="successMessage" class="text-center text-lg text-green-400 mt-6">
-            {{ page.props.flash.success }}
-        </div>
-
-        <div v-if="form.hasErrors && form.errors.general" class="text-red-400 text-center mt-4">
-            {{ form.errors.general }}
         </div>
     </section>
 </template>
