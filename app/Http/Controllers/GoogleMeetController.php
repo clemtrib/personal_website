@@ -113,6 +113,7 @@ class GoogleMeetController extends Controller
             ]);
         }
 
+
         $validatedData = $request->validate(self::VALIDATION_RULES);
 
         $token = Session::get('google_token');
@@ -125,17 +126,23 @@ class GoogleMeetController extends Controller
 
         $meet->setAccessToken($token);
 
-        /*
         if (!$guser) {
-            return redirect()->route('google.auth');
+            return back()->with([
+                'flash' => [
+                    'failure_meeting' => 'Veuillez vous reconnecter.' . $meet->getAuthUrl()
+                ]
+            ]);
         }
+
         try {
             $meet->setUser($guser);
         } catch (\Exception $e) {
-            return redirect()->route('google.auth')->with('error', 'Session expirée, veuillez vous reconnecter.');
-            //return back()->with('force_google_auth', true)->with('error', 'Session expirée, veuillez vous reconnecter.');
+            return back()->with([
+                'flash' => [
+                    'failure_meeting' => 'Session expirée, veuillez vous reconnecter.' . $meet->getAuthUrl()
+                ]
+            ]);
         }
-        */
 
         $timeslot->recipient_email = $guser->google_email;
         $timeslot->recipient_fullname = $guser->google_name;
