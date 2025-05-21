@@ -1,21 +1,47 @@
 <script setup lang="ts">
-import { Eraser } from 'lucide-vue-next';
+import { router } from '@inertiajs/vue3';
+import { ref } from 'vue';
 
-defineProps<{
-    timeslots: Array<{
-        id: number;
-        summary: string;
-        recipient_email: string;
-        recipient_fullname: string;
-        start_datetime: string;
-        end_datetime: string;
-    }>;
+const props = defineProps<{
+    timeslots: {
+        data: Array<any>;
+        current_page: number;
+        last_page: number;
+        per_page: number;
+        total: number;
+        next_page_url: string | null;
+        prev_page_url: string | null;
+    };
+    filters?: {
+        date?: string;
+        per_page?: number;
+    };
 }>();
 
-const emit = defineEmits(['open-delete-modal']);
+const filterDate = ref(props.filters?.date || '');
+const perPage = ref(props.filters?.per_page || 25);
 
-const openDeleteModal = (id: number) => {
-    emit('open-delete-modal', id);
+const goToPage = (page: number) => {
+    router.get(
+        route('meets'),
+        {
+            date: filterDate.value,
+            per_page: perPage.value,
+            page,
+        },
+        { preserveScroll: true, preserveState: true },
+    );
+};
+
+const updateFilters = () => {
+    router.get(
+        route('meets'),
+        {
+            date: filterDate.value,
+            per_page: perPage.value,
+        },
+        { preserveScroll: true, preserveState: true },
+    );
 };
 </script>
 
@@ -23,8 +49,34 @@ const openDeleteModal = (id: number) => {
     <div class="relative h-full w-full">
         <div class="relative z-10 p-4">
             <h2 class="mb-4 text-2xl font-bold">Rencontres</h2>
-            <ul class="space-y-4">
-                <li v-for="meet in timeslots" :key="meet.id" class="flex items-center gap-4 rounded-lg bg-white p-4 shadow dark:bg-gray-800">
+
+            <!-- Filtre par date et nombre par page -->
+            <div class="mb-4 flex items-center gap-2">
+                <label for="filter-date" class="font-medium">Filtrer par date :</label>
+                <input id="filter-date" type="date" v-model="filterDate" class="rounded border px-2 py-1 dark:bg-gray-700 dark:border-gray-600 dark:text-white" />
+                <label class="ml-4 font-medium">Par page :</label>
+                <select v-model="perPage" class="rounded border px-2 py-1 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+                    <option :value="10" v-if="perPage != 10">10</option>
+                    <option :value="10" v-if="perPage == 10" selected>10</option>
+                    <option :value="25" v-if="perPage != 25">25</option>
+                    <option :value="25" v-if="perPage == 25" selected>25</option>
+                </select>
+                <button @click="updateFilters" class="ml-2 rounded bg-green-600 px-3 py-1 text-sm text-white hover:bg-green-700">Appliquer</button>
+                <button
+                    v-if="filterDate"
+                    @click="
+                        filterDate = '';
+                        updateFilters();
+                    "
+                    class="ml-2 text-sm text-gray-600 dark:text-green-400 hover:underline"
+                >
+                    Réinitialiser
+                </button>
+            </div>
+
+            <ul v-if="timeslots && timeslots.data" class="space-y-4">
+                <li v-for="meet in timeslots.data" :key="meet.id" class="flex items-center gap-4 rounded-lg bg-white p-4 shadow dark:bg-gray-800">
+
                     <!-- Bloc date -->
                     <div class="w-12 shrink-0 text-center text-xl font-bold text-gray-700 dark:text-gray-300">
                         <div class="text-gray-600 dark:text-green-400">
@@ -74,6 +126,27 @@ const openDeleteModal = (id: number) => {
                     </div>
                 </li>
             </ul>
+
+            <!-- Pagination -->
+            <div v-if="timeslots.last_page > 1" class="mt-6 flex justify-center gap-2">
+                <button
+                    @click="goToPage(timeslots.current_page - 1)"
+                    :disabled="!timeslots.prev_page_url"
+                    class="rounded px-3 py-1 text-sm"
+                    :class="!timeslots.prev_page_url ? 'bg-gray-200 text-gray-400' : 'bg-blue-600 text-white hover:bg-blue-700'"
+                >
+                    Précédent
+                </button>
+                <span class="px-2 py-1 text-sm font-medium"> Page {{ timeslots.current_page }} / {{ timeslots.last_page }} </span>
+                <button
+                    @click="goToPage(timeslots.current_page + 1)"
+                    :disabled="!timeslots.next_page_url"
+                    class="rounded px-3 py-1 text-sm"
+                    :class="!timeslots.next_page_url ? 'bg-gray-200 text-gray-400' : 'bg-blue-600 text-white hover:bg-blue-700'"
+                >
+                    Suivant
+                </button>
+            </div>
         </div>
     </div>
 </template>

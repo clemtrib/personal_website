@@ -46,6 +46,8 @@ const timeslotContainer = ref(null);
 const formContainer = ref(null);
 const confirmedSlot = ref<{ start: string; end: string } | null>(null);
 
+/* Calendrier : clic sur une date */
+
 const handleDateClick = async ({ date }) => {
     selectedDate.value = date;
     selectedTimeslotId.value = null;
@@ -78,6 +80,7 @@ const selectTimeslot = (id: number) => {
 };
 
 onMounted(() => {
+    /* Affichage des dates dans le calendrier */
     if (props.meetings?.length) {
         const parsedDates = props.meetings.map((date) => {
             const [year, month, day] = date.split('-').map(Number);
@@ -85,6 +88,7 @@ onMounted(() => {
         });
         attrs.value = [{ highlight: 'green', dates: parsedDates }];
     }
+    /* Ancre pour revenir sur le formulaire après la redirection de l'authentification Google */
     if (window.location.hash) {
         nextTick(() => {
             const el = document.querySelector(window.location.hash);
@@ -95,6 +99,7 @@ onMounted(() => {
     }
 });
 
+/* Animation sur les champs et les boutons */
 watch(
     () => props.readyToLoad,
     (newVal) => {
@@ -130,7 +135,8 @@ function setupGsapAnimations() {
 
 const hasGoogleToken = computed(() => page.props.googleToken !== null);
 
-const submit = async () => {
+/* Soumission du Form */
+ const submit = async () => {
     if (!form.timeslot_id) {
         console.log('Veuillez sélectionner un créneau horaire.');
         return;
@@ -142,7 +148,6 @@ const submit = async () => {
     form.put(route('meets.book', { timeslot: form.timeslot_id }), {
         preserveScroll: true,
         onSuccess: () => {
-            console.log('success');
             const selectedSlot = timeslots.value.find((slot) => slot.id === selectedTimeslotId.value);
             if (selectedSlot) {
                 confirmedSlot.value = {
@@ -169,25 +174,28 @@ const submit = async () => {
     <section id="meets" v-if="props.readyToLoad && props.meetings?.length" class="bg-[#0a192f] px-6 py-20 text-[#ccd6f6]" data-aos="fade-bottom">
         <h2 class="mb-10 inline-block border-b-2 border-green-400 text-3xl font-bold">Prendre rendez-vous</h2>
 
-        <!-- L'utilisateur a déjà rendez-vous -->
+        <!-- L'utilisateur a déjà rendez-vous prochainement, il ne peut pas en programer un autre -->
         <template v-if="props.usermeet">
-            <h3 class="mb-2 text-lg font-semibold">Bonjour {{ props.googleauth?.google_name }},</h3>
-            <p>Nous avons déjà une rencontre programmée.</p>
+            <h3 class="mb-2 flex w-full justify-center text-lg">Bonjour&nbsp;<span class="font-semibold">{{ props.googleauth?.google_name }}</span>,<br/></h3>
+            <p class="mb-2 flex w-full justify-center">Nous avons déjà une rencontre programmée.</p>
             <p class="flex w-full justify-center pb-10 pt-10"><CalendarCheck2 :size="40" /></p>
-                <p class="flex w-full flex-col items-center gap-2 text-white">
-                    <span v-if="props.usermeet.start_datetime" class="flex items-center justify-center gap-2">
-                        <Calendar :size="16" />
-                        <span>{{ new Date(props.usermeet.start_datetime).toLocaleDateString() }}</span>
-                    </span>
-                    <span v-if="props.usermeet.start_datetime" class="flex items-center justify-center gap-2">
-                        <Clock :size="16" />
-                        <span>{{ new Date(props.usermeet.start_datetime).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' }) }} – {{ new Date(props.usermeet.end_datetime).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' }) }}</span>
-                    </span>
-                    <span v-if="props.usermeet.link" class="flex items-center justify-center gap-2">
-                        <Link :size="16" />
-                        <a :href="props.usermeet.link" class="text-green-400" target="_blank"> Google Meet </a>
-                    </span>
-                </p>
+            <p class="flex w-full flex-col items-center gap-2 text-white">
+                <span v-if="props.usermeet.start_datetime" class="flex items-center justify-center gap-2">
+                    <Calendar :size="16" />
+                    <span>{{ new Date(props.usermeet.start_datetime).toLocaleDateString() }}</span>
+                </span>
+                <span v-if="props.usermeet.start_datetime" class="flex items-center justify-center gap-2">
+                    <Clock :size="16" />
+                    <span
+                        >{{ new Date(props.usermeet.start_datetime).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' }) }} –
+                        {{ new Date(props.usermeet.end_datetime).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' }) }}</span
+                    >
+                </span>
+                <span v-if="props.usermeet.link" class="flex items-center justify-center gap-2">
+                    <Link :size="16" />
+                    <a :href="props.usermeet.link" class="text-green-400" target="_blank"> Google Meet </a>
+                </span>
+            </p>
         </template>
 
         <!-- Message de confirmation -->
@@ -213,12 +221,14 @@ const submit = async () => {
             </div>
         </template>
 
+        <!-- Message de d'erreur -->
         <template v-else-if="failureMeeting">
             <div class="mt-2 justify-center gap-4 text-center text-lg text-red-400">
                 <p class="w-full">{{ failureMeeting }}</p>
                 <p class="flex w-full justify-center pb-10 pt-10">
                     <CalendarX2 :size="40" />
                 </p>
+                <!-- Si la session est expirée, on affiche le bouton pour se reconnecter -->
                 <div v-if="failureMeetingLink" class="mt-4">
                     <a
                         :href="failureMeetingLink"
@@ -262,16 +272,15 @@ const submit = async () => {
                                 {{ new Date(slot.end_datetime).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' }) }}
                             </button>
                         </div>
+
+                        <!-- Aucune plage horaire n'est disponible -->
                         <p v-else-if="selectedDate" class="text-gray-400">Aucune plage horaire disponible pour cette date.</p>
 
+                        <!-- L'utilisateur est connecté et peut choisir une plage horaire -->
                         <template v-else>
-                                                    <h3 class="text-lg font-semibold mb-2">
-                                                        {{ props.googleauth?.google_email }} est identifié.
-                                                    </h3>
-                                                    <p class="text-gray-400">
-                                                        Choisir une date dans le calendrier.
-                                                    </p>
-                    </template>
+                            <h3 class="mb-2 text-lg font-semibold">{{ props.googleauth?.google_email }} est identifié.</h3>
+                            <p class="text-gray-400">Choisir une date dans le calendrier.</p>
+                        </template>
                     </div>
 
                     <!-- Formulaire -->

@@ -27,15 +27,30 @@ class GoogleMeetController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $timeslots = Timeslot::where('start_datetime', '>', Carbon::tomorrow())
-            ->orderBy('start_datetime', 'asc')
-            ->get();
+        $query = Timeslot::where('start_datetime', '>', \Illuminate\Support\Carbon::tomorrow());
+
+        // Filtre par date (YYYY-MM-DD)
+        if ($request->filled('date')) {
+            $query->whereDate('start_datetime', $request->input('date'));
+        }
+
+        // Pagination (par défaut 5 par page)
+        $perPage = $request->input('per_page', 25);
+        $timeslots = $query->orderBy('start_datetime', 'asc')
+            ->paginate($perPage)
+            ->appends($request->query()); // Pour conserver les filtres dans les liens
+
         return Inertia::render('Meets', [
-            'timeslots' => $timeslots
+            'timeslots' => $timeslots,
+            'filters' => [
+                'date' => $request->input('date', ''),
+                'per_page' => $perPage,
+            ],
         ]);
     }
+
 
     /**
      * Store a newly created resource in storage.
