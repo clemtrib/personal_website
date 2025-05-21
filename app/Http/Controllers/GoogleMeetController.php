@@ -117,8 +117,6 @@ class GoogleMeetController extends Controller
 
         $token = Session::get('google_token');
 
-        $google_auth = Session::get('google_userinfo');
-        // TODO replace by
         $guser = \App\Models\Guser::find(Session::get('guser_id'));
 
         if (!$token) {
@@ -139,10 +137,8 @@ class GoogleMeetController extends Controller
         }
         */
 
-        //$timeslot->recipient_email = $guser->google_email;
-        //$timeslot->recipient_fullname = $guser->google_name;
-        $timeslot->recipient_email = $google_auth['email'];
-        $timeslot->recipient_fullname = $google_auth['name'];
+        $timeslot->recipient_email = $guser->google_email;
+        $timeslot->recipient_fullname = $guser->google_name;
 
         $startDt = new \DateTimeImmutable($timeslot->start_datetime, new \DateTimeZone(getenv('TIME_ZONE')));
         $endDt = new \DateTimeImmutable($timeslot->end_datetime, new \DateTimeZone(getenv('TIME_ZONE')));
@@ -151,10 +147,8 @@ class GoogleMeetController extends Controller
             $validatedData['summary'],
             $startDt,
             $endDt,
-            //$guser->google_email,
-            //$guser->google_name
-            $google_auth['email'],
-            $google_auth['name']
+            $guser->google_email,
+            $guser->google_name
         );
 
         try {

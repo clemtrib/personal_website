@@ -47,10 +47,6 @@ class GoogleAuthController extends Controller
             $oauth2 = new Google_Service_Oauth2($client);
             $userInfo = $oauth2->userinfo->get();
 
-            //echo '<pre>';
-            //var_dump($userInfo, $userInfo->id);
-            //die;
-
             $guser = Guser::updateOrCreate(
                 ['google_id' => $userInfo->id],
                 [
