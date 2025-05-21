@@ -14,9 +14,9 @@ const props = defineProps < {
     readyToLoad: boolean;
     meetings: string[];
     googleauth: {
-        /*google_*/email: string;
-        /*google_*/name: string;
-        /*google_*/picture: string;
+        google_email: string;
+        google_name: string;
+        google_picture: string;
     };
     googleauthurl: string;
     usermeet: {
@@ -233,7 +233,7 @@ const submit = async () => {
                     </p>
                     <template v-else>
                                                     <h3 class="text-lg font-semibold mb-2">
-                                                        {{ props.googleauth?./*google_*/email }} est identifié.
+                                                        {{ props.googleauth?.google_email }} est identifié.
                                                     </h3>
                                                     <p v-if="props.usermeet">
                                                         Nous avons déjà une rencontre de prévue le <span> {{ new Date(props.usermeet.start_datetime).toLocaleDateString() }} de
@@ -254,11 +254,11 @@ const submit = async () => {
                     <!-- Formulaire -->
                     <form :key="formKey" v-if="selectedTimeslotId && !successMeeting" ref="formContainer" @submit.prevent="submit" class="max-w-full w-full grid gap-4">
                         <div>
-                            <p class="p-2 rounded bg-[#0a192f] text-white border border-[#64ffda] w-full">{{ props.googleauth?./*google_*/name }}</p>
+                            <p class="p-2 rounded bg-[#0a192f] text-white border border-[#64ffda] w-full">{{ props.googleauth?.google_name }}</p>
                         </div>
 
                         <div>
-                            <p class="p-2 rounded bg-[#0a192f] text-white border border-[#64ffda] w-full">{{ props.googleauth?./*google_*/email }}</p>
+                            <p class="p-2 rounded bg-[#0a192f] text-white border border-[#64ffda] w-full">{{ props.googleauth?.google_email }}</p>
                         </div>
 
                         <div>

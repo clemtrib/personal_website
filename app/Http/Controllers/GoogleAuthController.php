@@ -51,14 +51,6 @@ class GoogleAuthController extends Controller
             //var_dump($userInfo, $userInfo->id);
             //die;
 
-            // Exemple : récupérer l'email
-            // TODO remeove this
-            Session::put('google_userinfo', [
-                'email' => $userInfo->email,
-                'name' => $userInfo->name,
-                'picture' => $userInfo->picture,
-            ]);
-
             $guser = Guser::updateOrCreate(
                 ['google_id' => $userInfo->id],
                 [
@@ -71,6 +63,8 @@ class GoogleAuthController extends Controller
                     'google_token_expires_at' => now()->addSeconds($token['expires_in']),
                 ]
             );
+
+            Session::put('guser_id', $guser->id);
 
             return redirect('/#meets');
         }

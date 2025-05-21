@@ -8,6 +8,7 @@ use App\Models\Hobby;
 use App\Models\Skill;
 use App\Models\Page;
 use App\Models\Timeslot;
+use App\Models\Guser;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Session;
@@ -51,12 +52,12 @@ class SPAController extends Controller
             ->get()
             ->groupBy(fn($slot) => Carbon::parse($slot->start_datetime)->toDateString())
             ->keys();
-        $google_auth = Session::get('google_userinfo');;//  \App\Models\Guser::find(Session::get('guser_id'));
+        $google_auth = Guser::find(Session::get('guser_id'));
         $user_meet = null;
         if ($google_auth) {
             $user_meet = Timeslot::select('start_datetime', 'end_datetime')
                 ->where('start_datetime', '>', now())
-                ->where('recipient_email', '=', $google_auth['email']/*$google_auth->google_email*/)
+                ->where('recipient_email', '=', $google_auth->google_email)
                 ->orderBy('start_datetime')
                 ->first();
         }
