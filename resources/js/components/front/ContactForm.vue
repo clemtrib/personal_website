@@ -113,7 +113,7 @@ const submit = async () => {
             <p class="w-full flex justify-center pt-10"><MailCheck :size="40" /></p>
         </div>
 
-        <div v-if="failureMessage" ref="failureMessage" class="text-center justify-center text-lg text-green-400 gap-4 mt-2">
+        <div v-if="failureMessage" ref="failureMessage" class="text-center justify-center text-lg text-red-400 gap-4 mt-2">
             <p class="w-full">{{ failureMessage }}</p>
             <p class="w-full flex justify-center pt-10"><MailX :size="40" /></p>
         </div>

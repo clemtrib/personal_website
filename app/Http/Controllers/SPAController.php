@@ -55,7 +55,7 @@ class SPAController extends Controller
         $google_auth = Guser::find(Session::get('guser_id'));
         $user_meet = null;
         if ($google_auth) {
-            $user_meet = Timeslot::select('start_datetime', 'end_datetime')
+            $user_meet = Timeslot::select('start_datetime', 'end_datetime', 'link')
                 ->where('start_datetime', '>', now())
                 ->where('recipient_email', '=', $google_auth->google_email)
                 ->orderBy('start_datetime')

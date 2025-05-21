@@ -44,9 +44,8 @@ class GoogleMeetController extends Controller
     {
         $validatedData = $request->validate(self::VALIDATION_RULES_GENERATE_MEETS);
 
-
-        $start = new \DateTimeImmutable($validatedData['datetime_range'][0], new \DateTimeZone(getenv('TIME_ZONE')));
-        $end = new \DateTimeImmutable($validatedData['datetime_range'][1], new \DateTimeZone(getenv('TIME_ZONE')));
+        $start = new \DateTime($validatedData['datetime_range'][0], new \DateTimeZone(getenv('TIME_ZONE')));
+        $end = new \DateTime($validatedData['datetime_range'][1], new \DateTimeZone(getenv('TIME_ZONE')));
         $duration = (int) $validatedData['duration'];
         $targetDays = array_map('intval', $validatedData['days_multiple']); // convertit ["3", "4", "5"] en [3, 4, 5]
 
@@ -80,6 +79,7 @@ class GoogleMeetController extends Controller
                         $timeslot->recipient_fullname = null;
                         $timeslot->start_datetime = $slotStart->format('Y-m-d H:i:s');
                         $timeslot->end_datetime = $nextSlot->format('Y-m-d H:i:s');
+                        $timeslot->link = null;
                         $timeslot->save();
                         $i++;
 
@@ -129,7 +129,8 @@ class GoogleMeetController extends Controller
         if (!$guser) {
             return back()->with([
                 'flash' => [
-                    'failure_meeting' => 'Veuillez vous reconnecter.' . $meet->getAuthUrl()
+                    'failure_meeting' => 'Session expirée, veuillez vous reconnecter.',
+                    'failure_meeting_link' =>  $meet->getAuthUrl()
                 ]
             ]);
         }
@@ -139,8 +140,21 @@ class GoogleMeetController extends Controller
         } catch (\Exception $e) {
             return back()->with([
                 'flash' => [
-                    'failure_meeting' => 'Session expirée, veuillez vous reconnecter.' . $meet->getAuthUrl()
+                    'failure_meeting' => 'Session expirée, veuillez vous reconnecter.',
+                    'failure_meeting_link' =>  $meet->getAuthUrl()
                 ]
+            ]);
+        }
+
+        $user_meet = Timeslot::select('start_datetime', 'end_datetime', 'link')
+            ->where('start_datetime', '>', now())
+            ->where('recipient_email', '=', $guser->google_email)
+            ->orderBy('start_datetime')
+            ->first();
+        if ($user_meet) {
+            return back()->with([
+                'flash' =>
+                ['failure_meeting' => sprintf('Nous avons déjà rendez-vous le %s à %s.', new \DateTime($user_meet->start_datetime, new \DateTimeZone(getenv('TIME_ZONE')))->format('d/m/Y'), new \DateTime($user_meet->start_datetime, new \DateTimeZone(getenv('TIME_ZONE')))->format('H:i'))]
             ]);
         }
 
@@ -158,12 +172,14 @@ class GoogleMeetController extends Controller
             $guser->google_name
         );
 
+        $validatedData['link'] = $event->getHangoutLink();
+
         try {
             $timeslot->update($validatedData);
 
             return back()->with([
                 'flash' => [
-                    'success_meeting' => 'Votre rendez-vous est confirmé !',
+                    'success_meeting' => 'Votre rendez-vous est confirmé !<br />Une invitation Google Meet va vous être envoyée par email.',
                     'confirmed_meeting' => [
                         'date' => $startDt->format('d/m/Y'),
                         'start' => $startDt->format('H:i'),

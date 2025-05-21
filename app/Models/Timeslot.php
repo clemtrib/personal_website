@@ -16,7 +16,8 @@ class Timeslot extends Model
         'recipient_email',
         'recipient_fullname',
         'start_datetime',
-        'end_datetime'
+        'end_datetime',
+        'link'
     ];
 
     /**

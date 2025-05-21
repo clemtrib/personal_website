@@ -4,6 +4,7 @@ import { Link } from '@inertiajs/vue3';
 import { Mail, CalendarPlus } from 'lucide-vue-next';
 
 const props = defineProps < {
+    meetings: string[];
     home: {
         id: number;
         hero_subtitle: string;
@@ -40,7 +41,7 @@ const toggleMenu = () => {
                 <li><a href="#hobbies" class="hover:text-green-400">Loisirs</a></li>
                 <li v-if="props.config?.tjm"><a href="#tjm" class="hover:text-green-400">TJM</a></li>
                 <li><a href="#contact" class="hover:text-green-400"><Mail :size="16" /></a></li>
-                <li><a href="#meets" class="hover:text-green-400"><CalendarPlus :size="16" /></a></li>
+                <li v-if="props.meetings?.length"><a href="#meets" class="hover:text-green-400"><CalendarPlus :size="16" /></a></li>
             </ul>
 
             <!-- Icône burger -->
@@ -61,7 +62,7 @@ const toggleMenu = () => {
                 <li><a href="#hobbies" class="block py-1 hover:text-green-400" @click="toggleMenu">Loisirs</a></li>
                 <li v-if="props.config?.tjm"><a href="#tjm" class="block py-1 hover:text-green-400" @click="toggleMenu">TJM</a></li>
                 <li><a href="#contact" class="block py-1 hover:text-green-400" @click="toggleMenu">Contact</a></li>
-                <li><a href="#meets" class="block py-1 hover:text-green-400" @click="toggleMenu">Prendre rendez-vous</a></li>
+                <li v-if="props.meetings?.length"><a href="#meets" class="block py-1 hover:text-green-400" @click="toggleMenu">Prendre rendez-vous</a></li>
             </ul>
         </transition>
     </nav>
