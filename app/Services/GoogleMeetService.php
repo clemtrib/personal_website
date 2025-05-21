@@ -5,9 +5,9 @@ namespace App\Services;
 use Google_Client;
 use Google_Service_Calendar;
 use Google_Service_Calendar_Event;
-use Illuminate\Support\Facades\Session;
 use DateTime;
 use DateTimeImmutable;
+use App\Models\Guser;
 
 class GoogleMeetService
 {
@@ -69,5 +69,26 @@ class GoogleMeetService
         ]);
 
         return $calendarService->events->insert('primary', $event, ['conferenceDataVersion' => 1]);
+    }
+
+    public function setUser(Guser $user): void
+    {
+        $token = json_decode($user->google_access_token, true);
+        $this->client->setAccessToken($token);
+
+        if ($this->client->isAccessTokenExpired()) {
+            if (!$user->google_refresh_token) {
+                throw new \Exception("Refresh token manquant. Veuillez vous reconnecter.");
+            }
+
+            $newToken = $this->client->fetchAccessTokenWithRefreshToken($user->google_refresh_token);
+
+            $user->update([
+                'google_access_token' => json_encode($newToken),
+                'google_token_expires_at' => now()->addSeconds($newToken['expires_in']),
+            ]);
+
+            $this->client->setAccessToken($newToken);
+        }
     }
 }

@@ -12,9 +12,13 @@ class Guser extends Model
      * @var list<string>
      */
     protected $fillable = [
+        'google_id',
         'google_name',
         'google_email',
         'google_picture',
+        'google_access_token',
+        'google_refresh_token',
+        'google_token_expires_at',
     ];
 
     /**

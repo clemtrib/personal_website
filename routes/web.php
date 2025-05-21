@@ -7,6 +7,9 @@ use App\Http\Controllers\OvhController;
 use App\Http\Controllers\SPAController;
 use App\Http\Controllers\GoogleAuthController;
 
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Redirect;
+
 use App\Services\GoogleMeetService;
 
 /* Starter Laravel + VueJS */
@@ -48,6 +51,6 @@ Route::prefix('deploy')->group(function () {
 Route::get('/google/redirect', [GoogleAuthController::class, 'redirect']);
 Route::get('/auth/google/callback', [GoogleAuthController::class, 'callback'])->name('google.callback');
 
-Route::get('/auth/google', function (GoogleMeetService $meet) {
-    return redirect()->away($meet->getAuthUrl());
+Route::get('/auth/google', function (GoogleMeetService $meet): RedirectResponse {
+    return Redirect::away($meet->getAuthUrl());
 })->name('google.auth');
