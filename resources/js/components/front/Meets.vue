@@ -96,12 +96,22 @@ onMounted(() => {
         });
         attrs.value = [{ highlight: 'green', dates: parsedDates }];
     }
+    if (window.location.hash) {
+        nextTick(() => {
+        const el = document.querySelector(window.location.hash);
+        if (el) {
+            el.scrollIntoView({ behavior: 'smooth' });
+        }
+        });
+    }
 });
 
 watch(() => props.readyToLoad, (newVal) => {
-    if (newVal) {
-        nextTick(setupGsapAnimations);
-    }
+  if (newVal) {
+    nextTick(() => {
+      setupGsapAnimations();
+    });
+  }
 });
 
 function setupGsapAnimations() {
@@ -172,7 +182,7 @@ const submit = async () => {
 </script>
 
 <template>
-    <section v-if="props.readyToLoad && props.meetings?.length" class="px-6 py-20 bg-[#0a192f] text-[#ccd6f6]" data-aos="fade-bottom">
+    <section id="meets" v-if="props.readyToLoad && props.meetings?.length" class="px-6 py-20 bg-[#0a192f] text-[#ccd6f6]" data-aos="fade-bottom">
         <h2 class="text-3xl font-bold mb-10 inline-block border-b-2 border-green-400">
             Prendre rendez-vous
         </h2>
