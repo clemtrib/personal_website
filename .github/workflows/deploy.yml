@@ -75,7 +75,7 @@ jobs:
           echo "MAIL_USERNAME=null" >> .env
           echo "MAIL_PASSWORD=null" >> .env
           echo "MAIL_FROM_ADDRESS=\"hello@example.com\"" >> .env
-          echo "MAIL_FROM_NAME=\"Clément Tribouillard, développeur\"" >> .env
+          echo "MAIL_FROM_NAME=\"Clément Tribouillard, développeur web\"" >> .env
 
           echo "AWS_ACCESS_KEY_ID=" >> .env
           echo "AWS_SECRET_ACCESS_KEY=" >> .env
@@ -86,10 +86,10 @@ jobs:
           echo "FACEBOOK=" >> .env
           echo "LINKEDIN=https://www.linkedin.com/in/clement-tribouillard/" >> .env
           echo "GITHUB=https://github.com/clemtrib/" >> .env
-          echo "TJM=560" >> .env
+          echo "TJM=450" >> .env
           echo "RECAPTCHA_PRIVATE_KEY=${RECAPTCHA_PRIVATE_KEY}" >> .env
 
-          echo "VITE_APP_NAME=\"Clément Tribouillard, développeur\"" >> .env
+          echo "VITE_APP_NAME=\"Clément Tribouillard, développeur web\"" >> .env
           echo "VITE_APP_ENV=production" >> .env
           echo "VITE_RECAPTCHA_SITE_KEY=${VITE_RECAPTCHA_SITE_KEY}" >> .env
           echo "VITE_SHOW_HERO_IMAGE=1" >> .env
@@ -99,7 +99,9 @@ jobs:
           echo "CACHE_KEY=spa_content" >> .env
 
           echo "GOOGLE_REDIRECT_URI=${APP_URL}/oauth2callback" >> .env
-          echo "GOOGLE_MEET_EMAIL='clement.tribouillard@gmail.com'" >> .env
+          echo "GOOGLE_MEET_EMAIL='clement.tribouillard+wb@gmail.com'" >> .env
+
+          echo "TIME_ZONE='America/Montreal'" >> .env
         env:
           APP_KEY: ${{ secrets.APP_KEY }}
           APP_URL: ${{ vars.APP_URL }}
