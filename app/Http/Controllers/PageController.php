@@ -4,8 +4,10 @@ namespace App\Http\Controllers;
 
 use Inertia\Inertia;
 use App\Models\Page;
+use App\Models\Timeslot;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Carbon;
 
 class PageController extends Controller
 {
@@ -35,6 +37,59 @@ class PageController extends Controller
         return Inertia::render('Pages', [
             'pages' => $pages
         ]);
+    }
+
+    /**
+     *
+     */
+    public function getPage(string $slug)
+    {
+        $page = (Page::where('page_slug', $slug)->first());
+        $seo = $page->page_seo;
+        $timeslots = Timeslot::where('start_datetime', '>', now())
+            ->whereNull('summary')
+            ->whereNull('recipient_fullname')
+            ->whereNull('recipient_email')
+            ->orderBy('start_datetime')
+            ->get()
+            ->groupBy(fn($slot) => Carbon::parse($slot->start_datetime)->toDateString())
+            ->keys();
+        return Inertia::render(
+            'Page',
+            [
+                'page_slug' => $page->page_slug ?? '',
+                'page_name' => $page->page_name ?? '',
+                'hero_subtitle' => $page->hero_subtitle ?? '',
+                'hero_title' => $page->hero_title ?? '',
+                'hero_description' => $page->hero_description ?? '',
+                'hero_image' => $page->hero_image ?? '',
+                'content_text' => $page->content_text ?? '',
+                'content_image' => $page->content_image ?? '',
+                "meta" => [
+                    "description" => $seo['description'] ?? '',
+                    "canonical" => $seo['canonical'] ?? '',
+                    "og:title" => $seo['og:title'] ?? '',
+                    "og:description" => $seo['og:description'] ?? '',
+                    "og:image" => $seo['og:image'] ?? '',
+                    "og:url" => $seo['og:url'] ?? '',
+                    "og:type" => $seo['og:type'] ?? '',
+                    "og:site_name" => $seo['og:site_name'] ?? '',
+                    "twitter:card" => $seo['twitter:card'] ?? '',
+                    "twitter:title" =>  $seo['twitter:title'] ?? '',
+                    "twitter:description" => $seo['twitter:description'] ?? '',
+                    "twitter:image" =>  $seo['twitter:image'] ?? '',
+                ],
+                'config' => [
+                    'social_networks' => [
+                        'facebook' => getenv('FACEBOOK') ?? null,
+                        'github' => getenv('GITHUB') ?? null,
+                        'linkedin' => getenv('LINKEDIN') ?? null,
+                    ],
+                    'tjm' => getenv('TJM') ?? null,
+                ],
+                'meetings' => $timeslots
+            ]
+        );
     }
 
     /**

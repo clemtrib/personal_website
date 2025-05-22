@@ -4,6 +4,8 @@ use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use App\Http\Controllers\PageController;
 
+Route::get('/page/{slug}', [PageController::class, 'getPage'])->name('pages.show');
+
 Route::prefix('dashboard/pages')->middleware('auth')->group(function () {
     Route::get('/list', [PageController::class, 'index'])->name('pages');
     Route::get('/create', function () { return Inertia::render('PagesForm'); })->name('pages.create');
