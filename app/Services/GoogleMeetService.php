@@ -20,7 +20,7 @@ class GoogleMeetService
         $this->client->addScope(Google_Service_Calendar::CALENDAR);
         $this->client->addScope('email');
         $this->client->addScope('profile');
-        $this->client->setRedirectUri(route('google.callback'));
+        $this->client->setRedirectUri(getenv('GOOGLE_REDIRECT_URI'));
         $this->client->setAccessType('offline');
     }
 

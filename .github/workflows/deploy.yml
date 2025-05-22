@@ -98,7 +98,7 @@ jobs:
 
           echo "CACHE_KEY=spa_content" >> .env
 
-          echo "GOOGLE_REDIRECT_URI=${APP_URL}/oauth2callback" >> .env
+          echo "GOOGLE_REDIRECT_URI=${APP_URL}/auth/google/callback" >> .env
           echo "GOOGLE_MEET_EMAIL='clement.tribouillard+wb@gmail.com'" >> .env
 
           echo "TIME_ZONE='America/Montreal'" >> .env

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { router } from '@inertiajs/vue3';
+import { useForm, router } from '@inertiajs/vue3';
 import { ref } from 'vue';
 
 const props = defineProps<{
@@ -43,9 +43,55 @@ const updateFilters = () => {
         { preserveScroll: true, preserveState: true },
     );
 };
+
+// Modale
+const showDeleteModal = ref(false);
+const meetIdToDelete = ref(null);
+
+const form = useForm({});
+
+const openDeleteModal = (id: number) => {
+    meetIdToDelete.value = id;
+    showDeleteModal.value = true;
+};
+
+const closeDeleteModal = () => {
+    showDeleteModal.value = false;
+};
+
+const deleteMessage = () => {
+    form.delete(route('meets.destroy', meetIdToDelete.value), {
+        preserveScroll: true,
+        preserveState: false,
+        onSuccess: () => {
+            closeDeleteModal();
+        },
+    });
+};
+
+defineExpose({
+    openDeleteModal
+});
 </script>
 
 <template>
+    <div v-if="showDeleteModal" class="fixed inset-0 bg-black/50 flex items-center justify-center z-50" @click.self="closeDeleteModal">
+        <div class="bg-white dark:bg-gray-800 p-6 rounded-lg max-w-md w-full mx-4">
+            <h3 class="text-lg font-semibold mb-4">Confirmer la suppression</h3>
+            <p class="mb-6">Êtes-vous sûr de vouloir supprimer cette plage horaire ?</p>
+
+            <div class="flex justify-end gap-3">
+                <button @click="closeDeleteModal" class="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded">
+                Annuler
+                </button>
+                <button @click="deleteMessage" class="px-4 py-2 bg-red-600 text-white text-sm font-medium rounded hover:bg-red-700" :disabled="form.processing">
+                <span v-if="form.processing">Suppression...</span>
+                <span v-else>Confirmer</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
     <div class="relative h-full w-full">
         <div class="relative z-10 p-4">
             <h2 class="mb-4 text-2xl font-bold">Rencontres</h2>

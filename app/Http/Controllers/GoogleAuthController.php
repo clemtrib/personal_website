@@ -19,7 +19,7 @@ class GoogleAuthController extends Controller
         $client->addScope('email');
         $client->addScope('profile');
         $client->setAccessType('offline');
-        $client->setRedirectUri(route('google.callback'));
+        $client->setRedirectUri(getenv('GOOGLE_REDIRECT_URI'));
 
         return redirect($client->createAuthUrl());
     }
@@ -33,7 +33,7 @@ class GoogleAuthController extends Controller
         $client->addScope('profile');
         $client->setAccessType('offline');
         $client->setPrompt('consent');
-        $client->setRedirectUri(route('google.callback'));
+        $client->setRedirectUrigetenv('GOOGLE_REDIRECT_URI');
 
         if ($request->has('code')) {
             $token = $client->fetchAccessTokenWithAuthCode($request->get('code'));
