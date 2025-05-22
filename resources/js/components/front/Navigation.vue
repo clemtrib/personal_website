@@ -1,8 +1,10 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import { Link } from '@inertiajs/vue3';
+import { Mail, CalendarPlus } from 'lucide-vue-next';
 
 const props = defineProps < {
+    meetings: string[];
     home: {
         id: number;
         hero_subtitle: string;
@@ -29,7 +31,7 @@ const toggleMenu = () => {
 <template>
     <nav v-if="props.readyToLoad" class="fixed top-0 left-0 w-full box-border bg-[#0a192f] text-[#ccd6f6] shadow z-50 overflow-x-hidden">
         <div class="max-w-6xl mx-auto px-4 sm:px-6 py-4 flex justify-between items-center">
-            <a href="#" class="text-sm font-bold text-green-400">{{ props.home.hero_title }}</a>
+            <a href="/" class="text-sm font-bold text-green-400">{{ props.home.hero_title }}</a>
 
             <!-- Menu desktop -->
             <ul class="hidden sm:flex gap-6 text-xs uppercase tracking-wider">
@@ -38,7 +40,8 @@ const toggleMenu = () => {
                 <li><a href="#experiences" class="hover:text-green-400">Expériences</a></li>
                 <li><a href="#hobbies" class="hover:text-green-400">Loisirs</a></li>
                 <li v-if="props.config?.tjm"><a href="#tjm" class="hover:text-green-400">TJM</a></li>
-                <li><a href="#contact" class="hover:text-green-400">Contact</a></li>
+                <li><a href="#contact" class="hover:text-green-400"><Mail :size="16" /></a></li>
+                <li v-if="props.meetings?.length"><a href="#meets" class="hover:text-green-400"><CalendarPlus :size="16" /></a></li>
             </ul>
 
             <!-- Icône burger -->
@@ -59,6 +62,7 @@ const toggleMenu = () => {
                 <li><a href="#hobbies" class="block py-1 hover:text-green-400" @click="toggleMenu">Loisirs</a></li>
                 <li v-if="props.config?.tjm"><a href="#tjm" class="block py-1 hover:text-green-400" @click="toggleMenu">TJM</a></li>
                 <li><a href="#contact" class="block py-1 hover:text-green-400" @click="toggleMenu">Contact</a></li>
+                <li v-if="props.meetings?.length"><a href="#meets" class="block py-1 hover:text-green-400" @click="toggleMenu">Prendre rendez-vous</a></li>
             </ul>
         </transition>
     </nav>

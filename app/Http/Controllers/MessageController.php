@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\Message;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Http;
 use Inertia\Inertia;
 
 class MessageController extends Controller
@@ -36,16 +35,12 @@ class MessageController extends Controller
     {
         try {
 
-            $response = Http::asForm()->post('https://www.google.com/recaptcha/api/siteverify', [
-                'secret' => getenv('RECAPTCHA_PRIVATE_KEY') ?? null,
-                'response' => $request->recaptcha_token,
-                'remoteip' => $request->ip(),
-            ]);
-
-            $result = $response->json();
-
-            if (!($result['success'] ?? false) || ($result['score'] ?? 0) < 0.5) {
-                return back()->withErrors(['general' => 'Échec de la vérification reCAPTCHA.']);
+            if (!$this->verifyCaptcha($request)) {
+                return back()->with([
+                    'flash' => [
+                        'failure_message' => 'Échec de la vérification reCAPTCHA.'
+                    ]
+                ]);
             }
 
             $validatedData = $request->validate(self::VALIDATION_RULES);
@@ -54,9 +49,17 @@ class MessageController extends Controller
             $message->email = $this->sanitizeInput($validatedData['email']);
             $message->message = $this->sanitizeInput($validatedData['message']);
             $message->save();
-            return redirect()->back()->with('success', 'Message envoyé avec succès');
+            return back()->with([
+                'flash' => [
+                    'success_message' => 'Merci pour votre message ! Je vous répondrai dès que possible.',
+                ]
+            ]);
         } catch (\Exception $e) {
-            return back()->withErrors(['error' => $e->getMessage()]);
+            return back()->with([
+                'flash' => [
+                    'failure_message' => $e->getMessage(),
+                ]
+            ]);
         }
     }
 

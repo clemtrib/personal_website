@@ -30,7 +30,7 @@ const openDeleteModal = (id: number) => {
             <h2 class="text-2xl font-bold mb-4">Pages</h2>
             <ul class="space-y-4">
                 <li v-for="page in pages" :key="page.id" class="bg-white dark:bg-gray-800 p-4 rounded-lg shadow">
-                    <h3>{{ page.hero_subtitle }} <span class="font-semibold">{{ page.hero_title }}</span></h3>
+                    <h3>{{ page.hero_title }}</h3>
                     <div class="flex gap-2 mt-4">
                         <Link :href="route('pages.edit', page.id)" class="flex items-center gap-2 px-3 py-2 text-sm bg-blue-100 dark:bg-blue-900/30 hover:bg-blue-200 dark:hover:bg-blue-900/50 rounded-lg transition">
                             <Pencil class="h-4 w-4" /> Modifier

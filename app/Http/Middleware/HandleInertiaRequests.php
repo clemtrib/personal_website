@@ -45,6 +45,14 @@ class HandleInertiaRequests extends Middleware
             'auth' => [
                 'user' => $request->user(),
             ],
+            'flash' => [
+                'success_message' => fn() => $request->session()->get('flash.success_message'),
+                'failure_message' => fn() => $request->session()->get('flash.failure_message'),
+                'success_meeting' => fn() => $request->session()->get('flash.success_meeting'),
+                'failure_meeting' => fn() => $request->session()->get('flash.failure_meeting'),
+                'failure_meeting_link' => fn() => $request->session()->get('flash.failure_meeting_link'),
+                'confirmed_meeting' => fn() => $request->session()->get('flash.confirmed_meeting'),
+            ]
         ]);
     }
 }
