@@ -33,7 +33,7 @@ class GoogleAuthController extends Controller
         $client->addScope('profile');
         $client->setAccessType('offline');
         $client->setPrompt('consent');
-        $client->setRedirectUrigetenv('GOOGLE_REDIRECT_URI');
+        $client->setRedirectUri(getenv('GOOGLE_REDIRECT_URI'));
 
         if ($request->has('code')) {
             $token = $client->fetchAccessTokenWithAuthCode($request->get('code'));
