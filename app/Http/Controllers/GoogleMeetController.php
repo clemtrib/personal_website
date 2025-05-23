@@ -29,7 +29,7 @@ class GoogleMeetController extends Controller
      */
     public function index(Request $request)
     {
-        $query = Timeslot::where('start_datetime', '>', \Illuminate\Support\Carbon::tomorrow());
+        $query = Timeslot::where('start_datetime', '>=', \Illuminate\Support\Carbon::tomorrow());
 
         // Filtre par date (YYYY-MM-DD)
         if ($request->filled('date')) {

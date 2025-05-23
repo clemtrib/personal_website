@@ -44,7 +44,7 @@ class SPAController extends Controller
     public function index()
     {
         $key = config('app.cache_key');
-        $timeslots = Timeslot::where('start_datetime', '>', now())
+        $timeslots = Timeslot::where('start_datetime', '>=', \Illuminate\Support\Carbon::tomorrow())
             ->whereNull('summary')
             ->whereNull('recipient_fullname')
             ->whereNull('recipient_email')
@@ -93,6 +93,7 @@ class SPAController extends Controller
     {
         $timeslots = Timeslot::where('start_datetime', '>=', $date . ' 00:00:00')
             ->where('start_datetime', '<=', $date . ' 23:59:59')
+            ->where('start_datetime', '>=', \Illuminate\Support\Carbon::tomorrow())
             ->whereNull('summary')
             ->whereNull('recipient_fullname')
             ->whereNull('recipient_email')
