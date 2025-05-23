@@ -10,6 +10,13 @@ import { onMounted, ref, computed } from 'vue';
 import axios from 'axios';
 import { CirclePlus } from 'lucide-vue-next';
 
+const breadcrumbs: BreadcrumbItem[] = [
+    {
+        title: 'Diplômes',
+        href: '/dashboard/education/list',
+    },
+];
+
 // État de la modale
 const showDeleteModal = ref(false);
 const objectIdToDelete = ref<number | null>(null);
@@ -24,13 +31,7 @@ const closeDeleteModal = () => {
   objectIdToDelete.value = null;
 };
 
-const breadcrumbs: BreadcrumbItem[] = [
-    {
-        title: 'Diplômes',
-        href: '/dashboard/education/list',
-    },
-];
-
+// Récupération des props envoyées par Inertia
 const page = usePage();
 const educations = computed(() => page.props.educations);
 

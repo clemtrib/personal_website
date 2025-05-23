@@ -136,7 +136,7 @@ function setupGsapAnimations() {
 const hasGoogleToken = computed(() => page.props.googleToken !== null);
 
 /* Soumission du Form */
- const submit = async () => {
+const submit = async () => {
     if (!form.timeslot_id) {
         console.log('Veuillez sélectionner un créneau horaire.');
         return;
@@ -176,7 +176,10 @@ const hasGoogleToken = computed(() => page.props.googleToken !== null);
 
         <!-- L'utilisateur a déjà rendez-vous prochainement, il ne peut pas en programer un autre -->
         <template v-if="props.usermeet">
-            <h3 class="mb-2 flex w-full justify-center text-lg">Bonjour&nbsp;<span class="font-semibold">{{ props.googleauth?.google_name }}</span>,<br/></h3>
+            <h3 class="mb-2 flex w-full justify-center text-lg">
+                Bonjour&nbsp;<span class="font-semibold">{{ props.googleauth?.google_name }}</span
+                >,<br />
+            </h3>
             <p class="mb-2 flex w-full justify-center">Nous avons déjà une rencontre programmée.</p>
             <p class="flex w-full justify-center pb-10 pt-10"><CalendarCheck2 :size="40" /></p>
             <p class="flex w-full flex-col items-center gap-2 text-white">
@@ -193,7 +196,7 @@ const hasGoogleToken = computed(() => page.props.googleToken !== null);
                 </span>
                 <span v-if="props.usermeet.link" class="flex items-center justify-center gap-2">
                     <Link :size="16" />
-                    <a :href="props.usermeet.link" class="text-green-400" target="_blank"> Google Meet </a>
+                    <a :href="props.usermeet.link" class="text-green-400 hover:underline" target="_blank"> Google Meet </a>
                 </span>
             </p>
         </template>
@@ -214,7 +217,7 @@ const hasGoogleToken = computed(() => page.props.googleToken !== null);
                     </span>
                     <span class="flex items-center justify-center gap-2">
                         <Link :size="16" />
-                        <a :href="confirmedMeeting.link" class="text-green-400" target="_blank"> Google Meet </a>
+                        <a :href="confirmedMeeting.link" class="text-green-400 hover:underline" target="_blank"> Google Meet </a>
                     </span>
                 </p>
                 <p></p>
@@ -323,6 +326,12 @@ const hasGoogleToken = computed(() => page.props.googleToken !== null);
                 </template>
 
                 <template v-else>
+                    <h3 class="mb-2 text-lg font-semibold">Envie de faire connaissance ?</h3>
+                    <p>Utilisez le calendrier pour planifier une rencontre.<br />
+                    Une seule plage horaire peut être réservée par personne.<br />
+                    L’identification via Google est requise.<br />
+                    Une invitation Google Meet vous sera automatiquement envoyée avec le lien de connexion pour le jour et l’heure choisis.</p>
+                    <p class="italic">Les horaires affichés sont ceux du fuseau de Montréal.<br />&nbsp;</p>
                     <a
                         :href="googleauthurl"
                         class="rounded border border-green-400 bg-[#0a192f] px-4 py-2 text-white transition-all duration-200 hover:bg-green-800"

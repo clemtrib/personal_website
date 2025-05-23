@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import { useForm, router } from '@inertiajs/vue3';
+import { router } from '@inertiajs/vue3';
 import { ref } from 'vue';
+import { Pencil, Eraser } from 'lucide-vue-next';
 
 const props = defineProps<{
     timeslots: {
@@ -44,53 +45,15 @@ const updateFilters = () => {
     );
 };
 
-// Modale
-const showDeleteModal = ref(false);
-const meetIdToDelete = ref(null);
-
-const form = useForm({});
+const emit = defineEmits(['open-delete-modal']);
 
 const openDeleteModal = (id: number) => {
-    meetIdToDelete.value = id;
-    showDeleteModal.value = true;
+    emit('open-delete-modal', id);
 };
 
-const closeDeleteModal = () => {
-    showDeleteModal.value = false;
-};
-
-const deleteMessage = () => {
-    form.delete(route('meets.destroy', meetIdToDelete.value), {
-        preserveScroll: true,
-        preserveState: false,
-        onSuccess: () => {
-            closeDeleteModal();
-        },
-    });
-};
-
-defineExpose({
-    openDeleteModal
-});
 </script>
 
 <template>
-    <div v-if="showDeleteModal" class="fixed inset-0 bg-black/50 flex items-center justify-center z-50" @click.self="closeDeleteModal">
-        <div class="bg-white dark:bg-gray-800 p-6 rounded-lg max-w-md w-full mx-4">
-            <h3 class="text-lg font-semibold mb-4">Confirmer la suppression</h3>
-            <p class="mb-6">Êtes-vous sûr de vouloir supprimer cette plage horaire ?</p>
-
-            <div class="flex justify-end gap-3">
-                <button @click="closeDeleteModal" class="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded">
-                Annuler
-                </button>
-                <button @click="deleteMessage" class="px-4 py-2 bg-red-600 text-white text-sm font-medium rounded hover:bg-red-700" :disabled="form.processing">
-                <span v-if="form.processing">Suppression...</span>
-                <span v-else>Confirmer</span>
-                </button>
-            </div>
-        </div>
-    </div>
 
     <div class="relative h-full w-full">
         <div class="relative z-10 p-4">
@@ -99,9 +62,14 @@ defineExpose({
             <!-- Filtre par date et nombre par page -->
             <div class="mb-4 flex items-center gap-2">
                 <label for="filter-date" class="font-medium">Filtrer par date :</label>
-                <input id="filter-date" type="date" v-model="filterDate" class="rounded border px-2 py-1 dark:bg-gray-700 dark:border-gray-600 dark:text-white" />
+                <input
+                    id="filter-date"
+                    type="date"
+                    v-model="filterDate"
+                    class="rounded border px-2 py-1 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
+                />
                 <label class="ml-4 font-medium">Par page :</label>
-                <select v-model="perPage" class="rounded border px-2 py-1 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+                <select v-model="perPage" class="rounded border px-2 py-1 dark:border-gray-600 dark:bg-gray-700 dark:text-white">
                     <option :value="10" v-if="perPage != 10">10</option>
                     <option :value="10" v-if="perPage == 10" selected>10</option>
                     <option :value="25" v-if="perPage != 25">25</option>
@@ -114,7 +82,7 @@ defineExpose({
                         filterDate = '';
                         updateFilters();
                     "
-                    class="ml-2 text-sm text-gray-600 dark:text-green-400 hover:underline"
+                    class="ml-2 text-sm text-gray-600 hover:underline dark:text-green-400"
                 >
                     Réinitialiser
                 </button>
@@ -122,7 +90,6 @@ defineExpose({
 
             <ul v-if="timeslots && timeslots.data" class="space-y-4">
                 <li v-for="meet in timeslots.data" :key="meet.id" class="flex items-center gap-4 rounded-lg bg-white p-4 shadow dark:bg-gray-800">
-
                     <!-- Bloc date -->
                     <div class="w-12 shrink-0 text-center text-xl font-bold text-gray-700 dark:text-gray-300">
                         <div class="text-gray-600 dark:text-green-400">
