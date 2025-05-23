@@ -30,5 +30,6 @@ const props = defineProps < {
                 <Facebook />
             </a>
         </div>
+        <p><a href="/page/confidentialite" class="text-sm font-bold text-green-400 hover:underline">Politique de confidentialité</a></p>
     </footer>
 </template>

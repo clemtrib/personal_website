@@ -18,12 +18,12 @@ const appName = import.meta.env.VITE_APP_NAME || '';
 </script>
 
 <template>
-    <section class="flex min-h-screen flex-col justify-between bg-[#0a192f] px-6 py-20 text-[#ccd6f6]" data-aos="flip-right">
+    <section class="flex min-h-screen flex-col justify-between bg-[#0a192f] px-6 py-20 text-[#ccd6f6]" data-aos="fade-bottom">
         <!-- Zone texte + image -->
         <div class="flex flex-col items-center justify-between gap-12 md:flex-row">
             <!-- Colonne gauche : texte -->
             <div class="max-w-xl md:w-1/2">
-                <span class="mt-4 text-[#8892b0]" v-html="parsedDescription"></span>
+                <span class="mt-4 text-[#8892b0] leading-relaxed prose prose-invert max-w-none transition-all duration-300" v-html="parsedDescription"></span>
             </div>
 
             <!-- Colonne droite : image -->
