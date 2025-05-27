@@ -1,3 +1,10 @@
+## Version 1.2
+
+Date de publication : 
+
+### Nouveautés 🚀
+- Facturation.
+
 ## Version 1.1
 
 Date de publication : 26 mai 2025
