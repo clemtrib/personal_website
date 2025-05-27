@@ -15,7 +15,7 @@ const props = defineProps < {
 </script>
 
 <template>
-    <footer v-if="props.readyToLoad && props.readyToLoad == true" class="p-6 text-center bg-black text-white">
+    <footer class="p-6 text-center bg-black text-white">
         <p>codé à <span class="text-green-400">Montréal</span></p>
         <p>avec <span class="text-green-400">Laravel 12</span> et <span class="text-green-400">Vue.js 3</span></p>
         <p>- <span class="text-green-400">2025</span> -</p>
@@ -30,6 +30,5 @@ const props = defineProps < {
                 <Facebook />
             </a>
         </div>
-        <p><a href="/page/confidentialite" class="text-sm font-bold text-green-400 hover:underline">Politique de confidentialité</a></p>
     </footer>
 </template>

@@ -13,6 +13,9 @@ import 'vue-toastification/dist/index.css';
 import AOS from 'aos';
 import 'aos/dist/aos.css';
 
+import VCalendar from 'v-calendar';
+import 'v-calendar/style.css';
+
 // Extend ImportMeta interface for Vite...
 declare module 'vite/client' {
     interface ImportMetaEnv {
@@ -38,7 +41,8 @@ createInertiaApp({
             .use(Toast, {
                 position: "top-right",
                 timeout: 5000
-            });
+            })
+            .use(VCalendar, {});
 
         app.mount(el);
 
