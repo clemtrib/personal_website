@@ -28,14 +28,16 @@ return new class extends Migration
         Schema::create('bills', function (Blueprint $table) {
             $table->id();
             $table->foreignId('customer_id');
-            $table->string('hash');
+            $table->string('hash')->nullable();
+            $table->date('start_date')->nullable();
+            $table->date('end_date')->nullable();
             $table->string('provider_name');
-            $table->string('provider_address_line_1');
-            $table->string('provider_address_line_2');
-            $table->string('provider_zip_code');
-            $table->string('provider_city');
-            $table->string('provider_province');
-            $table->string('provider_country');
+            $table->string('provider_address_line_1')->nullable();
+            $table->string('provider_address_line_2')->nullable();
+            $table->string('provider_zip_code')->nullable();
+            $table->string('provider_city')->nullable();
+            $table->string('provider_province')->nullable();
+            $table->string('provider_country')->nullable();
             $table->string('customer_name');
             $table->string('customer_address_line_1');
             $table->string('customer_address_line_2');
@@ -44,12 +46,13 @@ return new class extends Migration
             $table->string('customer_province');
             $table->string('customer_country');
             $table->decimal('subtotal');
-            $table->decimal('tps');
-            $table->decimal('tvq');
+            $table->decimal('tps')->nullable();
+            $table->decimal('tvq')->nullable();
             $table->decimal('total');
-            $table->string('id_tps');
-            $table->string('id_tvq');
+            $table->string('id_tps')->nullable();
+            $table->string('id_tvq')->nullable();
             $table->boolean('is_paid')->default(false);
+            $table->boolean('is_cancelled')->default(false);
             $table->timestamps();
         });
 

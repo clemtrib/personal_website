@@ -12,6 +12,8 @@ class Bill extends Model
      * @var list<string>
      */
     protected $fillable = [
+        'start_date',
+        'end_date',
         'hash',
         'provider_name',
         'provider_address_line_1',

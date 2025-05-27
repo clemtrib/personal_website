@@ -26,6 +26,8 @@ class CustomerController extends Controller
      */
     public function index()
     {
+        //var_dump(Customer::orderBy('name', 'ASC')->get());
+        //die;
         return Inertia::render('Customers', [
             'customers' => Customer::orderBy('name', 'ASC')->get()
         ]);
