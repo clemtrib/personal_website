@@ -17,7 +17,7 @@ class CustomerController extends Controller
         'city' => 'nullable|string|max:255',
         'province' => 'nullable|string|max:2',
         'country' => 'nullable|string|max:2',
-        'tjm' => 'nullable|decimal|max:255',
+        'tjm' => 'nullable|decimal:0,2',
         'email' => 'nullable|string|max:255',
     ];
 

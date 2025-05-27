@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('customer', function (Blueprint $table) {
+        Schema::create('customers', function (Blueprint $table) {
             $table->id();
             $table->string('name');
             $table->string('address_line_1')->nullable();
@@ -25,8 +25,9 @@ return new class extends Migration
             $table->timestamps();
         });
 
-        Schema::create('bill', function (Blueprint $table) {
+        Schema::create('bills', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('customer_id');
             $table->string('hash');
             $table->string('provider_name');
             $table->string('provider_address_line_1');
@@ -48,12 +49,13 @@ return new class extends Migration
             $table->decimal('total');
             $table->string('id_tps');
             $table->string('id_tvq');
+            $table->boolean('is_paid')->default(false);
             $table->timestamps();
         });
 
-        Schema::create('bill_detail', function (Blueprint $table) {
+        Schema::create('bill_details', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('bill_id')->nullable()->unique();
+            $table->foreignId('bill_id');
             $table->string('product');
             $table->integer('price');
             $table->integer('quantity');
@@ -68,8 +70,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('customer');
-        Schema::dropIfExists('bill');
-        Schema::dropIfExists('bill_detail');
+        Schema::dropIfExists('customers');
+        Schema::dropIfExists('bills');
+        Schema::dropIfExists('bill_details');
     }
 };

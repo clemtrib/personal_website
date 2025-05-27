@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use App\Http\Controllers\CustomerController;
 
+/*
 Route::prefix('dashboard/customers')->middleware('auth')->group(function () {
     Route::get('/list', [CustomerController::class, 'index'])->name('customers');
     Route::get('/create', function () {
@@ -15,3 +16,4 @@ Route::prefix('dashboard/customers')->middleware('auth')->group(function () {
     Route::delete('/{hobby}', [CustomerController::class, 'destroy'])->name('customers.destroy');
     Route::post('/reorder', [CustomerController::class, 'reorder'])->name('customers.reorder');
 });
+*/

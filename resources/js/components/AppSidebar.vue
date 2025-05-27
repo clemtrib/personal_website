@@ -5,10 +5,11 @@ import NavUser from '@/components/NavUser.vue';
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar';
 import { type NavItem } from '@/types';
 import { Link } from '@inertiajs/vue3';
-import { BookOpen, Folder, LayoutGrid, Mail, Briefcase, GraduationCap, Gamepad2, CircleCheckBig, FileText, Calendar, Earth } from 'lucide-vue-next';
+import { Briefcase, Calendar, CircleCheckBig, Earth, FileText, Folder, Gamepad2, GraduationCap, LayoutGrid, Mail, Receipt, Users } from 'lucide-vue-next';
 import AppLogo from './AppLogo.vue';
 
-const mainNavItems: NavItem[] = [{
+const mainNavItems: NavItem[] = [
+    {
         title: 'Dashboard',
         url: '/dashboard',
         icon: LayoutGrid,
@@ -48,9 +49,20 @@ const mainNavItems: NavItem[] = [{
         url: '/dashboard/meets/list',
         icon: Calendar,
     },
+    {
+        title: 'Clients',
+        url: '/dashboard/customers/list',
+        icon: Users,
+    },
+    {
+        title: 'Facturation',
+        url: '/dashboard/bills/list',
+        icon: Receipt,
+    },
 ];
 
-const footerNavItems: NavItem[] = [{
+const footerNavItems: NavItem[] = [
+    {
         title: 'Github Repo',
         href: 'https://github.com/clemtrib/personal_website',
         icon: Folder,
@@ -70,7 +82,7 @@ const footerNavItems: NavItem[] = [{
                 <SidebarMenuItem>
                     <SidebarMenuButton size="lg" as-child>
                         <Link :href="route('dashboard')">
-                        <AppLogo />
+                            <AppLogo />
                         </Link>
                     </SidebarMenuButton>
                 </SidebarMenuItem>
