@@ -53,6 +53,7 @@ return new class extends Migration
             $table->string('id_tvq')->nullable();
             $table->boolean('is_paid')->default(false);
             $table->boolean('is_cancelled')->default(false);
+            $table->boolean('is_send')->default(false);
             $table->timestamps();
         });
 

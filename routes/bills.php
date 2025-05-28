@@ -10,7 +10,7 @@ Route::prefix('dashboard/bills')->middleware('auth')->group(function () {
     Route::post('/create', [BillController::class, 'store'])->name('bills.store');
     Route::get('/{bill}/edit', [BillController::class, 'edit'])->name('bills.edit');
     Route::get('/download/{bill}', [BillController::class, 'downloadInvoice'])->name('bills.download');
-    Route::put('/is_cancelled/{bill}', [BillController::class, 'update'])->name('bills.is_cancelled');
-    Route::put('/is_paid/{bill}', [BillController::class, 'update'])->name('bills.is_paid');
+    Route::get('/is_paid/{bill}', [BillController::class, 'isPaid'])->name('bills.isPaid');
+    Route::get('/send_by_mail/{bill}', [BillController::class, 'sendByMail'])->name('bills.sendByMail');
     Route::delete('/{bill}', [BillController::class, 'destroy'])->name('bills.destroy');
 });

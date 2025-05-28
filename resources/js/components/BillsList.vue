@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Download, Eraser } from 'lucide-vue-next';
+import { Download, Eraser, Paperclip } from 'lucide-vue-next';
 import { ref } from 'vue';
 
 const props = defineProps<{
@@ -9,6 +9,7 @@ const props = defineProps<{
         start_date: string;
         end_date: string;
         total: string;
+        is_send: boolean;
     }>;
 }>();
 
@@ -37,6 +38,12 @@ const openDeleteModal = (id: number) => {
                             target="_blank"
                         >
                             <Download class="h-4 w-4" /> Télécharger
+                        </a>
+                        <a v-if="!bill.is_send"
+                            :href="route('bills.sendByMail', bill.id)"
+                            class="flex items-center gap-2 rounded-lg bg-blue-100 px-3 py-2 text-sm transition hover:bg-blue-200 dark:bg-blue-900/30 dark:hover:bg-blue-900/50"
+                        >
+                            <Paperclip class="h-4 w-4" />Envoyer par email
                         </a>
                         <button
                             @click="openDeleteModal(bill.id)"

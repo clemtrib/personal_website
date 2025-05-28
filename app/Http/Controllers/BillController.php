@@ -3,14 +3,13 @@
 namespace App\Http\Controllers;
 
 use Inertia\Inertia;
+use App\Mail\BillMailable;
 use App\Models\Bill;
 use App\Models\BillDetail;
 use App\Models\Customer;
-
 use App\Services\BillPdfService;
-
-
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 
 class BillController extends Controller
@@ -30,7 +29,7 @@ class BillController extends Controller
     public function index()
     {
         return Inertia::render('Bills', [
-            'bills' => Bill::orderBy('id', 'DESC')->get()
+            'bills' => Bill::where('is_cancelled', 0)->orderBy('id', 'DESC')->get()
         ]);
     }
 
@@ -101,7 +100,7 @@ class BillController extends Controller
 
             $pdfService->generate($bill);
 
-            return redirect()->route('bills')->with('success', 'Facture créée avec succès');
+            return to_route('bills')->with('success', 'Facture créée avec succès');
             //return to_route('bills')->with('success', 'Facture créée avec succès');
         } catch (\Exception $e) {
             return back()->with('error', $e->getMessage());
@@ -127,28 +126,32 @@ class BillController extends Controller
     }
 
     /**
-     * Invoice is cancelled
+     *
      */
-    public function is_cancelled(Bill $bill)
+    public function sendByMail(Bill $bill, BillPdfService $pdfService)
     {
-        $bill->isCancelled = true;
+        $bill->is_send = true;
         try {
-            $bill->save();
-            return to_route('bills')->with('success', 'Facture annulée avec succès');
+            $pdfPath = $pdfService->generate($bill);
+            $r = Mail::to($bill->customer->email)->send(new BillMailable($bill, $pdfPath));
+            if ($r) {
+                $bill->save();
+            }
+            return to_route('bills')->with('success', 'Email envoyé');
         } catch (\Exception $e) {
-            return back()->with('error', $e->getMessage());
+            return back()->with('error',  $e->getMessage());
         }
     }
 
     /**
      * Invoice is paid
      */
-    public function is_paid(Bill $bill)
+    public function isPaid(Bill $bill)
     {
         $bill->is_paid = true;
         try {
             $bill->save();
-            return to_route('bills')->with('success', 'Facture annulée avec succès');
+            return to_route('bills')->with('success', 'Facture payée');
         } catch (\Exception $e) {
             return back()->with('error', $e->getMessage());
         }
@@ -159,9 +162,10 @@ class BillController extends Controller
      */
     public function destroy(Bill $bill)
     {
+        $bill->is_cancelled = true;
         try {
-            $bill->delete();
-            return to_route('bills')->with('success', 'Facture supprimée  avec succès');
+            $bill->save();
+            return to_route('bills')->with('success', 'Facture annulée avec succès');
         } catch (\Exception $e) {
             return back()->with('error',  $e->getMessage());
         }

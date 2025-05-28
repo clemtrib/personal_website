@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\ContactMailable;
 use App\Models\Message;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+use Illuminate\Support\Facades\Mail;
 
 class MessageController extends Controller
 {
@@ -49,6 +51,9 @@ class MessageController extends Controller
             $message->email = $this->sanitizeInput($validatedData['email']);
             $message->message = $this->sanitizeInput($validatedData['message']);
             $message->save();
+
+            Mail::to(getenv('GOOGLE_MEET_EMAIL'))->send(new ContactMailable($message));
+
             return back()->with([
                 'flash' => [
                     'success_message' => 'Merci pour votre message ! Je vous répondrai dès que possible.',

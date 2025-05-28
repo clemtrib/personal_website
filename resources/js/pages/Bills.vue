@@ -33,6 +33,18 @@ const closeDeleteModal = () => {
 const page = usePage();
 const bills = computed(() => page.props.bills);
 
+onMounted(async () => {
+    const message = localStorage.getItem('flashMessage');
+    const type = localStorage.getItem('flashType');
+    if (message) {
+        page.props.flash = {
+            [type]: message
+        };
+        localStorage.removeItem('flashMessage');
+        localStorage.removeItem('flashType');
+    }
+});
+
 </script>
 
 <template>
