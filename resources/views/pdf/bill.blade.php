@@ -32,7 +32,7 @@
         {{ $bill->customer_name }}<br />
         {{ $bill->customer_address_line_1 }}<br />
         {{ $bill->customer_address_line_2 }}<br />
-        {{ $bill->customer_zip_code }} {{ $bill->customer_province }} {{ $bill->customer_city }}<br />
+        {{ $bill->customer_city }} {{ $bill->customer_province }} {{ $bill->customer_zip_code }}<br />
     </p>
 
     <h3>Détails</h3>
