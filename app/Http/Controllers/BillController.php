@@ -7,6 +7,9 @@ use App\Models\Bill;
 use App\Models\BillDetail;
 use App\Models\Customer;
 
+use App\Services\BillPdfService;
+
+
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 
@@ -27,7 +30,7 @@ class BillController extends Controller
     public function index()
     {
         return Inertia::render('Bills', [
-            'bills' => Bill::get()
+            'bills' => Bill::orderBy('id', 'DESC')->get()
         ]);
     }
 
@@ -37,16 +40,18 @@ class BillController extends Controller
     public function create()
     {
 
-        return Inertia::render('BillsForm',
-        [
-            'customers' => Customer::orderBy('name', 'ASC')->get()
-        ]);
+        return Inertia::render(
+            'BillsForm',
+            [
+                'customers' => Customer::orderBy('name', 'ASC')->get()
+            ]
+        );
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(Request $request, BillPdfService $pdfService)
     {
         $validatedData = $request->validate(self::VALIDATION_RULES_GENERATE_INVOICE);
 
@@ -81,8 +86,8 @@ class BillController extends Controller
             $bill->subtotal = $validatedData['hours'] * $customer->tjm;
             $bill->id_tps = getenv('NO_TPS') ?? null;
             $bill->id_tvq = getenv('NO_TVQ') ?? null;
-            $bill->tps = $bill->id_tps ? $bill->subtotal * 0.05 : null;
-            $bill->tvq = $bill->id_tvq ? $bill->subtotal * 0.09975 : null;
+            $bill->tps = $bill->id_tps && $bill->id_tvq ? $bill->subtotal * 0.05 : null;
+            $bill->tvq = $bill->id_tps && $bill->id_tvq  ? $bill->subtotal * 0.09975 : null;
             $bill->total = $bill->subtotal + $bill->tps + $bill->tvq;
             $bill->save();
 
@@ -94,12 +99,31 @@ class BillController extends Controller
             $billDetail->total = $validatedData['hours'] * $customer->tjm;
             $billDetail->save();
 
-            //send email to $customer->email;
+            $pdfService->generate($bill);
 
-            return to_route('bills')->with('success', 'Facture créé avec succès');
+            return redirect()->route('bills')->with('success', 'Facture créée avec succès');
+            //return to_route('bills')->with('success', 'Facture créée avec succès');
         } catch (\Exception $e) {
             return back()->with('error', $e->getMessage());
         }
+    }
+
+    /**
+     *
+     */
+    public function downloadInvoice(Bill $bill, BillPdfService $pdfService)
+    {
+        $pdfPath = $pdfService->generate($bill);
+
+        // Pour afficher dans le navigateur :
+        return response()->file(
+            $pdfPath,
+            [
+                'Content-Type' => 'application/pdf',
+                // "inline" pour affichage, "attachment" pour téléchargement
+                'Content-Disposition' => 'inline; filename="' . basename($pdfPath) . '"'
+            ]
+        );
     }
 
     /**

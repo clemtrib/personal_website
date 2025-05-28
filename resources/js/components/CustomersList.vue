@@ -9,6 +9,9 @@ const props = defineProps<{
         name: string;
         address_line_1: string;
         address_line_2: string;
+        zip_code: string;
+        city: string;
+        province: string;
     }>;
 }>();
 
@@ -27,9 +30,11 @@ const openDeleteModal = (id: number) => {
             <h2 class="mb-4 text-2xl font-bold">Clients</h2>
             <ul class="space-y-4">
                 <li v-for="customer in customersList" :key="customer.id" class="rounded-lg bg-white p-4 shadow dark:bg-gray-800">
-                    <h3>{{ customer.name }}</h3>
+                    <h3 class="text-2xl">{{ customer.name }}</h3>
                     <p>{{ customer.address_line_1 }}</p>
                     <p>{{ customer.address_line_2 }}</p>
+                    <p>{{ customer.city }} {{ customer.province }} {{ customer.zip_code }}</p>
+                    <p>Taux horaire : {{ customer.tjm }} $</p>
                     <div class="mt-4 flex gap-2">
                         <Link
                             :href="route('customers.edit', customer.id)"

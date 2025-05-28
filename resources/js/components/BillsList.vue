@@ -1,11 +1,13 @@
 <script setup lang="ts">
-import { Link } from '@inertiajs/vue3';
-import { Eraser, Pencil } from 'lucide-vue-next';
+import { Download, Eraser } from 'lucide-vue-next';
 import { ref } from 'vue';
 
 const props = defineProps<{
     bills: Array<{
         id: number;
+        customer_name: string;
+        start_date: string;
+        end_date: string;
         total: string;
     }>;
 }>();
@@ -25,15 +27,17 @@ const openDeleteModal = (id: number) => {
             <h2 class="mb-4 text-2xl font-bold">Facturation</h2>
             <ul class="space-y-4">
                 <li v-for="bill in bills" :key="bill.id" class="rounded-lg bg-white p-4 shadow dark:bg-gray-800">
-                    <h3>{{ bill.id }}</h3>
-                    <p>{{ bill.total }} $</p>
+                    <p>Du {{ new Date(bill.start_date).toLocaleDateString('fr-FR') }} au {{ new Date(bill.end_date).toLocaleDateString('fr-FR') }}</p>
+                    <h3 class="text-2xl">Facture #{{ bill.id }} - {{ bill.customer_name }}</h3>
+                    <p>Total : {{ bill.total }} $</p>
                     <div class="mt-4 flex gap-2">
-                        <Link
-                            :href="route('bills.edit', bill.id)"
+                        <a
+                            :href="route('bills.download', bill.id)"
                             class="flex items-center gap-2 rounded-lg bg-blue-100 px-3 py-2 text-sm transition hover:bg-blue-200 dark:bg-blue-900/30 dark:hover:bg-blue-900/50"
+                            target="_blank"
                         >
-                            <Pencil class="h-4 w-4" /> Modifier
-                        </Link>
+                            <Download class="h-4 w-4" /> Télécharger
+                        </a>
                         <button
                             @click="openDeleteModal(bill.id)"
                             class="flex items-center gap-2 rounded-lg bg-red-100 px-3 py-2 text-sm transition hover:bg-red-200 dark:bg-red-900/30 dark:hover:bg-red-900/50"

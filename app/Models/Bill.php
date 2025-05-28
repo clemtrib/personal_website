@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\BillDetail;
 use Illuminate\Database\Eloquent\Model;
 
 class Bill extends Model
@@ -57,5 +58,13 @@ class Bill extends Model
             'created_at' => 'datetime',
             'updated_at' => 'datetime',
         ];
+    }
+
+    /**
+     *
+     */
+    public function details()
+    {
+        return $this->hasMany(BillDetail::class);
     }
 }
