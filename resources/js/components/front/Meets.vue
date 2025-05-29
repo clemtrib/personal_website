@@ -18,10 +18,10 @@ const props = defineProps<{
         google_picture: string;
     };
     googleauthurl: string;
-    usermeet: {
+    usermeet?: {
         start_datetime: string;
         end_datetime: string;
-    };
+    } | null;
 }>();
 
 const form = useForm({
@@ -37,7 +37,6 @@ const failureMeetingLink = computed(() => page.props.flash?.failure_meeting_link
 const confirmedMeeting = computed(() => page.props.flash?.confirmed_meeting);
 
 const selectedDate = ref<Date | null>(null);
-const attrs = ref([]);
 const timeslots = ref<any[]>([]);
 const selectedTimeslotId = ref<number | null>(null);
 const siteKey = import.meta.env.VITE_RECAPTCHA_SITE_KEY;
@@ -79,15 +78,20 @@ const selectTimeslot = (id: number) => {
     });
 };
 
+/* Highlight des dates dans le calendrier */
+/* /!\ L'utilisateur peut changer de mois */
+const attrs = computed(() => {
+  if (!props.meetings?.length) return [];
+  const parsedDates = props.meetings.map(date => {
+    const [year, month, day] = date.split('-').map(Number);
+    return new Date(year, month - 1, day);
+  });
+  return [{ highlight: 'green', dates: parsedDates }];
+});
+
+
 onMounted(() => {
-    /* Affichage des dates dans le calendrier */
-    if (props.meetings?.length) {
-        const parsedDates = props.meetings.map((date) => {
-            const [year, month, day] = date.split('-').map(Number);
-            return new Date(year, month - 1, day);
-        });
-        attrs.value = [{ highlight: 'green', dates: parsedDates }];
-    }
+
     /* Ancre pour revenir sur le formulaire après la redirection de l'authentification Google */
     if (window.location.hash) {
         nextTick(() => {
@@ -327,10 +331,12 @@ const submit = async () => {
 
                 <template v-else>
                     <h3 class="mb-2 text-lg font-semibold">Envie de faire connaissance ?</h3>
-                    <p>Utilisez le calendrier pour planifier une rencontre.<br />
-                    Une seule plage horaire peut être réservée par personne.<br />
-                    L’identification via Google est requise.<br />
-                    Une invitation Google Meet vous sera automatiquement envoyée avec le lien de connexion pour le jour et l’heure choisis.</p>
+                    <p>
+                        Utilisez le calendrier pour planifier une rencontre.<br />
+                        Une seule plage horaire peut être réservée par personne.<br />
+                        L’identification via Google est requise.<br />
+                        Une invitation Google Meet vous sera automatiquement envoyée avec le lien de connexion pour le jour et l’heure choisis.
+                    </p>
                     <p class="italic">Les horaires affichés sont ceux du fuseau de Montréal.<br />&nbsp;</p>
                     <a
                         :href="googleauthurl"
