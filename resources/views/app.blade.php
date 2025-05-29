@@ -27,6 +27,9 @@
     <meta name="twitter:title" content="{{ $meta['twitter:title'] }}" />
     <meta name="twitter:description" content="{{ $meta['twitter:description'] }}" />
     <meta name="twitter:image" content="{{ $meta['twitter:image'] }}" />
+
+    <!-- Google Site Verification -->
+    <meta name="google-site-verification" content="dLxmDDa7Zytu_zutWz-ISsWxYY181kxiu0G26g3JEus" />
     @endif
 
     @routes
