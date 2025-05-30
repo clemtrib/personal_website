@@ -24,7 +24,7 @@ jobs:
       # Création du fichier .env
       - name: Create .env file
         run: |
-          echo "APP_NAME=\"Clément Tribouillard, développeur\"" >> .env
+          echo "APP_NAME=\"${APP_NAME}\"" >> .env
           echo "APP_ENV=production" >> .env
           echo "APP_KEY=${APP_KEY}" >> .env
           echo "APP_DEBUG=false" >> .env
@@ -64,6 +64,7 @@ jobs:
           echo "MAIL_PORT=${MAIL_PORT}" >> .env
           echo "MAIL_USERNAME=${MAIL_USERNAME}" >> .env
           echo "MAIL_PASSWORD=${MAIL_PASSWORD}" >> .env
+          echo "MAIL_ENCRYPTION=${MAIL_ENCRYPTION}" >> .env
           echo "MAIL_FROM_ADDRESS=${MAIL_FROM_ADDRESS}" >> .env
           echo "MAIL_FROM_NAME=${MAIL_FROM_NAME}" >> .env
           echo "AWS_ACCESS_KEY_ID=" >> .env
@@ -85,17 +86,18 @@ jobs:
           echo "GOOGLE_REDIRECT_URI=${APP_URL}/auth/google/callback" >> .env
           echo "GOOGLE_MEET_EMAIL=clement.tribouillard+wb@gmail.com" >> .env
           echo "TIME_ZONE=America/Montreal" >> .env
-          echo "BILLING_FULLNAME=${BILLING_FULLNAME}" >> .env
-          echo "BILLING_ADDRESS_LINE_1=${BILLING_ADDRESS_LINE_1}" >> .env
-          echo "BILLING_ADDRESS_LINE_2=${BILLING_ADDRESS_LINE_2}" >> .env
-          echo "BILLING_ZIP_CODE=${BILLING_ZIP_CODE}" >> .env
-          echo "BILLING_CITY=${BILLING_CITY}" >> .env
-          echo "BILLING_PROVINCE=${BILLING_PROVINCE}" >> .env
-          echo "BILLING_COUNTRY=${BILLING_COUNTRY}" >> .env
-          echo "NO_TPS=${NO_TPS}" >> .env
-          echo "NO_TVQ=${NO_TVQ}" >> .env
-          echo "VITE_BILLING_PRODUCT_NAME=${VITE_BILLING_PRODUCT_NAME}" >> .env
+          echo "BILLING_FULLNAME=\"${BILLING_FULLNAME}\"" >> .env
+          echo "BILLING_ADDRESS_LINE_1=\"${BILLING_ADDRESS_LINE_1}\"" >> .env
+          echo "BILLING_ADDRESS_LINE_2=\"${BILLING_ADDRESS_LINE_2}\"" >> .env
+          echo "BILLING_ZIP_CODE=\"${BILLING_ZIP_CODE}\"" >> .env
+          echo "BILLING_CITY=\"${BILLING_CITY}\"" >> .env
+          echo "BILLING_PROVINCE=\"${BILLING_PROVINCE}\"" >> .env
+          echo "BILLING_COUNTRY=\"${BILLING_COUNTRY}\"" >> .env
+          echo "NO_TPS=\"${NO_TPS}\"" >> .env
+          echo "NO_TVQ=\"${NO_TVQ}\"" >> .env
+          echo "VITE_BILLING_PRODUCT_NAME=\"${VITE_BILLING_PRODUCT_NAME}\"" >> .env
         env:
+          APP_NAME: ${{ vars.APP_NAME }}
           APP_KEY: ${{ secrets.APP_KEY }}
           APP_URL: ${{ vars.APP_URL }}
           DB_HOST: ${{ secrets.DB_HOST }}
@@ -111,6 +113,7 @@ jobs:
           MAIL_PORT: ${{ secrets.MAIL_PORT }}
           MAIL_USERNAME: ${{ secrets.MAIL_USERNAME }}
           MAIL_PASSWORD: ${{ secrets.MAIL_PASSWORD }}
+          MAIL_ENCRYPTION: ${{ secrets.MAIL_ENCRYPTION }}
           MAIL_FROM_ADDRESS: ${{ secrets.MAIL_FROM_ADDRESS }}
           MAIL_FROM_NAME: ${{ secrets.MAIL_FROM_NAME }}
           BILLING_FULLNAME: ${{ vars.BILLING_FULLNAME }}
