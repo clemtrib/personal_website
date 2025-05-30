@@ -124,7 +124,23 @@ jobs:
           RECAPTCHA_PRIVATE_KEY: ${{ secrets.RECAPTCHA_PRIVATE_KEY }}
           VITE_RECAPTCHA_SITE_KEY: ${{ secrets.VITE_RECAPTCHA_SITE_KEY }}
           MIGRATION_WEBHOOK_TOKEN: ${{ secrets.MIGRATION_WEBHOOK_TOKEN }}
-
+          MAIL_MAILER: ${{ secrets.MAIL_MAILER }}
+          MAIL_HOST: ${{ secrets.MAIL_HOST }}
+          MAIL_PORT: ${{ secrets.MAIL_PORT }}
+          MAIL_USERNAME: ${{ secrets.MAIL_USERNAME }}
+          MAIL_PASSWORD: ${{ secrets.MAIL_PASSWORD }}
+          MAIL_FROM_ADDRESS: ${{ secrets.MAIL_FROM_ADDRESS }}
+          MAIL_FROM_NAME: ${{ secrets.MAIL_FROM_NAME }}
+          BILLING_FULLNAME: ${{ vars.BILLING_FULLNAME }}
+          BILLING_ADDRESS_LINE_1: ${{ vars.BILLING_ADDRESS_LINE_1 }}
+          BILLING_ADDRESS_LINE_2: ${{ vars.BILLING_ADDRESS_LINE_2 }}
+          BILLING_ZIP_CODE: ${{ vars.BILLING_ZIP_CODE }}
+          BILLING_CITY: ${{ vars.BILLING_CITY }}
+          BILLING_PROVINCE: ${{ vars.BILLING_PROVINCE }}
+          BILLING_COUNTRY: ${{ vars.BILLING_COUNTRY }}
+          NO_TPS: ${{ vars.NO_TPS }}
+          NO_TVQ: ${{ vars.NO_TVQ }}
+          VITE_BILLING_PRODUCT_NAME: ${{ vars.VITE_BILLING_PRODUCT_NAME }}
       # Upload du fichier .env
       - name: Upload .env to OVH
         uses: SamKirkland/FTP-Deploy-Action@v4.3.4
