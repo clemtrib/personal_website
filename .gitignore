@@ -6,7 +6,7 @@
 /build
 /storage/*.key
 /storage/pail
-/vendor
+#/vendor -> pas d'accès SSH au serveur, on déploie aussi le répertoire vendor
 .env
 .env.backup
 .env.production
