@@ -98,9 +98,9 @@ jobs:
           echo "CACHE_KEY=spa_content" >> .env
 
           echo "GOOGLE_REDIRECT_URI=${APP_URL}/auth/google/callback" >> .env
-          echo "GOOGLE_MEET_EMAIL='clement.tribouillard+wb@gmail.com'" >> .env
+          echo "GOOGLE_MEET_EMAIL=clement.tribouillard+wb@gmail.com" >> .env
 
-          echo "TIME_ZONE='America/Montreal'" >> .env
+          echo "TIME_ZONE=America/Montreal" >> .env
 
           echo "BILLING_FULLNAME=${BILLING_FULLNAME}" >> .env
           echo "BILLING_ADDRESS_LINE_1=${BILLING_ADDRESS_LINE_1}" >> .env
