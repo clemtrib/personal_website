@@ -24,13 +24,15 @@ require __DIR__ . '/settings.php';
 require __DIR__ . '/auth.php';
 
 /* CRUD */
-require __DIR__ . '/message.php';
+require __DIR__ . '/messages.php';
 require __DIR__ . '/experiences.php';
 require __DIR__ . '/education.php';
 require __DIR__ . '/hobbies.php';
 require __DIR__ . '/skills.php';
 require __DIR__ . '/pages.php';
 require __DIR__ . '/meets.php';
+require __DIR__ . '/customers.php';
+require __DIR__ . '/bills.php';
 
 /* Front: affichage des données */
 Route::prefix('api/spa')->group(function () {

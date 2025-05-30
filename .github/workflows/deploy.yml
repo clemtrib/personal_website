@@ -68,14 +68,13 @@ jobs:
           echo "REDIS_PASSWORD=null" >> .env
           echo "REDIS_PORT=6379" >> .env
 
-          echo "MAIL_MAILER=log" >> .env
-          echo "MAIL_SCHEME=null" >> .env
-          echo "MAIL_HOST=127.0.0.1" >> .env
-          echo "MAIL_PORT=2525" >> .env
-          echo "MAIL_USERNAME=null" >> .env
-          echo "MAIL_PASSWORD=null" >> .env
-          echo "MAIL_FROM_ADDRESS=\"hello@example.com\"" >> .env
-          echo "MAIL_FROM_NAME=\"Clément Tribouillard, développeur web\"" >> .env
+          echo "MAIL_MAILER=${MAIL_MAILER}" >> .env
+          echo "MAIL_HOST=${MAIL_HOST}" >> .env
+          echo "MAIL_PORT=${MAIL_PORT}" >> .env
+          echo "MAIL_USERNAME=${MAIL_USERNAME}" >> .env
+          echo "MAIL_PASSWORD=${MAIL_PASSWORD}" >> .env
+          echo "MAIL_FROM_ADDRESS=${MAIL_FROM_ADDRESS}" >> .env
+          echo "MAIL_FROM_NAME=${MAIL_FROM_NAME}" >> .env
 
           echo "AWS_ACCESS_KEY_ID=" >> .env
           echo "AWS_SECRET_ACCESS_KEY=" >> .env
@@ -102,6 +101,18 @@ jobs:
           echo "GOOGLE_MEET_EMAIL='clement.tribouillard+wb@gmail.com'" >> .env
 
           echo "TIME_ZONE='America/Montreal'" >> .env
+
+          echo "BILLING_FULLNAME=${BILLING_FULLNAME}" >> .env
+          echo "BILLING_ADDRESS_LINE_1=${BILLING_ADDRESS_LINE_1}" >> .env
+          echo "BILLING_ADDRESS_LINE_2=${BILLING_ADDRESS_LINE_2}" >> .env
+          echo "BILLING_ZIP_CODE=${BILLING_ZIP_CODE}" >> .env
+          echo "BILLING_CITY=${BILLING_CITY}" >> .env
+          echo "BILLING_PROVINCE=${BILLING_PROVINCE}" >> .env
+          echo "BILLING_COUNTRY=${BILLING_COUNTRY}" >> .env
+          echo "NO_TPS=${NO_TPS}" >> .env
+          echo "NO_TVQ=${NO_TVQ}" >> .env
+          echo "VITE_BILLING_PRODUCT_NAME=${VITE_BILLING_PRODUCT_NAME}" >> .env
+
         env:
           APP_KEY: ${{ secrets.APP_KEY }}
           APP_URL: ${{ vars.APP_URL }}
