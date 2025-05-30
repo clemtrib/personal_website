@@ -29,45 +29,36 @@ jobs:
           echo "APP_KEY=${APP_KEY}" >> .env
           echo "APP_DEBUG=false" >> .env
           echo "APP_URL=${APP_URL}" >> .env
-
           echo "APP_LOCALE=fr" >> .env
           echo "APP_FALLBACK_LOCALE=fr" >> .env
           echo "APP_FAKER_LOCALE=fr_CA" >> .env
-
           echo "APP_MAINTENANCE_DRIVER=file" >> .env
           echo "PHP_CLI_SERVER_WORKERS=4" >> .env
           echo "BCRYPT_ROUNDS=12" >> .env
-
           echo "LOG_CHANNEL=stack" >> .env
           echo "LOG_STACK=single" >> .env
           echo "LOG_DEPRECATIONS_CHANNEL=null" >> .env
           echo "LOG_LEVEL=debug" >> .env
-
           echo "DB_CONNECTION=mysql" >> .env
           echo "DB_HOST=${DB_HOST}" >> .env
           echo "DB_PORT=${DB_PORT}" >> .env
           echo "DB_DATABASE=${DB_DATABASE}" >> .env
           echo "DB_USERNAME=${DB_USERNAME}" >> .env
           echo "DB_PASSWORD=${DB_PASSWORD}" >> .env
-
           echo "SESSION_DRIVER=database" >> .env
           echo "SESSION_LIFETIME=120" >> .env
           echo "SESSION_ENCRYPT=false" >> .env
           echo "SESSION_PATH=/" >> .env
           echo "SESSION_DOMAIN=null" >> .env
-
           echo "BROADCAST_CONNECTION=log" >> .env
           echo "FILESYSTEM_DISK=local" >> .env
           echo "QUEUE_CONNECTION=database" >> .env
-
           echo "CACHE_STORE=database" >> .env
           echo "MEMCACHED_HOST=127.0.0.1" >> .env
-
           echo "REDIS_CLIENT=phpredis" >> .env
           echo "REDIS_HOST=127.0.0.1" >> .env
           echo "REDIS_PASSWORD=null" >> .env
           echo "REDIS_PORT=6379" >> .env
-
           echo "MAIL_MAILER=${MAIL_MAILER}" >> .env
           echo "MAIL_HOST=${MAIL_HOST}" >> .env
           echo "MAIL_PORT=${MAIL_PORT}" >> .env
@@ -75,33 +66,25 @@ jobs:
           echo "MAIL_PASSWORD=${MAIL_PASSWORD}" >> .env
           echo "MAIL_FROM_ADDRESS=${MAIL_FROM_ADDRESS}" >> .env
           echo "MAIL_FROM_NAME=${MAIL_FROM_NAME}" >> .env
-
           echo "AWS_ACCESS_KEY_ID=" >> .env
           echo "AWS_SECRET_ACCESS_KEY=" >> .env
           echo "AWS_DEFAULT_REGION=us-east-1" >> .env
           echo "AWS_BUCKET=" >> .env
           echo "AWS_USE_PATH_STYLE_ENDPOINT=false" >> .env
-
           echo "FACEBOOK=" >> .env
           echo "LINKEDIN=https://www.linkedin.com/in/clement-tribouillard/" >> .env
           echo "GITHUB=https://github.com/clemtrib/" >> .env
           echo "TJM=450" >> .env
           echo "RECAPTCHA_PRIVATE_KEY=${RECAPTCHA_PRIVATE_KEY}" >> .env
-
           echo "VITE_APP_NAME=\"Clément Tribouillard, développeur web\"" >> .env
           echo "VITE_APP_ENV=production" >> .env
           echo "VITE_RECAPTCHA_SITE_KEY=${VITE_RECAPTCHA_SITE_KEY}" >> .env
           echo "VITE_SHOW_HERO_IMAGE=1" >> .env
-
           echo "MIGRATION_WEBHOOK_TOKEN=${MIGRATION_WEBHOOK_TOKEN}" >> .env
-
           echo "CACHE_KEY=spa_content" >> .env
-
           echo "GOOGLE_REDIRECT_URI=${APP_URL}/auth/google/callback" >> .env
-          echo "GOOGLE_MEET_EMAIL='clement.tribouillard+wb@gmail.com'" >> .env
-
-          echo "TIME_ZONE='America/Montreal'" >> .env
-
+          echo "GOOGLE_MEET_EMAIL=clement.tribouillard+wb@gmail.com" >> .env
+          echo "TIME_ZONE=America/Montreal" >> .env
           echo "BILLING_FULLNAME=${BILLING_FULLNAME}" >> .env
           echo "BILLING_ADDRESS_LINE_1=${BILLING_ADDRESS_LINE_1}" >> .env
           echo "BILLING_ADDRESS_LINE_2=${BILLING_ADDRESS_LINE_2}" >> .env
@@ -112,7 +95,6 @@ jobs:
           echo "NO_TPS=${NO_TPS}" >> .env
           echo "NO_TVQ=${NO_TVQ}" >> .env
           echo "VITE_BILLING_PRODUCT_NAME=${VITE_BILLING_PRODUCT_NAME}" >> .env
-
         env:
           APP_KEY: ${{ secrets.APP_KEY }}
           APP_URL: ${{ vars.APP_URL }}
@@ -131,16 +113,16 @@ jobs:
           MAIL_PASSWORD: ${{ secrets.MAIL_PASSWORD }}
           MAIL_FROM_ADDRESS: ${{ secrets.MAIL_FROM_ADDRESS }}
           MAIL_FROM_NAME: ${{ secrets.MAIL_FROM_NAME }}
-          BILLING_FULLNAME: ${{ secrets.BILLING_FULLNAME }}
-          BILLING_ADDRESS_LINE_1: ${{ secrets.BILLING_ADDRESS_LINE_1 }}
-          BILLING_ADDRESS_LINE_2: ${{ secrets.BILLING_ADDRESS_LINE_2 }}
-          BILLING_ZIP_CODE: ${{ secrets.BILLING_ZIP_CODE }}
-          BILLING_CITY: ${{ secrets.BILLING_CITY }}
-          BILLING_PROVINCE: ${{ secrets.BILLING_PROVINCE }}
-          BILLING_COUNTRY: ${{ secrets.BILLING_COUNTRY }}
-          NO_TPS: ${{ secrets.NO_TPS }}
-          NO_TVQ: ${{ secrets.NO_TVQ }}
-          VITE_BILLING_PRODUCT_NAME: ${{ secrets.VITE_BILLING_PRODUCT_NAME }}
+          BILLING_FULLNAME: ${{ vars.BILLING_FULLNAME }}
+          BILLING_ADDRESS_LINE_1: ${{ vars.BILLING_ADDRESS_LINE_1 }}
+          BILLING_ADDRESS_LINE_2: ${{ vars.BILLING_ADDRESS_LINE_2 }}
+          BILLING_ZIP_CODE: ${{ vars.BILLING_ZIP_CODE }}
+          BILLING_CITY: ${{ vars.BILLING_CITY }}
+          BILLING_PROVINCE: ${{ vars.BILLING_PROVINCE }}
+          BILLING_COUNTRY: ${{ vars.BILLING_COUNTRY }}
+          NO_TPS: ${{ vars.NO_TPS }}
+          NO_TVQ: ${{ vars.NO_TVQ }}
+          VITE_BILLING_PRODUCT_NAME: ${{ vars.VITE_BILLING_PRODUCT_NAME }}
       # Upload du fichier .env
       - name: Upload .env to OVH
         uses: SamKirkland/FTP-Deploy-Action@v4.3.4
