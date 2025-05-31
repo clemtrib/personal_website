@@ -47,7 +47,7 @@ function togglePanel(index: number) {
 
                 <!-- Transition -->
                 <transition name="expand">
-                    <div v-show="activeIndex === index" class="overflow-hidden text-1xl text-gray-600 dark:text-gray-400 leading-relaxed prose prose-invert max-w-none transition-all duration-300" v-html="experience.description"></div>
+                    <div v-show="activeIndex === index" class="overflow-hidden pt-8 text-1xl text-gray-600 dark:text-gray-400 leading-relaxed prose prose-invert max-w-none transition-all duration-300" v-html="experience.description"></div>
                 </transition>
             </div>
         </div>

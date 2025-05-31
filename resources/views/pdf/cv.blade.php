@@ -203,9 +203,10 @@
                     <span class="experience-location">{{ $experience['location'] }}</span>
                 </div>
                 <div class="experience-job">
-                    {{ $experience['job'] }}
                     @if(!empty($experience['company']))
-                    @ <span class="experience-company">{{ $experience['company'] }}</span>
+                    <span class="experience-company">{{ $experience['company'] }}</span> ({{ $experience['job'] }})
+                    @else
+                    {{ $experience['job'] }}
                     @endif
                 </div>
                 <div class="experience-description">
