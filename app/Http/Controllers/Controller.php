@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Storage;
 
 abstract class Controller
 {
@@ -19,12 +20,19 @@ abstract class Controller
         if ($key && Cache::has($key)) {
             Cache::forget($key);
         }
+
+        // Regénérer le CV au format PDF
+        $filepath = Storage::disk('local')->path("cv.pdf");
+        if (file_exists($filepath)) {
+            unlink($filepath);
+        }
     }
 
     /**
      *
      */
-    protected function verifyCaptcha(Request $request): bool {
+    protected function verifyCaptcha(Request $request): bool
+    {
         $response = Http::asForm()->post('https://www.google.com/recaptcha/api/siteverify', [
             'secret' => getenv('RECAPTCHA_PRIVATE_KEY') ?? null,
             'response' => $request->recaptcha_token,

@@ -9,6 +9,7 @@ use App\Models\Skill;
 use App\Models\Page;
 use App\Models\Timeslot;
 use App\Models\Guser;
+use App\Services\CvPdfService;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Session;
@@ -64,22 +65,7 @@ class SPAController extends Controller
         if (Cache::has($key)) {
             $value = array_merge(Cache::get($key), ['cache' => 1, 'meetings' => $timeslots, 'google_auth' => $google_auth, 'user_meet' => $user_meet]);
         } else {
-            $response = [
-                'config' => [
-                    'social_networks' => [
-                        'facebook' => getenv('FACEBOOK') ?? null,
-                        'github' => getenv('GITHUB') ?? null,
-                        'linkedin' => getenv('LINKEDIN') ?? null,
-                    ],
-                    'tjm' => getenv('TJM') ?? null,
-                ],
-                'experiences' => WorkExperience::orderByRaw('end_at IS NOT NULL, end_at DESC')->get(),
-                'schools' => Education::orderByRaw('date IS NOT NULL, date DESC')->get(),
-                'hobbies' => Hobby::orderBy('order', 'asc')->get(),
-                'skills' => Skill::orderBy('order', 'asc')->get(),
-                'content' => Page::where('page_slug', 'home')->first(),
-                'google_auth_url' => route('google.auth'),
-            ];
+            $response = $this->getContent();
             Cache::add($key, $response, now()->addHours(12));
             $value = array_merge($response, ['cache' => 0, 'meetings' => $timeslots, 'google_auth' => $google_auth, 'user_meet' => $user_meet]);
         }
@@ -100,5 +86,58 @@ class SPAController extends Controller
             ->orderBy('start_datetime')
             ->get();
         return response()->json($timeslots);
+    }
+
+    /**
+     *
+     */
+    public function download(CvPdfService $cvPdfService)
+    {
+        $pdfPath = $cvPdfService->generate($this->getContent());
+
+        // Pour afficher dans le navigateur :
+        return response()->file(
+            $pdfPath,
+            [
+                'Content-Type' => 'application/pdf',
+                // "inline" pour affichage, "attachment" pour téléchargement
+                'Content-Disposition' => 'inline; filename="' . basename($pdfPath) . '"'
+            ]
+        );
+    }
+
+    /**
+     *
+     */
+    private function getContent(): array
+    {
+        return [
+            'config' => [
+                'social_networks' => [
+                    'facebook' => getenv('FACEBOOK') ?? null,
+                    'github' => getenv('GITHUB') ?? null,
+                    'linkedin' => getenv('LINKEDIN') ?? null,
+                ],
+                'tjm' => getenv('TJM') ?? null,
+            ],
+            'experiences' => WorkExperience::orderByRaw('end_at IS NOT NULL, end_at DESC')->get(),
+            'schools' => Education::orderByRaw('date IS NOT NULL, date DESC')->get(),
+            'hobbies' => Hobby::orderBy('order', 'asc')->get(),
+            'skills' => Skill::orderBy('order', 'asc')->get(),
+            'content' => Page::where('page_slug', 'home')->first(),
+            'google_auth_url' => route('google.auth'),
+            'address' => [
+                'fullname' => getenv('BILLING_FULLNAME'),
+                'address_line_1' => getenv('BILLING_ADDRESS_LINE_1'),
+                'address_line_2' => getenv('BILLING_ADDRESS_LINE_2'),
+                'zip_code' => getenv('BILLING_ZIP_CODE'),
+                'city' => getenv('BILLING_CITY'),
+                'province' => getenv('BILLING_PROVINCE'),
+                'country' => getenv('BILLING_COUNTRY'),
+                'email' => getenv('GOOGLE_MEET_EMAIL'),
+                'app_url' => getenv('APP_URL'),
+                'phone' => getenv('PHONE'),
+            ]
+        ];
     }
 }
