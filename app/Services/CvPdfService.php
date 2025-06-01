@@ -18,6 +18,7 @@ class CvPdfService
         }
 
         // Générer le PDF depuis une vue Blade (ex: resources/views/pdf/cv.blade.php)
+        \Carbon\Carbon::setLocale('fr');
         $pdf = Pdf::loadView('pdf.cv', $data);
 
         // Sauvegarder le PDF dans le dossier storage/app

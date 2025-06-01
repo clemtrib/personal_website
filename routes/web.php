@@ -16,7 +16,7 @@ use App\Services\GoogleMeetService;
 
 Route::get('/', [SPAController::class, 'load'])->name('home');
 
-Route::get('/download', [SPAController::class, 'download'])->name('download');
+Route::get('/download', [SPAController::class, 'download'])->name('cv.download');
 
 Route::get('dashboard', function () {
     return Inertia::render('Dashboard');

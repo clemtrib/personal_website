@@ -3,30 +3,20 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>CV</title>
+    <title>CV - {{ $content['hero_title'] }}</title>
     <style>
         body {
             font-family: DejaVu Sans, Arial, Helvetica, sans-serif;
             color: #222;
-            background: #f7f7f7;
             margin: 0;
             padding: 0;
             text-align: justify;
         }
 
         .container {
-            background: #fff;
             max-width: 800px;
-            margin: 30px auto;
-            padding: 40px 50px 30px 50px;
-            border-radius: 12px;
-            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
-        }
-
-        .header {
-            border-bottom: 2px solid #0f766e;
-            padding-bottom: 18px;
-            margin-bottom: 30px;
+            margin: 0;
+            padding: 0;
         }
 
         .hero-title {
@@ -46,6 +36,10 @@
         .contact a {
             color: #0f766e;
             text-decoration: none;
+        }
+
+        a {
+            color: #0f766e;
         }
 
         .section-title {
@@ -75,11 +69,14 @@
             color: #222;
         }
 
+        .school-location {
+            margin-left: 7px;
+        }
+
         .school-location,
         .experience-location {
             color: #666;
             font-size: 0.98em;
-            margin-left: 7px;
         }
 
         .graduation {
@@ -149,13 +146,14 @@
         <div class="header">
             <h1 class="hero-title">{{ $content['hero_title'] }}</h1>
             <div class="contact">
-                <strong>{{ $address['fullname'] }}</strong><br>
                 {{ $address['address_line_1'] }}<br>
                 @if(!empty($address['address_line_2']))
                 {{ $address['address_line_2'] }}<br>
                 @endif
                 {{ $address['city'] }} {{ $address['province'] }} {{ $address['zip_code'] }}<br>
+                @if(!empty($address['phone']))
                 {{ $address['phone'] }}<br>
+                @endif
                 <a href="mailto:{{ $address['email'] }}">{{ $address['email'] }}</a><br>
                 <span>{{ $address['app_url'] }}</span>
             </div>
@@ -200,7 +198,7 @@
                         à aujourd'hui
                         @endif
                     </span>
-                    <span class="experience-location">{{ $experience['location'] }}</span>
+                    <span class="experience-location">&nbsp;-&nbsp;{{ $experience['location'] }}</span>
                 </div>
                 <div class="experience-job">
                     @if(!empty($experience['company']))

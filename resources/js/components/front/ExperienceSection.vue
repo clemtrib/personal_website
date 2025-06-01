@@ -37,7 +37,7 @@ function togglePanel(index: number) {
                                 </span>
                         <span v-else>à aujourd'hui</span>
                         </span>
-                        <small>- {{ experience.location }}</small>
+                        <small>&nbsp;-&nbsp;{{ experience.location }}</small>
                     </h3>
                     <h2 class="text-xl font-semibold text-white">
                         {{ experience.job }}
