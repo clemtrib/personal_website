@@ -18,6 +18,7 @@ const props = defineProps({
 // Initialisation conditionnelle du formulaire
 const form = useForm({
     name: props.customer?.name || '',
+    company: props.customer?.company || '',
     address_line_1: props.customer?.address_line_1 || '',
     address_line_2: props.customer?.address_line_2 || '',
     zip_code: props.customer?.zip_code || '',
@@ -76,6 +77,20 @@ const page = usePage();
                     class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
                 />
                 <p v-if="form.errors.name" class="mt-1 text-sm text-red-600">{{ form.errors.name }}</p>
+            </div>
+
+            <!-- Company -->
+            <div class="mb-4">
+                <Label for="company" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Société</Label>
+                <Input
+                    id="company"
+                    type="text"
+                    required
+                    tabindex="1"
+                    v-model="form.company"
+                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
+                />
+                <p v-if="form.errors.company" class="mt-1 text-sm text-red-600">{{ form.errors.company }}</p>
             </div>
 
             <!-- Adresse (ligne 1) -->
