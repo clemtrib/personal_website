@@ -6,6 +6,10 @@ use App\Models\Timeslot;
 use Illuminate\Console\Command;
 use Illuminate\Support\Carbon;
 
+/**
+ *
+ * @example php artisan app:timeslots-command
+ */
 class TimeslotsCommand extends Command
 {
     /**
