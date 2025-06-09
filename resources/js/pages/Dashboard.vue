@@ -2,7 +2,6 @@
 import AppLayout from '@/layouts/AppLayout.vue';
 import { type BreadcrumbItem } from '@/types';
 import { Head } from '@inertiajs/vue3';
-import PlaceholderPattern from '../components/PlaceholderPattern.vue';
 import SalesChart from '../components/SalesChart.vue';
 
 import { Calendar, Mail, Receipt, Recycle } from 'lucide-vue-next';
@@ -54,15 +53,15 @@ defineProps<{
     <Head title="Dashboard" />
 
     <AppLayout :breadcrumbs="breadcrumbs">
-<!-- Contenu principal -->
-    <div class="flex h-auto min-h-[50px] flex-col gap-4 rounded-xl p-4">
-      <div class="relative h-full rounded-xl border border-sidebar-border/70 dark:border-sidebar-border overflow-hidden">
-        <a :href="route('dashboard.cache')" class="flex items-center gap-x-3 rounded-lg px-3 py-2 text-sm font-medium hover:bg-accent">
-          <component :is="Recycle" />
-          <span>Clear cache</span>
-        </a>
-      </div>
-    </div>
+        <!-- Contenu principal -->
+        <div class="flex h-auto min-h-[50px] flex-col gap-4 rounded-xl p-4">
+            <div class="relative h-full overflow-hidden rounded-xl border border-sidebar-border/70 dark:border-sidebar-border">
+                <a :href="route('dashboard.cache')" class="flex items-center gap-x-3 rounded-lg px-3 py-2 text-sm font-medium hover:bg-accent">
+                    <component :is="Recycle" />
+                    <span>Clear cache</span>
+                </a>
+            </div>
+        </div>
 
         <div class="flex h-full flex-1 flex-col gap-4 rounded-xl p-4">
             <div class="grid auto-rows-min gap-4 md:grid-cols-3">
@@ -133,10 +132,9 @@ defineProps<{
                 </div>
             </div>
 
-<div class="relative min-h-[100vh] flex-1 rounded-xl border border-sidebar-border/70 dark:border-sidebar-border md:min-h-min">
-  <SalesChart :data="last12MonthsSales" />
-</div>
-
+            <div class="relative min-h-[100vh] flex-1 rounded-xl border border-sidebar-border/70 dark:border-sidebar-border md:min-h-min">
+                <SalesChart :data="last12MonthsSales" />
+            </div>
         </div>
     </AppLayout>
 </template>
