@@ -72,6 +72,9 @@ use Illuminate\Support\Str;
                 @if(!empty($bill->provider_mail))
                 <a href="mailto:{{ $bill->provider_mail }}">{{ $bill->provider_mail }}</a><br />
                 @endif
+                @if(!empty($bill->provider_website))
+                <a href="{{ $bill->provider_website }}">{{ $bill->provider_website }}</a><br />
+                @endif
                 @if(!empty($bill->provider_phone))
                 {{ $bill->provider_phone }}<br />
                 @endif

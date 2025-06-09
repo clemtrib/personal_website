@@ -25,6 +25,7 @@ class Bill extends Model
         'provider_country',
         'provider_phone',
         'provider_mail',
+        'provider_website',
         'provider_logo',
         'customer_name',
         'customer_company',

@@ -95,6 +95,7 @@ class BillController extends Controller
             $bill->provider_logo = getenv('BILLING_LOGO') ?? '';
             $bill->provider_phone = getenv('BILLING_PHONE') ?? '';
             $bill->provider_mail = getenv('BILLING_EMAIL') ?? '';
+            $bill->provider_website = getenv('BILLING_WEBSITE') ?? '';
             $bill->customer_name = $customer->name;
             $bill->customer_company = $customer->company ?? '';
             $bill->customer_address_line_1 = $customer->address_line_1 ?? '';
@@ -118,8 +119,6 @@ class BillController extends Controller
             $billDetail->quantity = $validatedData['hours'];
             $billDetail->total = $validatedData['hours'] * $customer->tjm;
             $billDetail->save();
-
-            $pdfService->generate($bill);
 
             return to_route('bills')->with('success', 'Facture créée avec succès');
             //return to_route('bills')->with('success', 'Facture créée avec succès');

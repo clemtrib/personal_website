@@ -19,6 +19,7 @@ return new class extends Migration
         Schema::table('bills', function (Blueprint $table) {
             $table->string('provider_phone')->nullable();
             $table->string('provider_mail')->nullable();
+            $table->string('provider_website')->nullable();
             $table->string('provider_logo')->nullable();
             $table->string('customer_company')->nullable();
         });
@@ -35,9 +36,9 @@ return new class extends Migration
         });
 
         Schema::table('bills', function (Blueprint $table) {
-            $table->id();
             $table->dropColumn('provider_phone');
             $table->dropColumn('provider_mail');
+            $table->dropColumn('provider_website');
             $table->dropColumn('provider_logo');
             $table->dropColumn('customer_company');
         });

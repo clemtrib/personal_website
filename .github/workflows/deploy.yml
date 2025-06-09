@@ -93,6 +93,10 @@ jobs:
           echo "BILLING_CITY=\"${BILLING_CITY}\"" >> .env
           echo "BILLING_PROVINCE=\"${BILLING_PROVINCE}\"" >> .env
           echo "BILLING_COUNTRY=\"${BILLING_COUNTRY}\"" >> .env
+          echo "BILLING_LOGO=\"${BILLING_LOGO}\"" >> .env
+          echo "BILLING_PHONE=\"${BILLING_PHONE}\"" >> .env
+          echo "BILLING_EMAIL=\"${BILLING_EMAIL}\"" >> .env
+          echo "BILLING_WEBSITE=\"${BILLING_WEBSITE}\"" >> .env
           echo "NO_TPS=\"${NO_TPS}\"" >> .env
           echo "NO_TVQ=\"${NO_TVQ}\"" >> .env
           echo "VITE_BILLING_PRODUCT_NAME=\"${VITE_BILLING_PRODUCT_NAME}\"" >> .env
@@ -123,6 +127,10 @@ jobs:
           BILLING_CITY: ${{ vars.BILLING_CITY }}
           BILLING_PROVINCE: ${{ vars.BILLING_PROVINCE }}
           BILLING_COUNTRY: ${{ vars.BILLING_COUNTRY }}
+          BILLING_LOGO: ${{ vars.BILLING_LOGO }}
+          BILLING_PHONE: ${{ vars.BILLING_PHONE }}
+          BILLING_EMAIL: ${{ vars.BILLING_EMAIL }}
+          BILLING_WEBSITE: ${{ vars.BILLING_WEBSITE }}
           NO_TPS: ${{ vars.NO_TPS }}
           NO_TVQ: ${{ vars.NO_TVQ }}
           VITE_BILLING_PRODUCT_NAME: ${{ vars.VITE_BILLING_PRODUCT_NAME }}
