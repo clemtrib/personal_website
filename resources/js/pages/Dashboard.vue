@@ -82,7 +82,7 @@ defineProps<{
                                     class="border-t border-gray-200 hover:bg-gray-50 dark:border-gray-600 dark:hover:bg-gray-800"
                                 >
                                     <td class="px-4 py-2 text-left text-green-400">{{ summary.year }}</td>
-                                    <td class="px-4 py-2 text-right text-green-400">{{ summary.total_subtotal.toFixed(2) }} $</td>
+                                    <td class="px-4 py-2 text-right text-green-400">{{ summary.total_subtotal/*.toFixed(2)*/ }} $</td>
                                 </tr>
                             </tbody>
                         </table>
