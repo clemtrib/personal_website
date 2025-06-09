@@ -25,10 +25,18 @@ class CustomerController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
+        $customers = Customer::query()
+            ->when($request->search, function ($query, $search) {
+                $query->where('name', 'LIKE', "%{$search}%");
+            })
+            ->orderBy('name', 'ASC')
+            ->paginate(10);
+
         return Inertia::render('Customers', [
-            'customers' => Customer::orderBy('name', 'ASC')->paginate(10)
+            'customers' => $customers,
+            'filters' => $request->only(['search']),
         ]);
     }
 
