@@ -37,7 +37,7 @@ class BillMailable extends Mailable
                 'name' => $this->bill->customer_name,
             ])
             ->attach($this->pdfPath, [
-                'as' =>  htmlspecialchars($this->str_ascii(sprintf('facture_%d_%s_%s.pdf', $this->bill->id, $this->bill->provider_name, $this->bill->customer_name))),
+                'as' =>  htmlspecialchars($this->str_ascii(sprintf('facture_%d_%s_%s', $this->bill->id, $this->bill->provider_name, $this->bill->customer_name))) . '.pdf',
                 'mime' => 'application/pdf',
             ]);
     }
