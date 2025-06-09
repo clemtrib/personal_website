@@ -29,7 +29,7 @@ class BillController extends Controller
     public function index()
     {
         return Inertia::render('Bills', [
-            'bills' => Bill::where('is_cancelled', 0)->orderBy('id', 'DESC')->paginate(5)
+            'bills' => Bill::where('is_cancelled', 0)->orderBy('id', 'DESC')->paginate(10)
         ]);
     }
 

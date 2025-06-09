@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import Pager from '../components/Pager.vue';
 import { Download, Eraser, Paperclip } from 'lucide-vue-next';
 import { ref } from 'vue';
 import { router } from '@inertiajs/vue3';
@@ -70,20 +71,7 @@ const openDeleteModal = (id: number) => {
                 </li>
             </ul>
 
-            <div class="mt-6 flex flex-wrap justify-center gap-2">
-                <button
-                    v-for="(link, index) in bills.links"
-                    :key="index"
-                    v-html="link.label"
-                    :disabled="!link.url"
-                    @click="navigate(link.url)"
-                    :class="[
-                        'rounded px-3 py-1 text-sm',
-                        link.active ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-700 dark:bg-gray-700 dark:text-white',
-                        !link.url ? 'cursor-not-allowed opacity-50' : 'hover:bg-gray-300 dark:hover:bg-gray-600',
-                    ]"
-                />
-            </div>
+            <Pager :links="bills.links" />
         </div>
     </div>
 </template>
