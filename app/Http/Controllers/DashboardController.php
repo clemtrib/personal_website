@@ -38,23 +38,23 @@ class DashboardController extends Controller
         }
         $last13Months = $last13Months->sortBy('year_month');
 
-
         // Requête pour compter les ventes par mois
-        $salesByMonth = Bill::selectRaw(
-            "DATE_FORMAT(created_at, '%Y-%m') as year_month"
-        );
         if (getenv('DB_CONNECTION') === 'sqlite') {
             $salesByMonth = Bill::selectRaw(
-                "strftime('%Y-%m', created_at) as year_month"
+                "strftime('%Y-%m', created_at) as year_month, SUM(subtotal) as total_subtotal_month"
+            );
+        } else {
+            $salesByMonth = Bill::selectRaw(
+                "DATE_FORMAT(created_at, '%Y-%m') as year_month, SUM(subtotal) as total_subtotal_month"
             );
         }
         $salesByMonth = $salesByMonth
-            ->selectRaw('SUM(subtotal) as total_subtotal_month')
             ->where('is_cancelled', 0)
-            ->where('created_at', '>=', $now->copy()->subMonths(12)->startOfMonth()) // 13 mois (inclut le mois courant)
+            ->where('created_at', '>=', $now->copy()->subMonths(12)->startOfMonth())
             ->groupBy('year_month')
             ->orderBy('year_month')
             ->get();
+
 
         // Jointure pour afficher tous les mois, même sans vente
         $last13MonthsSales = $last13Months->map(function ($month) use ($salesByMonth) {
