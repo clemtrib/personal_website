@@ -1,9 +1,14 @@
 ## Version 1.2
 
-Date de publication : 
+Date de publication : 09 juin 2025
 
 ### Nouveautés 🚀
-- Facturation.
+- Prise de rendez-vous avec Google Meet.
+- Création d'un CV au format PDF.
+- Administration des fiches clients et facturation.
+
+### Notes diverses
+Cette version nécessite une mise à jour de la base de données.
 
 ## Version 1.1
 
