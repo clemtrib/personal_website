@@ -3,18 +3,11 @@
 namespace App\Http\Controllers;
 
 use Inertia\Inertia;
-use App\Mail\BillMailable;
 use App\Models\Bill;
-use App\Models\BillDetail;
-use App\Models\Customer;
 use App\Models\Message;
 use App\Models\Timeslot;
-
-
-use App\Services\BillPdfService;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Mail;
-use Illuminate\Support\Str;
+use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Artisan;
 
 class DashboardController extends Controller
 {
@@ -25,11 +18,54 @@ class DashboardController extends Controller
     public function index()
     {
 
+        /** HT par années */
         $sumByYears = Bill::selectRaw('YEAR(created_at) as year');
         if (getenv('DB_CONNECTION') === 'sqlite') {
             $sumByYears = Bill::selectRaw("strftime('%Y', created_at) as year");
         }
 
+        /** HT sur le mois en cours et les 12 précedents */
+
+        // Génère la liste des 13 derniers mois (mois en cours inclus)
+        $now = Carbon::now();
+        $last13Months = collect();
+        for ($i = 0; $i < 13; $i++) {
+            $date = $now->copy()->subMonths($i);
+            $last13Months->push([
+                'year_month' => $date->format('Y-m'),
+                'month_name' => $date->format('Y-m')
+            ]);
+        }
+        $last13Months = $last13Months->sortBy('year_month');
+
+
+        // Requête pour compter les ventes par mois
+        $salesByMonth = Bill::selectRaw(
+            "DATE_FORMAT(created_at, '%Y-%m') as year_month"
+        );
+        if (getenv('DB_CONNECTION') === 'sqlite') {
+            $salesByMonth = Bill::selectRaw(
+                "strftime('%Y-%m', created_at) as year_month"
+            );
+        }
+        $salesByMonth = $salesByMonth
+            ->selectRaw('SUM(subtotal) as total_subtotal_month')
+            ->where('is_cancelled', 0)
+            ->where('created_at', '>=', $now->copy()->subMonths(12)->startOfMonth()) // 13 mois (inclut le mois courant)
+            ->groupBy('year_month')
+            ->orderBy('year_month')
+            ->get();
+
+        // Jointure pour afficher tous les mois, même sans vente
+        $last13MonthsSales = $last13Months->map(function ($month) use ($salesByMonth) {
+            $sale = $salesByMonth->firstWhere('year_month', $month['year_month']);
+            return [
+                'month' => $month['month_name'],
+                'total_subtotal_month' => $sale ? $sale->total_subtotal_month : 0
+            ];
+        })->values()->all();
+
+        /** Affichage */
         return Inertia::render('Dashboard', [
             'annualSummary' => $sumByYears
                 ->selectRaw('SUM(subtotal) as total_subtotal')
@@ -41,6 +77,8 @@ class DashboardController extends Controller
                 ->orderByDesc('year')
                 ->take(3)
                 ->get(),
+
+            'last12MonthsSales' => $last13MonthsSales,
 
             'recentBills' => Bill::where('is_cancelled', 0)
                 ->orderByDesc('created_at')
@@ -65,5 +103,17 @@ class DashboardController extends Controller
                 ->take(4)
                 ->get()
         ]);
+    }
+
+    /**
+     *
+     */
+    public function clearCache()
+    {
+        Artisan::call('cache:clear');
+        Artisan::call('config:clear');
+        Artisan::call('route:clear');
+        Artisan::call('view:clear');
+        return to_route('dashboard')->with('success', 'Cache effacé avec succès');
     }
 }
