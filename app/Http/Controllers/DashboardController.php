@@ -62,9 +62,8 @@ class DashboardController extends Controller
             ->where('is_cancelled', 0)
             ->where('created_at', '>=', $now->copy()->subMonths(12)->startOfMonth())
             ->groupBy('year_month')
-            ->orderBy('year_month')
+            ->orderByRaw('1 ASC')
             ->get();
-
 
         // Jointure pour afficher tous les mois, même sans vente
         $last13MonthsSales = $last13Months->map(function ($month) use ($salesByMonth) {
