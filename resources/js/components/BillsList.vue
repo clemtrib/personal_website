@@ -4,15 +4,6 @@ import { Download, Eraser, Paperclip } from 'lucide-vue-next';
 import { ref } from 'vue';
 import { router } from '@inertiajs/vue3';
 
-const navigate = (url: string) => {
-  if (url) {
-    router.visit(url, {
-      preserveScroll: true,
-      preserveState: true,
-    });
-  }
-};
-
 const props = defineProps<{
     bills: {
         data: Array<{
