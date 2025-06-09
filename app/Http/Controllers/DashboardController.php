@@ -19,10 +19,21 @@ class DashboardController extends Controller
     {
 
         /** HT par années */
-        $sumByYears = Bill::selectRaw('YEAR(created_at) as year');
         if (getenv('DB_CONNECTION') === 'sqlite') {
-            $sumByYears = Bill::selectRaw("strftime('%Y', created_at) as year");
+            $sumByYears = Bill::selectRaw(
+                "strftime('%Y', created_at) as year, SUM(subtotal) as total_subtotal, SUM(tps) as total_tps, SUM(tvq) as total_tvq, SUM(total) as total_total"
+            );
+        } else {
+            $sumByYears = Bill::selectRaw(
+                "YEAR(created_at) as year, SUM(subtotal) as total_subtotal, SUM(tps) as total_tps, SUM(tvq) as total_tvq, SUM(total) as total_total"
+            );
         }
+        $annualSummary = $sumByYears
+            ->where('is_cancelled', 0)
+            ->groupBy('year')
+            ->orderByDesc('year')
+            ->take(3)
+            ->get();
 
         /** HT sur le mois en cours et les 12 précedents */
 
@@ -39,13 +50,12 @@ class DashboardController extends Controller
         $last13Months = $last13Months->sortBy('year_month');
 
         // Requête pour compter les ventes par mois
+        $salesByMonth = Bill::selectRaw(
+            "DATE_FORMAT(created_at, '%Y-%m') as year_month, SUM(subtotal) as total_subtotal_month"
+        );
         if (getenv('DB_CONNECTION') === 'sqlite') {
             $salesByMonth = Bill::selectRaw(
                 "strftime('%Y-%m', created_at) as year_month, SUM(subtotal) as total_subtotal_month"
-            );
-        } else {
-            $salesByMonth = Bill::selectRaw(
-                "DATE_FORMAT(created_at, '%Y-%m') as year_month, SUM(subtotal) as total_subtotal_month"
             );
         }
         $salesByMonth = $salesByMonth
@@ -67,16 +77,7 @@ class DashboardController extends Controller
 
         /** Affichage */
         return Inertia::render('Dashboard', [
-            'annualSummary' => $sumByYears
-                ->selectRaw('SUM(subtotal) as total_subtotal')
-                ->selectRaw('SUM(tps) as total_tps')
-                ->selectRaw('SUM(tvq) as total_tvq')
-                ->selectRaw('SUM(total) as total_total')
-                ->where('is_cancelled', 0)
-                ->groupBy('year')
-                ->orderByDesc('year')
-                ->take(3)
-                ->get(),
+            'annualSummary' => $annualSummary,
 
             'last12MonthsSales' => $last13MonthsSales,
 
