@@ -26,10 +26,27 @@ class BillController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
+        $bills = Bill::query()
+            ->where('is_cancelled', 0)
+            ->when($request->customer, function ($query, $customer) {
+                $query->where('customer_id', $customer);
+            })
+            ->when($request->id, function ($query, $id) {
+                $query->where('id', $id);
+            })
+            ->when($request->start_date && $request->end_date, function ($query) use ($request) {
+                $query->whereBetween('start_date', [$request->start_date, $request->end_date])
+                    ->orWhereBetween('end_date', [$request->start_date, $request->end_date]);
+            })
+            ->orderBy('id', 'DESC')
+            ->paginate(10);
         return Inertia::render('Bills', [
-            'bills' => Bill::where('is_cancelled', 0)->orderBy('id', 'DESC')->paginate(10)
+            'customers' => Customer::orderBy('name', 'ASC')->get(['id', 'name']),
+            'filters' => $request->only(['customer', 'id', 'start_date', 'end_date']),
+            'bills' => $bills,
+
         ]);
     }
 

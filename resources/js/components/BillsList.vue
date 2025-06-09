@@ -1,10 +1,14 @@
 <script setup lang="ts">
-import Pager from '../components/Pager.vue';
+import { router } from '@inertiajs/vue3';
 import { Download, Eraser, Paperclip } from 'lucide-vue-next';
 import { ref } from 'vue';
-import { router } from '@inertiajs/vue3';
+import Pager from '../components/Pager.vue';
 
 const props = defineProps<{
+    customers: Array<{
+        id: number;
+        name: string;
+    }>;
     bills: {
         data: Array<{
             id: number;
@@ -18,9 +22,44 @@ const props = defineProps<{
         last_page: number;
         links: Array<any>;
     };
+    filters: {
+        customer?: number;
+        id?: number;
+        start_date?: string;
+        end_date?: string;
+    };
 }>();
 
 const emit = defineEmits(['open-delete-modal']);
+
+// Réactifs pour les filtres
+const customerFilter = ref(props.filters?.customer || '');
+const idFilter = ref(props.filters?.id || '');
+const startDate = ref(props.filters?.start_date || '');
+const endDate = ref(props.filters?.end_date || '');
+
+const applyFilters = () => {
+    router.get(
+        route('bills'),
+        {
+            customer: customerFilter.value,
+            id: idFilter.value,
+            start_date: startDate.value,
+            end_date: endDate.value,
+        },
+        {
+            preserveState: true,
+            replace: true,
+        },
+    );
+};
+
+// Délai pour éviter les requêtes excessives
+let timeoutId;
+const debouncedApply = () => {
+    clearTimeout(timeoutId);
+    timeoutId = setTimeout(applyFilters, 300);
+};
 
 const openDeleteModal = (id: number) => {
     emit('open-delete-modal', id);
@@ -31,6 +70,44 @@ const openDeleteModal = (id: number) => {
     <div class="relative h-full w-full">
         <div class="relative z-10 p-4">
             <h2 class="mb-4 text-2xl font-bold">Facturation</h2>
+
+            <!-- Filtres -->
+            <div class="mb-6 grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
+                <select
+                    v-model="customerFilter"
+                    @change="applyFilters"
+                    class="rounded-lg border border-gray-300 p-2 dark:border-gray-700 dark:bg-gray-800 dark:text-white"
+                >
+                    <option value="">Tous les clients</option>
+                    <option v-for="customer in props.customers" :value="customer.id" :key="customer.id">
+                        {{ customer.name }}
+                    </option>
+                </select>
+
+                <input
+                    type="number"
+                    v-model="idFilter"
+                    @input="debouncedApply"
+                    placeholder="ID Facture"
+                    class="rounded-lg border border-gray-300 p-2 dark:border-gray-700 dark:bg-gray-800 dark:text-white"
+                />
+
+                <input
+                    type="date"
+                    v-model="startDate"
+                    @change="applyFilters"
+                    class="rounded-lg border border-gray-300 p-2 dark:border-gray-700 dark:bg-gray-800 dark:text-white"
+                />
+
+                <input
+                    type="date"
+                    v-model="endDate"
+                    @change="applyFilters"
+                    class="rounded-lg border border-gray-300 p-2 dark:border-gray-700 dark:bg-gray-800 dark:text-white"
+                />
+            </div>
+
+            <!-- Liste des factures -->
             <ul class="space-y-4">
                 <li v-for="bill in props.bills.data" :key="bill.id" class="rounded-lg bg-white p-4 shadow dark:bg-gray-800">
                     <p>Du {{ new Date(bill.start_date).toLocaleDateString('fr-FR') }} au {{ new Date(bill.end_date).toLocaleDateString('fr-FR') }}</p>

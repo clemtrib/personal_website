@@ -32,6 +32,8 @@ const closeDeleteModal = () => {
 
 const page = usePage();
 const bills = computed(() => page.props.bills);
+const customers = computed(() => page.props.customers);
+const filters = computed(() => page.props.filters);
 
 onMounted(async () => {
     const message = localStorage.getItem('flashMessage');
@@ -65,7 +67,7 @@ onMounted(async () => {
         <!-- Liste des clients -->
         <div class="flex h-full flex-1 flex-col gap-4 rounded-xl p-4">
             <div class="relative min-h-[100vh] flex-1 rounded-xl border border-sidebar-border/70 dark:border-sidebar-border md:min-h-min">
-                <BillsList :bills="bills" @open-delete-modal="openDeleteModal" />
+                <BillsList :bills="bills" :customers="customers" :filters="filters" @open-delete-modal="openDeleteModal" />
             </div>
         </div>
 
