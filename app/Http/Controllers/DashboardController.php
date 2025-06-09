@@ -50,20 +50,25 @@ class DashboardController extends Controller
         $last13Months = $last13Months->sortBy('year_month');
 
         // Requête pour compter les ventes par mois
-        $salesByMonth = Bill::selectRaw(
-            "DATE_FORMAT(created_at, '%Y-%m') as year_month, SUM(subtotal) as total_subtotal_month"
-        );
         if (getenv('DB_CONNECTION') === 'sqlite') {
             $salesByMonth = Bill::selectRaw(
                 "strftime('%Y-%m', created_at) as year_month, SUM(subtotal) as total_subtotal_month"
-            );
+            )
+                ->where('is_cancelled', 0)
+                ->where('created_at', '>=', $now->copy()->subMonths(12)->startOfMonth())
+                ->groupByRaw("strftime('%Y-%m', created_at)")
+                ->orderByRaw("strftime('%Y-%m', created_at) ASC")
+                ->get();
+        } else {
+            $salesByMonth = Bill::selectRaw(
+                "DATE_FORMAT(created_at, '%Y-%m') as year_month, SUM(subtotal) as total_subtotal_month"
+            )
+                ->where('is_cancelled', 0)
+                ->where('created_at', '>=', $now->copy()->subMonths(12)->startOfMonth())
+                ->groupByRaw("DATE_FORMAT(created_at, '%Y-%m')")
+                ->orderByRaw("DATE_FORMAT(created_at, '%Y-%m') ASC")
+                ->get();
         }
-        $salesByMonth = $salesByMonth
-            ->where('is_cancelled', 0)
-            ->where('created_at', '>=', $now->copy()->subMonths(12)->startOfMonth())
-            ->groupBy('year_month')
-            ->orderByRaw('1 ASC')
-            ->get();
 
         // Jointure pour afficher tous les mois, même sans vente
         $last13MonthsSales = $last13Months->map(function ($month) use ($salesByMonth) {
