@@ -97,7 +97,7 @@ defineProps<{
                                     new Date(bill.created_at).toLocaleDateString('fr-FR')
                                 }}</a>
                             </span>
-                            <span class="text-right text-sm">{{ bill.subtotal.toFixed(2) }} $</span>
+                            <span class="text-right text-sm">{{ bill.subtotal }} $</span>
                         </div>
                     </div>
                 </div>
