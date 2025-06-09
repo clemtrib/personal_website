@@ -2,13 +2,13 @@
 
 namespace App\Services;
 
-use App\Models\Bill;
 use Illuminate\Support\Facades\Storage;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Carbon\Carbon;
 
 class CvPdfService
 {
-    public function generate($data): string
+    public function generate(array $data): string
     {
         $filename = 'cv.pdf';
 
@@ -18,7 +18,7 @@ class CvPdfService
         }
 
         // Générer le PDF depuis une vue Blade (ex: resources/views/pdf/cv.blade.php)
-        \Carbon\Carbon::setLocale('fr');
+        Carbon::setLocale('fr');
         $pdf = Pdf::loadView('pdf.cv', $data);
 
         // Sauvegarder le PDF dans le dossier storage/app

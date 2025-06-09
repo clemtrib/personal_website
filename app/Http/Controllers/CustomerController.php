@@ -11,6 +11,7 @@ class CustomerController extends Controller
 
     const VALIDATION_RULES = [
         'name' => 'required|string|max:255',
+        'company' => 'nullable|string|max:255',
         'address_line_1' => 'nullable|string|max:255',
         'address_line_2' => 'nullable|string|max:255',
         'zip_code' => 'nullable|string|max:7',
@@ -24,12 +25,18 @@ class CustomerController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        //var_dump(Customer::orderBy('name', 'ASC')->get());
-        //die;
+        $customers = Customer::query()
+            ->when($request->search, function ($query, $search) {
+                $query->where('name', 'LIKE', "%{$search}%");
+            })
+            ->orderBy('name', 'ASC')
+            ->paginate(10);
+
         return Inertia::render('Customers', [
-            'customers' => Customer::orderBy('name', 'ASC')->get()
+            'customers' => $customers,
+            'filters' => $request->only(['search']),
         ]);
     }
 
@@ -42,6 +49,7 @@ class CustomerController extends Controller
 
         $customer = new Customer();
         $customer->name = $validatedData['name'];
+        $customer->company = $validatedData['company'];
         $customer->address_line_1 = $validatedData['address_line_1'];
         $customer->address_line_2 = $validatedData['address_line_2'];
         $customer->zip_code = $validatedData['zip_code'];
@@ -68,7 +76,7 @@ class CustomerController extends Controller
             abort(404, "Client non trouvée");
         }
         return Inertia::render('CustomersForm', [
-            'customer' => $customer->only(['id', 'name', 'address_line_1', 'address_line_2', 'zip_code', 'city', 'province', 'country', 'tjm', 'email'])
+            'customer' => $customer->only(['id', 'name', 'company', 'address_line_1', 'address_line_2', 'zip_code', 'city', 'province', 'country', 'tjm', 'email'])
         ]);
     }
 
@@ -78,7 +86,6 @@ class CustomerController extends Controller
     public function update(Request $request, Customer $customer)
     {
         $validatedData = $request->validate(self::VALIDATION_RULES);
-
         try {
             $customer->update($validatedData);
             return to_route('customers')->with('success', 'Client modifié avec succès');

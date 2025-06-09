@@ -1,26 +1,43 @@
 <script setup lang="ts">
-import { Link } from '@inertiajs/vue3';
+import { router, Link } from '@inertiajs/vue3';
 import { Eraser, Pencil } from 'lucide-vue-next';
 import { ref } from 'vue';
+import Pager from '../components/Pager.vue';
 
 const props = defineProps<{
-    customers: Array<{
-        id: number;
-        name: string;
-        address_line_1: string;
-        address_line_2: string;
-        zip_code: string;
-        city: string;
-        province: string;
-    }>;
+    customers: {
+        data: Array<{
+            id: number;
+            name: string;
+            address_line_1: string;
+            address_line_2: string;
+            zip_code: string;
+            city: string;
+            province: string;
+            tjm: number;
+        }>;
+        current_page: number;
+        last_page: number;
+        links: Array<any>;
+    };
+    filters: {
+        search?: string;
+    };
 }>();
-
-const customersList = ref([...props.customers]);
 
 const emit = defineEmits(['open-delete-modal']);
 
 const openDeleteModal = (id: number) => {
     emit('open-delete-modal', id);
+};
+
+const search = ref(props.filters?.search || '');
+
+const onSearch = () => {
+    router.get(route('customers'), { search: search.value }, {
+        preserveState: true,
+        replace: true,
+    });
 };
 </script>
 
@@ -28,8 +45,17 @@ const openDeleteModal = (id: number) => {
     <div class="relative h-full w-full">
         <div class="relative z-10 p-4">
             <h2 class="mb-4 text-2xl font-bold">Clients</h2>
+                        <div class="mb-4">
+                <input
+                    type="text"
+                    v-model="search"
+                    placeholder="Rechercher un client..."
+                    class="w-full rounded-lg border border-gray-300 px-4 py-2 dark:border-gray-700 dark:bg-gray-800 dark:text-white"
+                    @input="onSearch"
+                />
+            </div>
             <ul class="space-y-4">
-                <li v-for="customer in customersList" :key="customer.id" class="rounded-lg bg-white p-4 shadow dark:bg-gray-800">
+                <li v-for="customer in props.customers.data" :key="customer.id" class="rounded-lg bg-white p-4 shadow dark:bg-gray-800">
                     <h3 class="text-2xl">{{ customer.name }}</h3>
                     <p>{{ customer.address_line_1 }}</p>
                     <p>{{ customer.address_line_2 }}</p>
@@ -52,6 +78,7 @@ const openDeleteModal = (id: number) => {
                     </div>
                 </li>
             </ul>
+            <Pager :links="customers.links" />
         </div>
     </div>
 </template>

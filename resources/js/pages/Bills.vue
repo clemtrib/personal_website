@@ -1,13 +1,12 @@
 <script setup lang="ts">
-import api from '@/api';
 import AppLayout from '@/layouts/AppLayout.vue';
 import { type BreadcrumbItem } from '@/types';
 import { Head, usePage } from '@inertiajs/vue3';
+import { CirclePlus } from 'lucide-vue-next';
+import { computed, onMounted, ref } from 'vue';
 import BillsList from '../components/BillsList.vue';
 import DeleteModale from '../components/DeleteModale.vue';
 import Toast from '../components/Toast.vue';
-import { onMounted, ref, computed } from 'vue';
-import { CirclePlus } from 'lucide-vue-next';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -18,7 +17,7 @@ const breadcrumbs: BreadcrumbItem[] = [
 
 // État de la modale
 const showDeleteModal = ref(false);
-const objectIdToDelete = ref < number | null > (null);
+const objectIdToDelete = ref<number | null>(null);
 
 const openDeleteModal = (id: number) => {
     objectIdToDelete.value = id;
@@ -32,19 +31,20 @@ const closeDeleteModal = () => {
 
 const page = usePage();
 const bills = computed(() => page.props.bills);
+const customers = computed(() => page.props.customers);
+const filters = computed(() => page.props.filters);
 
 onMounted(async () => {
     const message = localStorage.getItem('flashMessage');
     const type = localStorage.getItem('flashType');
     if (message) {
         page.props.flash = {
-            [type]: message
+            [type]: message,
         };
         localStorage.removeItem('flashMessage');
         localStorage.removeItem('flashType');
     }
 });
-
 </script>
 
 <template>
@@ -54,7 +54,7 @@ onMounted(async () => {
     <AppLayout :breadcrumbs="breadcrumbs">
         <!-- Contenu principal -->
         <div class="flex h-auto min-h-[50px] flex-col gap-4 rounded-xl p-4">
-            <div class="relative h-full rounded-xl border border-sidebar-border/70 dark:border-sidebar-border overflow-hidden">
+            <div class="relative h-full overflow-hidden rounded-xl border border-sidebar-border/70 dark:border-sidebar-border">
                 <a :href="route('bills.create')" class="flex items-center gap-x-3 rounded-lg px-3 py-2 text-sm font-medium hover:bg-accent">
                     <component :is="CirclePlus" />
                     <span>Ajouter</span>
@@ -65,7 +65,7 @@ onMounted(async () => {
         <!-- Liste des clients -->
         <div class="flex h-full flex-1 flex-col gap-4 rounded-xl p-4">
             <div class="relative min-h-[100vh] flex-1 rounded-xl border border-sidebar-border/70 dark:border-sidebar-border md:min-h-min">
-                <BillsList :bills="bills" @open-delete-modal="openDeleteModal" />
+                <BillsList :bills="bills" :customers="customers" :filters="filters" @open-delete-modal="openDeleteModal" />
             </div>
         </div>
 

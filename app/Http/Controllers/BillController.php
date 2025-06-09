@@ -26,10 +26,27 @@ class BillController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
+        $bills = Bill::query()
+            ->where('is_cancelled', 0)
+            ->when($request->customer, function ($query, $customer) {
+                $query->where('customer_id', $customer);
+            })
+            ->when($request->id, function ($query, $id) {
+                $query->where('id', $id);
+            })
+            ->when($request->start_date && $request->end_date, function ($query) use ($request) {
+                $query->whereBetween('start_date', [$request->start_date, $request->end_date])
+                    ->orWhereBetween('end_date', [$request->start_date, $request->end_date]);
+            })
+            ->orderBy('id', 'DESC')
+            ->paginate(10);
         return Inertia::render('Bills', [
-            'bills' => Bill::where('is_cancelled', 0)->orderBy('id', 'DESC')->get()
+            'customers' => Customer::orderBy('name', 'ASC')->get(['id', 'name']),
+            'filters' => $request->only(['customer', 'id', 'start_date', 'end_date']),
+            'bills' => $bills,
+
         ]);
     }
 
@@ -75,7 +92,12 @@ class BillController extends Controller
             $bill->provider_city = getenv('BILLING_CITY') ?? '';
             $bill->provider_province = getenv('BILLING_PROVINCE') ?? '';
             $bill->provider_country = getenv('BILLING_COUNTRY') ?? '';
+            $bill->provider_logo = getenv('BILLING_LOGO') ?? '';
+            $bill->provider_phone = getenv('BILLING_PHONE') ?? '';
+            $bill->provider_mail = getenv('BILLING_EMAIL') ?? '';
+            $bill->provider_website = getenv('BILLING_WEBSITE') ?? '';
             $bill->customer_name = $customer->name;
+            $bill->customer_company = $customer->company ?? '';
             $bill->customer_address_line_1 = $customer->address_line_1 ?? '';
             $bill->customer_address_line_2 = $customer->address_line_2 ?? '';
             $bill->customer_zip_code = $customer->zip_code ?? '';
@@ -97,8 +119,6 @@ class BillController extends Controller
             $billDetail->quantity = $validatedData['hours'];
             $billDetail->total = $validatedData['hours'] * $customer->tjm;
             $billDetail->save();
-
-            $pdfService->generate($bill);
 
             return to_route('bills')->with('success', 'Facture créée avec succès');
             //return to_route('bills')->with('success', 'Facture créée avec succès');

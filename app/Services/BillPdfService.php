@@ -17,10 +17,17 @@ class BillPdfService
             return Storage::disk('local')->path($filename);
         }
 
+        // Vérifier la présence de provider_logo et préparer les chemins
+        $providerLogo = $bill->provider_logo ?? null;
+        $logoPath = $providerLogo ? public_path($providerLogo) : null;
+        $logoExists = $logoPath && file_exists($logoPath);
+
         // Préparer les données pour la vue
         $data = [
             'bill' => $bill,
             'no_taxes' => is_null($bill->tps) && is_null($bill->tvq),
+            'logo' => $logoPath,
+            'logoExists' => $logoExists,
         ];
 
         // Générer le PDF depuis une vue Blade (ex: resources/views/pdf/bill.blade.php)
