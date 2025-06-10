@@ -190,4 +190,44 @@ class BillController extends Controller
             return back()->with('error',  $e->getMessage());
         }
     }
+
+    /**
+     * Exporte un CSV des factures non annulées pour une année donnée.
+     */
+    public function exportYearlyCsv(Request $request, $year)
+    {
+        $bills = Bill::query()
+            ->where('is_cancelled', 0)
+            ->whereYear('created_at', $year)
+            ->select(['id', 'customer_name', 'customer_company', 'subtotal', 'tps', 'tvq', 'total'])
+            ->get();
+
+        $headers = [
+            'Content-Type' => 'text/csv',
+            'Content-Disposition' => "attachment; filename=bills-export-{$year}.csv",
+        ];
+
+        $callback = function () use ($bills) {
+            $file = fopen('php://output', 'w');
+
+            // En-têtes
+            fputcsv($file, ['id', 'customer_name', 'customer_company', 'subtotal', 'tps', 'tvq', 'total']);
+
+            // Données
+            foreach ($bills as $bill) {
+                fputcsv($file, [
+                    $bill->id,
+                    $bill->customer_name,
+                    $bill->customer_company,
+                    $bill->subtotal,
+                    $bill->tps,
+                    $bill->tvq,
+                    $bill->total,
+                ]);
+            }
+            fclose($file);
+        };
+
+        return response()->stream($callback, 200, $headers);
+    }
 }

@@ -1,3 +1,10 @@
+## Version 1.3
+
+Date de publication : 09 juin 2025
+
+### Nouveautés 🚀
+- Export des factures au format CSV.
+
 ## Version 1.2
 
 Date de publication : 09 juin 2025

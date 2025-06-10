@@ -13,4 +13,5 @@ Route::prefix('dashboard/bills')->middleware('auth')->group(function () {
     Route::get('/is_paid/{bill}', [BillController::class, 'isPaid'])->name('bills.isPaid');
     Route::get('/send_by_mail/{bill}', [BillController::class, 'sendByMail'])->name('bills.sendByMail');
     Route::delete('/{bill}', [BillController::class, 'destroy'])->name('bills.destroy');
+    Route::get('/bills/export/{year}', [BillController::class, 'exportYearlyCsv'])->name('bills.exportYearlyCsv');
 });
