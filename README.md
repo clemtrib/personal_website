@@ -1,3 +1,65 @@
+## Présentation de l'application
+
+Cette application est une **Single Page Application** développée pour présenter mon parcours universitaire et professionnel.  
+Elle inclut plusieurs sections dynamiques que je peux éditer moi-même :  
+**"Hero"**, **"Formation"**, **"Compétences"**, **"Expériences"**, **"Loisirs"** et **"TJM"**.
+
+### Fonctionnalités principales
+
+- **Frontoffice** :  
+  - Présentation de mon profil.
+  - Formulaire de contact.
+  - Prise de rendez-vous avec génération automatique d'une invitation **Google Meet**.
+  - Génération de mon **CV au format PDF**.
+
+- **Backoffice** (pour usage personnel en tant que travailleur autonome) :  
+  - Gestion des **clients** : créer, modifier, supprimer.
+  - Création de **factures** : export en PDF ou envoi par email au client.
+  - Export **CSV** des factures pour une période donnée.
+  - Tableau de bord synthétique :
+    - Sommes facturées par **année** (3 dernières années).
+    - Sommes facturées par **mois** (13 derniers mois).
+
+### Exemple en ligne
+
+Vous pouvez consulter une version en ligne de l'application à l'adresse suivante :  
+👉 [https://clementtribouillard.com](https://clementtribouillard.com)
+
+Cette instance présente l'ensemble des fonctionnalités, incluant :
+- l'affichage public de mon profil professionnel,
+- le formulaire de contact,
+- la prise de rendez-vous avec génération d’un lien Google Meet,
+- ainsi que l'espace d'administration privé utilisé pour la gestion des factures et des contenus.
+
+### Aperçu visuel
+
+Vous pouvez consulter des captures d’écran [ici](https://clementtribouillard.com/screenshoots).
+
+![Frontoffice - Hero](./public/screenshoots/001_frontoffice_hero.png)  
+![Frontoffice - Prendre rendez-vous avec Google Meet](./public/screenshoots/001_frontoffice_meet.png)  
+![Backoffice - Dashboard](./public/screenshoots/101_backoffice_dashboard.png)
+
+---
+
+## Développement
+
+```bash
+# Créer le fichier .env à la racine du projet
+composer run dev
+```
+
+### Déploiement en production
+
+```bash
+npm install
+npm run build
+composer artisan migrate
+```
+
+💡 Si vous n'avez pas accès SSH à votre serveur, vous pouvez utiliser le script présent dans .github/workflows/deploy.yml pour automatiser le déploiement.
+
+---
+
 ## About Laravel
 
 Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:

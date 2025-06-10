@@ -26,6 +26,10 @@ Date de publication : 09 juin 2025
 ### Notes diverses
 Cette version nécessite une mise à jour de la base de données.
 
+### Aperçu visuel
+
+![Backoffice - Dashboard](./public/screenshoots/101_backoffice_dashboard.png)
+
 ## Version 1.1
 
 Date de publication : 26 mai 2025
@@ -36,6 +40,10 @@ Date de publication : 26 mai 2025
 ### Notes diverses
 Cette version nécessite une mise à jour de la base de données.
 
+### Aperçu visuel
+
+![Backoffice - Création de plages horaire](./public/screenshoots/106_backoffice_meet_edit.png)
+
 ## Version 1.0
 
 Date de publication : 16 mai 2025
@@ -43,3 +51,7 @@ Date de publication : 16 mai 2025
 ### Nouveautés 🚀
 - Création d'une SPA avec les blocs de contenu Hero, Formation, Compétences, Expériences & projets, Loisirs, TJM et Contact.
 - Création d'un panneau d'administration pour mettre à jour ce contenu.
+
+### Aperçu visuel
+
+![Frontoffice - Hero](./public/screenshoots/001_frontoffice_hero.png)
