@@ -3,9 +3,11 @@
 Date de publication : 09 juin 2025
 
 ### Nouveautés 🚀
-- Prise de rendez-vous avec Google Meet.
 - Création d'un CV au format PDF.
 - Administration des fiches clients et facturation.
+
+### Améliorations
+- Réservation de rendez-vous avec Google Meet.
 
 ### Notes diverses
 Cette version nécessite une mise à jour de la base de données.
