@@ -4,7 +4,7 @@ import { type BreadcrumbItem } from '@/types';
 import { Head } from '@inertiajs/vue3';
 import SalesChart from '../components/SalesChart.vue';
 
-import { Calendar, Mail, Receipt, Recycle } from 'lucide-vue-next';
+import { Calendar, Mail, Receipt, Recycle, Database } from 'lucide-vue-next';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -55,10 +55,17 @@ defineProps<{
     <AppLayout :breadcrumbs="breadcrumbs">
         <!-- Contenu principal -->
         <div class="flex h-auto min-h-[50px] flex-col gap-4 rounded-xl p-4">
-            <div class="relative h-full overflow-hidden rounded-xl border border-sidebar-border/70 dark:border-sidebar-border">
-                <a :href="route('dashboard.cache')" class="flex items-center gap-x-3 rounded-lg px-3 py-2 text-sm font-medium hover:bg-accent">
+            <div class="relative flex h-full flex-row overflow-hidden rounded-xl border border-sidebar-border/70 dark:border-sidebar-border">
+                <a :href="route('dashboard.cache')" class="flex w-1/2 items-center gap-x-3 rounded-lg px-3 py-2 text-sm font-medium hover:bg-accent">
                     <component :is="Recycle" />
-                    <span>Clear cache</span>
+                    <span>Nettoyer le cache</span>
+                </a>
+                <a
+                    :href="route('dashboard.clearTimeslotsTable')"
+                    class="flex w-1/2 items-center gap-x-3 rounded-lg px-3 py-2 text-sm font-medium hover:bg-accent"
+                >
+                    <component :is="Database" />
+                    <span>Nettoyer la table Timeslots</span>
                 </a>
             </div>
         </div>
@@ -86,7 +93,9 @@ defineProps<{
                                             {{ summary.year }}
                                         </a>
                                     </td>
-                                    <td class="px-4 py-2 text-right text-green-400">{{ summary.total_subtotal /*.toFixed(2)*/ }} $</td>
+                                    <td class="px-4 py-2 text-right text-green-400">
+                                        <a :href="route('bills.exportYearlyCsv', summary.year)"> {{ summary.total_subtotal }} $ </a>
+                                    </td>
                                 </tr>
                             </tbody>
                         </table>

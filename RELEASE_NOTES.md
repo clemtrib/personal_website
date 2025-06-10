@@ -1,3 +1,10 @@
+## Version 1.4
+
+Date de publication : 10 juin 2025
+
+### Nouveautés 🚀
+- Bouton pour nettoyer la table Timeslots.
+
 ## Version 1.3
 
 Date de publication : 09 juin 2025
