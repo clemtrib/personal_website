@@ -36,7 +36,7 @@ Cette instance présente l'ensemble des fonctionnalités, incluant :
 Vous pouvez consulter des captures d’écran [ici](https://clementtribouillard.com/screenshoots).
 
 ![Frontoffice - Hero](./public/screenshoots/001_frontoffice_hero.png)  
-![Frontoffice - Prendre rendez-vous avec Google Meet](./public/screenshoots/001_frontoffice_meet.png)  
+![Frontoffice - Prendre rendez-vous avec Google Meet](./public/screenshoots/002_frontoffice_meet.png)  
 ![Backoffice - Dashboard](./public/screenshoots/101_backoffice_dashboard.png)
 
 ---
