@@ -31,8 +31,6 @@ class TimeslotsCommand extends Command
      */
     public function handle()
     {
-        echo '=== Clean Timeslots table ===' . PHP_EOL;
-        $i = 0;
         $timeslots = Timeslot::where('end_datetime', '<', Carbon::now())
             ->whereNull('summary')
             ->whereNull('recipient_fullname')
@@ -41,8 +39,6 @@ class TimeslotsCommand extends Command
 
         foreach ($timeslots as $timeslot) {
             $timeslot->delete();
-            $i++;
         }
-        echo sprintf('--> %d entrées supprimées <---' . PHP_EOL, $i);
     }
 }

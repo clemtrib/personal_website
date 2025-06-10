@@ -22,6 +22,7 @@ Route::get('/download', [SPAController::class, 'download'])->name('cv.download')
 Route::prefix('dashboard')->middleware(['auth', 'verified'])->group(function () {
     Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
     Route::get('/clear-cache', [DashboardController::class, 'clearCache'])->name('dashboard.cache');
+    Route::get('/clear-timeslots-table', [DashboardController::class, 'clearTimeslotsTable'])->name('dashboard.clearTimeslotsTable');
 });
 
 Route::get('dashboard', [DashboardController::class, 'index'])->middleware(['auth', 'verified'])->name('dashboard');

@@ -13,7 +13,14 @@ class DashboardController extends Controller
 {
 
     /**
-     * Display a listing of the resource.
+     * Afficher la page Dashboard avec :
+     * - le total des ventes HT pour les 3 dernières années avec un lien pour les exporter au format CSV.
+     * - les 3 dernières factures.
+     * - les 3 derniers messages envoyés avec le formulaire de contact.
+     * - les 4 prochains rendez-vous pris avec Google Meet.
+     * - le total des ventes pour chaque mois de la dernière année.
+     * Un bouton pour nettoyer le cache.
+     * Un bouton pour nettoyer la table Timeslots.
      */
     public function index()
     {
@@ -109,7 +116,7 @@ class DashboardController extends Controller
     }
 
     /**
-     *
+     * Nettoyer le cache
      */
     public function clearCache()
     {
@@ -118,5 +125,14 @@ class DashboardController extends Controller
         Artisan::call('route:clear');
         Artisan::call('view:clear');
         return to_route('dashboard')->with('success', 'Cache effacé avec succès');
+    }
+
+    /**
+     * Nettoyer la table Timeslots
+     */
+    public function clearTimeslotsTable()
+    {
+        Artisan::call('app:timeslots-command');
+        return to_route('dashboard')->with('success', 'Table Timeslots nettoyée avec succès');
     }
 }
